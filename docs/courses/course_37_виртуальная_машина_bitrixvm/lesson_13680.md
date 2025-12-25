@@ -1,0 +1,104 @@
+# Настройка сервера
+
+**Навигация**
+- [← Оглавление курса](index.md)
+- [← Предыдущий: 11783 — Ручное включение php-расширений](lesson_11783.md)
+- [Следующий: 13682 — Проксирование запросов →](lesson_13682.md)
+
+Официальная страница урока: https://dev.1c-bitrix.ru/learning/course/index.php?COURSE_ID=37&LESSON_ID=13680
+
+**Внимание!** Приведённые настройки выходят за рамки меню Виртуальной машины. Это означает, что информация - ознакомительная и применять её следует с чётким пониманием того что вы делаете и с собственной ответственностью за совершаемые действия. В нашей техподдержке рассматриваются только вопросы по работе пунктов меню ВМ.
+
+### Организация работы web-сокетов
+
+Основная особенность в данном случае – это организация работы **web-сокетов** (ws/wss протоколов), так как бывают ситуации, когда требуются дополнительные настройки для того, чтобы сетевое оборудование не прерывало соединение по таймауту.
+
+Настройку сетевого оборудования мы обсуждать не будем – предположим, что уже все настроено, поддержка web-сокетов включена.
+
+Опишем ситуацию, когда понадобилось для работы перенести порт для ws/wss протоколов.
+
+### 1. Конфигурация виртуальной машины
+
+Создаем конфигурационный файл **/etc/nginx/bx/site_ext_enabled/rtc_ext.conf**:
+
+```
+
+server {
+	listen 1137;
+	listen 1139 default_server ssl;
+
+	#access_log off;
+
+	server_name _;
+
+	# ssl settings
+	include bx/conf/ssl.conf;
+
+	# Include im subscrider handlers
+	include bx/conf/im_subscrider.conf;
+
+	location / {
+		deny all;
+	}
+}
+```
+
+Внимательно отнеситесь к настройкам SSL (https). Нужно использовать те же настройки и тот же SSL-сертификат, что и на сайте, к которому предполагается подключить Push-server. Пример настроек можно взять из конфигурационного файла: **/etc/nginx/bx/site_enabled/rtc-server.conf**.
+
+Не забываем перезапустить nginx после того, как внесли все коррективы.
+
+**CentOS 6**:
+
+```
+
+service nginx restart
+```
+
+**CentOS 7**:
+
+```
+
+systemctl restart nginx.service
+```
+
+### 2. Открытие портов
+
+Открываем порты в виртуальной машине *BitrixVM*:
+
+**iptables**:
+
+```
+
+iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 1137 -j ACCEPT
+iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 1139 -j ACCEPT
+iptables-save > /etc/sysconfig/iptables
+```
+
+**firewalld**:
+
+```
+
+firewall-cmd --permanent --add-port=1137/tcp
+firewall-cmd --permanent --add-port=1139/tcp
+firewall-cmd --reload
+```
+
+### 3. Изменение настроек сайта
+
+Добавляем выбранные порты в конфигурационный файл **bitrix/.settings.php**:
+
+```
+
+'pull_s1' => 'BEGIN GENERATED PUSH SETTINGS. DON\'T DELETE COMMENT!!!!',
+'pull' => Array(
+    'value' =>  array(
+...
+        'path_to_websocket' => 'ws://#DOMAIN#:1137/bitrix/subws/',
+        'path_to_websocket_secure' => 'wss://#DOMAIN#:1139/bitrix/subws/',
+...
+    ),
+),
+'pull_e1' => 'END GENERATED PUSH SETTINGS. DON\'T DELETE COMMENT!!!!',
+```
+
+И затем проверяем работу через браузер.

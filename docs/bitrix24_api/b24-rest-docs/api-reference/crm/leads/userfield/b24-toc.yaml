@@ -1,0 +1,21 @@
+title: Пользовательские поля
+href: index.md
+items: 
+  - name: Обзор методов
+    href: index.md
+  - name: Добавить поле
+    href: crm-lead-userfield-add.md
+  - name: Изменить поле
+    href: crm-lead-userfield-update.md
+  - name: Получить поле по коду
+    href: crm-lead-userfield-get.md
+  - name: Получить список полей
+    href: crm-lead-userfield-list.md
+  - name: Удалить поле
+    href: crm-lead-userfield-delete.md
+  - name: События
+    include:
+      path: events/b24-toc.yaml
+      mode: link
+
+  
