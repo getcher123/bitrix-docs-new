@@ -6,6 +6,15 @@ Thumbs.db
 __pycache__/
 *.py[cod]
 
+.venv/
+.env
+.env.*
+!.env.example
+
 *.swp
 *.swo
 *.tmp
+
+# RAG runtime data (indexes, caches, local volumes)
+.rag/
+rag_data/
