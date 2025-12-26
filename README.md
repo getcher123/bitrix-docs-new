@@ -30,6 +30,7 @@
 - `docs/QUICK_REFERENCE.md` — быстрые ответы/сценарии
 - `docs/bitrix24_api/index.md` — Bitrix24 REST API (включая импорт `b24-rest-docs`)
 - `docs/AGENT.md` — как AI‑агенту искать справку
+- `docs/RAG/` — документация по проекту RAG (план, параметры, риски, тесты)
 
 ## Быстрый поиск
 
@@ -40,6 +41,12 @@ rg "CIBlockElement" docs/
 # Поиск по заголовкам (класс/метод)
 rg "^#\\s+GetList\\b" docs/
 ```
+
+## RAG‑сервис (опционально)
+
+Код RAG‑системы находится в `rag/`. Инструкции запуска и конфигурации — в:
+- `rag/README.md`
+- `docs/RAG/RAG_PLAN.md`
 
 ## Источники
 
