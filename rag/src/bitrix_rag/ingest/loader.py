@@ -20,7 +20,8 @@ class MarkdownDocument:
 
 def iter_markdown_files(vault_root: Path) -> Iterator[Path]:
     for path in vault_root.rglob("*.md"):
-        if path.name.startswith("RAG_"):
+        rel = path.relative_to(vault_root)
+        if rel.parts and rel.parts[0] == "RAG":
             continue
         yield path
 
@@ -29,4 +30,3 @@ def load_markdown(path: Path) -> MarkdownDocument:
     text = path.read_text(encoding="utf-8", errors="replace")
     text = VAULT_NAV_RE.sub("", text)
     return MarkdownDocument(path=path, text=text)
-

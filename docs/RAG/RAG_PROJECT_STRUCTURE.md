@@ -7,13 +7,14 @@
 
 ## Где что лежит
 
-- Документация по проекту RAG:
-  - `docs/RAG_PLAN.md` — план и чекбоксы прогресса
-  - `docs/RAG_PARAMETERS.md` — параметры и стек (в т.ч. Colab endpoints)
-  - `docs/RAG_RISKS.md` — риски и минимизация
-  - `docs/RAG_ACCEPTANCE.md` — критерии тестирования/приемки
-  - `docs/RAG_TEST_SET.md` — контрольные вопросы с эталонными ссылками
-  - `docs/RAG_QUESTIONNAIRE.md` — ответы на вводные вопросы (настроечный “источник правды”)
+- Документация по проекту RAG (в `docs/RAG/`):
+  - `docs/RAG/RAG_PLAN.md` — план и чекбоксы прогресса
+  - `docs/RAG/RAG_PARAMETERS.md` — параметры и стек (в т.ч. Colab endpoints)
+  - `docs/RAG/RAG_RISKS.md` — риски и минимизация
+  - `docs/RAG/RAG_ACCEPTANCE.md` — критерии тестирования/приемки
+  - `docs/RAG/RAG_TEST_SET.md` — контрольные вопросы с эталонными ссылками
+  - `docs/RAG/RAG_QUESTIONNAIRE.md` — ответы на вводные вопросы (настроечный “источник правды”)
+  - `docs/RAG/RAG_PROJECT_STRUCTURE.md` — структура проекта RAG (куда класть код/данные)
 
 - Код и инфраструктура RAG: `rag/`
 

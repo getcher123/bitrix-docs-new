@@ -16,7 +16,7 @@
 
 | Параметр | Значение | Примечание |
 | --- | --- | --- |
-| Корпус | `docs/**/*.md` | Исключить `scripts/`, `images/`, `.git/`, `docs/RAG_*.md` |
+| Корпус | `docs/**/*.md` | Исключить `scripts/`, `images/`, `.git/`, `docs/RAG/**` |
 | Очистка | удалять `vault-nav` блоки | `<!-- vault-nav:start -->…<!-- vault-nav:end -->` |
 | Chunk size | 900 токенов | Допустимо 800–1200 |
 | Overlap | 150 токенов | Допустимо 120–200 |
@@ -47,11 +47,11 @@
 
 | Переменная | Пример | Примечание |
 | --- | --- | --- |
-| `BGE_BASE_URL` | `https://xxxxxx.ngrok-free.app` | Без завершающего `/` |
+| `BGE_BASE_URL` | `https://cc2bb1b6c3b0.ngrok-free.app` | Без завершающего `/` |
 | `BGE_EMBED_PATH` | `/embed` | По умолчанию `/embed` |
 | `BGE_RERANK_PATH` | `/rerank` | По умолчанию `/rerank` |
 | `BGE_HEALTH_PATH` | `/health` | По умолчанию `/health` |
-| `BGE_API_KEY` | `...` | Опционально (если включите защиту) |
+| `BGE_API_KEY` | `<YOUR_KEY>` | Опционально (если включите защиту); не коммитить |
 | `BGE_TIMEOUT_S` | `30` | Таймаут HTTP на запрос |
 | `BGE_RETRIES` | `3` | Повторы при временных сбоях |
 
@@ -66,9 +66,31 @@
   Response: `{"scores": [0.12, 0.87]}`
 
 - `GET {BGE_BASE_URL}{BGE_HEALTH_PATH}`  
-  Response: `{"status":"ok","embed_model":"...","rerank_model":"..."}`
+  Response (пример): `{"status":"ok","embed_model":"BAAI/bge-m3","rerank_model":"BAAI/bge-reranker-v2-m3","device":"cuda"}`
 
 Если включена защита ключом — использовать заголовок `X-API-Key: <BGE_API_KEY>`.
+
+### Быстрая проверка эндпоинтов
+
+Python (requests):
+
+```python
+import requests
+
+url = "https://cc2bb1b6c3b0.ngrok-free.app/embed"
+headers = {"X-API-Key": "<BGE_API_KEY>"}
+payload = {"texts": ["Hello world"]}
+print(requests.post(url, json=payload, headers=headers).json())
+```
+
+cURL:
+
+```bash
+curl -X POST https://cc2bb1b6c3b0.ngrok-free.app/embed \
+  -H 'X-API-Key: <BGE_API_KEY>' \
+  -H 'Content-Type: application/json' \
+  -d '{"texts": ["Hello world"]}'
+```
 
 ## Векторная БД (Qdrant)
 

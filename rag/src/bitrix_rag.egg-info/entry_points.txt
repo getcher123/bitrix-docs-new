@@ -1,0 +1,2 @@
+[console_scripts]
+bitrix-rag = bitrix_rag.cli:main

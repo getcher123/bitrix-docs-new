@@ -19,6 +19,13 @@ def _env_int(name: str, default: int) -> int:
     return int(value)
 
 
+def _resolve_path(value: str, base: Path) -> Path:
+    path = Path(value)
+    if not path.is_absolute():
+        path = (base / path).resolve()
+    return path
+
+
 @dataclass(frozen=True)
 class BgeEndpointsConfig:
     base_url: str
@@ -43,15 +50,35 @@ class OpenAIConfig:
 
 
 @dataclass(frozen=True)
+class IndexingConfig:
+    chunk_size: int = 900
+    chunk_overlap: int = 150
+    min_chunk: int = 200
+    max_rerank_chars: int = 2000
+
+
+@dataclass(frozen=True)
+class RetrievalConfig:
+    bm25_k: int = 40
+    vector_k: int = 40
+    rrf_k: int = 60
+    rerank_k: int = 10
+
+
+@dataclass(frozen=True)
 class AppConfig:
     vault_root: Path
+    rag_data_dir: Path
     qdrant: QdrantConfig
     bge: BgeEndpointsConfig
     openai: OpenAIConfig
+    indexing: IndexingConfig
+    retrieval: RetrievalConfig
 
 
 def load_config(repo_root: Path) -> AppConfig:
-    vault_root = Path(_env("VAULT_ROOT", str((repo_root / ".." / "docs").resolve()))).resolve()
+    vault_root = _resolve_path(_env("VAULT_ROOT", "docs"), repo_root)
+    rag_data_dir = _resolve_path(_env("RAG_DATA_DIR", ".rag"), repo_root)
 
     qdrant = QdrantConfig(
         url=_env("QDRANT_URL", "http://localhost:6333"),
@@ -73,5 +100,26 @@ def load_config(repo_root: Path) -> AppConfig:
         model=_env("OPENAI_MODEL", "gpt-5"),
     )
 
-    return AppConfig(vault_root=vault_root, qdrant=qdrant, bge=bge, openai=openai)
+    indexing = IndexingConfig(
+        chunk_size=_env_int("RAG_CHUNK_SIZE", 900),
+        chunk_overlap=_env_int("RAG_CHUNK_OVERLAP", 150),
+        min_chunk=_env_int("RAG_MIN_CHUNK", 200),
+        max_rerank_chars=_env_int("RAG_MAX_RERANK_CHARS", 2000),
+    )
 
+    retrieval = RetrievalConfig(
+        bm25_k=_env_int("RAG_BM25_K", 40),
+        vector_k=_env_int("RAG_VECTOR_K", 40),
+        rrf_k=_env_int("RAG_RRF_K", 60),
+        rerank_k=_env_int("RAG_RERANK_K", 10),
+    )
+
+    return AppConfig(
+        vault_root=vault_root,
+        rag_data_dir=rag_data_dir,
+        qdrant=qdrant,
+        bge=bge,
+        openai=openai,
+        indexing=indexing,
+        retrieval=retrieval,
+    )

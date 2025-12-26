@@ -3,9 +3,11 @@ from __future__ import annotations
 from pathlib import Path
 
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 
 from ..config import load_config
+from ..retrieval.rag import RagService
 
 
 def create_app() -> FastAPI:
@@ -14,6 +16,13 @@ def create_app() -> FastAPI:
     cfg = load_config(repo_root)
 
     app = FastAPI(title="bitrix-rag")
+    service = RagService(cfg)
+
+    class SearchRequest(BaseModel):
+        query: str
+
+    class AnswerRequest(BaseModel):
+        query: str
 
     @app.get("/health")
     def health():
@@ -26,8 +35,32 @@ def create_app() -> FastAPI:
             "openai_model": cfg.openai.model,
         }
 
+    @app.post("/search")
+    def search(req: SearchRequest):
+        if not req.query.strip():
+            raise HTTPException(status_code=400, detail="Empty query")
+        results = service.search(req.query)
+        return {
+            "query": req.query,
+            "results": [
+                {
+                    "path": doc.path,
+                    "title": doc.title,
+                    "heading_path": doc.heading_path,
+                    "section": doc.section,
+                    "module": doc.module,
+                }
+                for doc in results
+            ],
+        }
+
+    @app.post("/answer")
+    def answer(req: AnswerRequest):
+        if not req.query.strip():
+            raise HTTPException(status_code=400, detail="Empty query")
+        return service.answer(req.query)
+
     return app
 
 
 app = create_app()
-
