@@ -30,19 +30,23 @@ def build_indexes(cfg: AppConfig) -> None:
     bm25 = Bm25Index.build(records)
     bm25.save(cfg.rag_data_dir / BM25_FILE)
 
-    store = QdrantStore.connect(
-        url=cfg.qdrant.url,
-        collection=cfg.qdrant.collection,
-        vector_size=1024,
-    )
-    bge = BgeClient(cfg.bge)
-    build_vector_index(
-        records,
-        store=store,
-        bge=bge,
-        cache_path=cfg.rag_data_dir / EMBED_CACHE_FILE,
-        batch_size=16,
-    )
+    try:
+        store = QdrantStore.connect(
+            url=cfg.qdrant.url,
+            collection=cfg.qdrant.collection,
+            vector_size=1024,
+        )
+        bge = BgeClient(cfg.bge)
+        build_vector_index(
+            records,
+            store=store,
+            bge=bge,
+            cache_path=cfg.rag_data_dir / EMBED_CACHE_FILE,
+            batch_size=cfg.indexing.embed_batch_size,
+            max_text_chars=cfg.indexing.max_rerank_chars,
+        )
+    except Exception as exc:
+        print(f"Vector index skipped (qdrant unavailable): {exc}")
 
 
 def _write_chunks(path: Path, records: list[ChunkRecord]) -> None:

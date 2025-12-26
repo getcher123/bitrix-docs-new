@@ -10,6 +10,14 @@ from ..config import load_config
 from ..retrieval.rag import RagService
 
 
+class SearchRequest(BaseModel):
+    query: str
+
+
+class AnswerRequest(BaseModel):
+    query: str
+
+
 def create_app() -> FastAPI:
     repo_root = Path(__file__).resolve().parents[4]
     load_dotenv(repo_root / "rag" / ".env")
@@ -17,12 +25,6 @@ def create_app() -> FastAPI:
 
     app = FastAPI(title="bitrix-rag")
     service = RagService(cfg)
-
-    class SearchRequest(BaseModel):
-        query: str
-
-    class AnswerRequest(BaseModel):
-        query: str
 
     @app.get("/health")
     def health():

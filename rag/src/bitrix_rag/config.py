@@ -55,6 +55,7 @@ class IndexingConfig:
     chunk_overlap: int = 150
     min_chunk: int = 200
     max_rerank_chars: int = 2000
+    embed_batch_size: int = 8
 
 
 @dataclass(frozen=True)
@@ -105,6 +106,7 @@ def load_config(repo_root: Path) -> AppConfig:
         chunk_overlap=_env_int("RAG_CHUNK_OVERLAP", 150),
         min_chunk=_env_int("RAG_MIN_CHUNK", 200),
         max_rerank_chars=_env_int("RAG_MAX_RERANK_CHARS", 2000),
+        embed_batch_size=_env_int("RAG_EMBED_BATCH", 8),
     )
 
     retrieval = RetrievalConfig(

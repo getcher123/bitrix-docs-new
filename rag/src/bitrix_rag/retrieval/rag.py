@@ -54,11 +54,15 @@ class RagService:
         self._cfg = cfg
         self._chunks = ChunkStore(cfg.rag_data_dir / CHUNKS_FILE)
         self._bm25 = Bm25Index.load(cfg.rag_data_dir / BM25_FILE)
-        self._qdrant = QdrantStore.connect(
-            url=cfg.qdrant.url,
-            collection=cfg.qdrant.collection,
-            vector_size=1024,
-        )
+        self._qdrant = None
+        try:
+            self._qdrant = QdrantStore.connect(
+                url=cfg.qdrant.url,
+                collection=cfg.qdrant.collection,
+                vector_size=1024,
+            )
+        except Exception:
+            self._qdrant = None
         self._bge = BgeClient(cfg.bge)
         self._openai = OpenAIClient(cfg.openai) if cfg.openai.api_key else None
 
@@ -68,12 +72,14 @@ class RagService:
 
         bm25_results = self._bm25.query(query, top_k=self._cfg.retrieval.bm25_k)
 
-        vector = self._bge.embed([query])[0]
-        vector_results = self._qdrant.search(
-            vector=vector,
-            top_k=self._cfg.retrieval.vector_k,
-            filter_=filter_,
-        )
+        vector_results: list[tuple[str, float]] = []
+        if self._qdrant:
+            vector = self._bge.embed([query])[0]
+            vector_results = self._qdrant.search(
+                vector=vector,
+                top_k=self._cfg.retrieval.vector_k,
+                filter_=filter_,
+            )
 
         fused = rrf_fuse(bm25_results, vector_results, k=self._cfg.retrieval.rrf_k)
         top_ids = [item.doc_id for item in fused[: self._cfg.retrieval.rerank_k]]
@@ -90,12 +96,16 @@ class RagService:
                 "mode": "fallback",
             }
 
-        docs_text = [doc.text[: self._cfg.indexing.max_rerank_chars] for doc in candidates]
-        scores = self._bge.rerank(query=query, documents=docs_text)
-        reranked = sorted(zip(candidates, scores), key=lambda item: item[1], reverse=True)
-        top = [doc for doc, _ in reranked[: self._cfg.retrieval.rerank_k]]
+        top = candidates
+        try:
+            docs_text = [doc.text[: self._cfg.indexing.max_rerank_chars] for doc in candidates]
+            scores = self._bge.rerank(query=query, documents=docs_text)
+            reranked = sorted(zip(candidates, scores), key=lambda item: item[1], reverse=True)
+            top = [doc for doc, _ in reranked[: self._cfg.retrieval.rerank_k]]
+        except Exception as exc:
+            print(f"Rerank skipped (reason: {exc})")
 
-        sources = [doc.path for doc in top][:4]
+        sources = [f"docs/{doc.path}" for doc in top][:4]
         context = _build_context(top, max_chars=6000)
 
         if not self._openai:
@@ -105,9 +115,19 @@ class RagService:
                 "mode": "extractive",
             }
 
-        prompt = _build_prompt(query, context)
-        answer = self._openai.complete(prompt)
-        return {"answer": answer, "sources": sources, "mode": "llm"}
+        prompt = _build_prompt(query, context, sources)
+        try:
+            answer = self._openai.complete(prompt)
+            if not _contains_source(answer, sources):
+                raise RuntimeError("LLM response missing required local sources")
+            return {"answer": answer, "sources": sources, "mode": "llm"}
+        except Exception as exc:
+            print(f"LLM fallback (reason: {exc})")
+            return {
+                "answer": _extractive_answer(query, top),
+                "sources": sources,
+                "mode": "extractive",
+            }
 
 
 def _sections_filter(sections: list[str] | None) -> qmodels.Filter | None:
@@ -137,11 +157,14 @@ def _build_context(chunks: Iterable[Chunk], max_chars: int) -> str:
     return "".join(parts).strip()
 
 
-def _build_prompt(query: str, context: str) -> str:
+def _build_prompt(query: str, context: str, sources: list[str]) -> str:
+    sources_block = "\n".join(f"- {src}" for src in sources)
     return (
         "Ты помощник по документации Bitrix. Отвечай на русском, кратко и по делу. "
-        "В ответе обязательно 2-4 локальные ссылки вида docs/.... Не выдумывай.\n\n"
+        "В ответе обязательно 2-4 локальные ссылки вида docs/.... Не выдумывай. "
+        "Используй только источники из списка ниже и указывай их пути дословно.\n\n"
         f"Вопрос:\n{query}\n\n"
+        f"Разрешенные источники:\n{sources_block}\n\n"
         f"Контекст:\n{context}\n\n"
         "Ответ:"
     )
@@ -153,3 +176,7 @@ def _extractive_answer(query: str, chunks: list[Chunk]) -> str:
         text = chunk.text.strip().replace("\n", " ")
         snippets.append(text[:300])
     return " ".join(snippets) or f"Не найдено точного ответа на запрос: {query}"
+
+
+def _contains_source(answer: str, sources: list[str]) -> bool:
+    return any(src in answer for src in sources)

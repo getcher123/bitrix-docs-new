@@ -44,10 +44,16 @@ class QdrantStore:
         top_k: int,
         filter_: qmodels.Filter | None = None,
     ) -> list[tuple[str, float]]:
-        results = self.client.search(
+        results = self.client.query_points(
             collection_name=self.collection,
-            query_vector=vector,
+            query=vector,
             limit=top_k,
             query_filter=filter_,
-        )
-        return [(str(hit.id), float(hit.score)) for hit in results]
+            with_payload=True,
+        ).points
+        items: list[tuple[str, float]] = []
+        for hit in results:
+            payload = hit.payload or {}
+            chunk_id = payload.get("chunk_id") or str(hit.id)
+            items.append((str(chunk_id), float(hit.score)))
+        return items

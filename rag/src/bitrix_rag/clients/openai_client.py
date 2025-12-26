@@ -19,10 +19,12 @@ class OpenAIClient:
             "messages": [{"role": "user", "content": prompt}],
             "temperature": 0.2,
             "top_p": 0.9,
-            "max_tokens": 800,
+            "max_completion_tokens": 800,
         }
         with httpx.Client(timeout=60) as client:
             resp = client.post(url, headers=headers, json=payload)
-            resp.raise_for_status()
+            if resp.status_code >= 400:
+                detail = resp.text[:800]
+                raise RuntimeError(f"OpenAI API error {resp.status_code}: {detail}")
             data = resp.json()
         return data["choices"][0]["message"]["content"].strip()
