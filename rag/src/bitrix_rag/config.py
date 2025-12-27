@@ -19,6 +19,13 @@ def _env_int(name: str, default: int) -> int:
     return int(value)
 
 
+def _env_bool(name: str, default: bool) -> bool:
+    value = os.environ.get(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
 def _resolve_path(value: str, base: Path) -> Path:
     path = Path(value)
     if not path.is_absolute():
@@ -47,6 +54,7 @@ class QdrantConfig:
 class OpenAIConfig:
     api_key: str
     model: str = "gpt-5"
+    timeout_s: int = 20
 
 
 @dataclass(frozen=True)
@@ -64,6 +72,8 @@ class RetrievalConfig:
     vector_k: int = 40
     rrf_k: int = 60
     rerank_k: int = 10
+    max_latency_s: int = 25
+    fast_rest: bool = True
 
 
 @dataclass(frozen=True)
@@ -99,6 +109,7 @@ def load_config(repo_root: Path) -> AppConfig:
     openai = OpenAIConfig(
         api_key=_env("OPENAI_API_KEY", ""),
         model=_env("OPENAI_MODEL", "gpt-5"),
+        timeout_s=_env_int("OPENAI_TIMEOUT_S", 20),
     )
 
     indexing = IndexingConfig(
@@ -114,6 +125,8 @@ def load_config(repo_root: Path) -> AppConfig:
         vector_k=_env_int("RAG_VECTOR_K", 40),
         rrf_k=_env_int("RAG_RRF_K", 60),
         rerank_k=_env_int("RAG_RERANK_K", 10),
+        max_latency_s=_env_int("RAG_MAX_LATENCY_S", 25),
+        fast_rest=_env_bool("RAG_FAST_REST", True),
     )
 
     return AppConfig(

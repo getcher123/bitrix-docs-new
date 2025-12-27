@@ -11,4 +11,8 @@ def route_sections(query: str) -> list[str] | None:
         return ["REST"]
     if "урок" in q or "курс" in q:
         return ["courses"]
-    if "настройк" in q or "интерфейс" in 
+    if "настройк" in q or "интерфейс" in q or "админ" in q:
+        return ["user_help"]
+    if re.search(r"\\bC[A-Z][A-Za-z0-9_]+\\b", query):
+        return ["classic"]
+    return None

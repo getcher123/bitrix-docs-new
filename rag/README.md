@@ -81,7 +81,10 @@ curl -s http://localhost:8000/health
 - `BGE_API_KEY=...`
 - `OPENAI_API_KEY=...`
 - `OPENAI_MODEL=gpt-5.2`
+- `OPENAI_TIMEOUT_S=20`
 - `RAG_EMBED_BATCH=4`
+- `RAG_MAX_LATENCY_S=25`
+- `RAG_FAST_REST=1` (быстрый режим для REST: без vector/rerank/LLM)
 
 ## API endpoints
 

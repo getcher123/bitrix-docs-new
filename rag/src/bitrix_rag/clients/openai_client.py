@@ -11,7 +11,7 @@ from ..config import OpenAIConfig
 class OpenAIClient:
     cfg: OpenAIConfig
 
-    def complete(self, prompt: str) -> str:
+    def complete(self, prompt: str, timeout_s: int | None = None) -> str:
         url = "https://api.openai.com/v1/chat/completions"
         headers = {"Authorization": f"Bearer {self.cfg.api_key}"}
         payload = {
@@ -21,7 +21,7 @@ class OpenAIClient:
             "top_p": 0.9,
             "max_completion_tokens": 800,
         }
-        with httpx.Client(timeout=60) as client:
+        with httpx.Client(timeout=timeout_s or self.cfg.timeout_s) as client:
             resp = client.post(url, headers=headers, json=payload)
             if resp.status_code >= 400:
                 detail = resp.text[:800]
