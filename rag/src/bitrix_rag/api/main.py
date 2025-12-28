@@ -4,6 +4,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from ..config import load_config
@@ -24,6 +25,13 @@ def create_app() -> FastAPI:
     cfg = load_config(repo_root)
 
     app = FastAPI(title="bitrix-rag")
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=False,
+        allow_methods=["*"],
+        allow_headers=["*", "ngrok-skip-browser-warning"],
+    )
     service = RagService(cfg)
 
     @app.get("/health")

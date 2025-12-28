@@ -186,6 +186,8 @@ class RagService:
                 floor_s=2,
             )
             answer = self._openai.complete(prompt, timeout_s=llm_timeout)
+            if not answer.strip():
+                raise RuntimeError("LLM returned empty response")
             answer = _attach_sources(answer, sources)
             timings["llm_ms"] = (time.monotonic() - llm_started) * 1000
             timings["total_ms"] = (time.monotonic() - started) * 1000

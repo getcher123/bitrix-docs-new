@@ -25,7 +25,10 @@ class BgeClient:
     def _headers(self) -> dict[str, str]:
         headers: dict[str, str] = {}
         if self._cfg.api_key:
-            headers["X-API-Key"] = self._cfg.api_key
+            if self._is_deepinfra():
+                headers["Authorization"] = f"bearer {self._cfg.api_key}"
+            else:
+                headers["X-API-Key"] = self._cfg.api_key
         return headers
 
     def health(self, timeout_s: int | None = None) -> BgeHealth:
@@ -43,7 +46,7 @@ class BgeClient:
 
     def embed(self, texts: list[str], timeout_s: int | None = None) -> list[list[float]]:
         url = f"{self._cfg.base_url}{self._cfg.embed_path}"
-        payload = {"texts": texts}
+        payload = {"inputs": texts} if self._is_deepinfra() else {"texts": texts}
         with httpx.Client(timeout=timeout_s or self._cfg.timeout_s) as client:
             r = client.post(url, headers=self._headers(), json=payload)
             r.raise_for_status()
@@ -55,7 +58,10 @@ class BgeClient:
 
     def rerank(self, query: str, documents: list[str], timeout_s: int | None = None) -> list[float]:
         url = f"{self._cfg.base_url}{self._cfg.rerank_path}"
-        payload = {"query": query, "documents": documents}
+        if self._is_deepinfra():
+            payload = {"queries": [query], "documents": documents}
+        else:
+            payload = {"query": query, "documents": documents}
         with httpx.Client(timeout=timeout_s or self._cfg.timeout_s) as client:
             r = client.post(url, headers=self._headers(), json=payload)
             r.raise_for_status()
@@ -64,6 +70,9 @@ class BgeClient:
         if not isinstance(scores, list):
             raise ValueError("Invalid /rerank response: missing 'scores'")
         return scores
+
+    def _is_deepinfra(self) -> bool:
+        return "api.deepinfra.com" in self._cfg.base_url
 
 
 def chunked(items: Iterable[str], size: int) -> Iterable[list[str]]:

@@ -17,10 +17,11 @@ class OpenAIClient:
         payload = {
             "model": self.cfg.model,
             "messages": [{"role": "user", "content": prompt}],
-            "temperature": 0.2,
-            "top_p": 0.9,
             "max_completion_tokens": 800,
         }
+        if _supports_sampling_params(self.cfg.model):
+            payload["temperature"] = 0.2
+            payload["top_p"] = 0.9
         with httpx.Client(timeout=timeout_s or self.cfg.timeout_s) as client:
             resp = client.post(url, headers=headers, json=payload)
             if resp.status_code >= 400:
@@ -28,3 +29,7 @@ class OpenAIClient:
                 raise RuntimeError(f"OpenAI API error {resp.status_code}: {detail}")
             data = resp.json()
         return data["choices"][0]["message"]["content"].strip()
+
+
+def _supports_sampling_params(model: str) -> bool:
+    return not model.startswith("gpt-5")

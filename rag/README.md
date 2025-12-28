@@ -23,6 +23,7 @@
 - Поиск: `bitrix-rag --env-file .env search "запрос"`
 - Ответ: `bitrix-rag --env-file .env answer "запрос"`
 - API: `uvicorn bitrix_rag.api.main:app --host 0.0.0.0 --port 8000`
+- Публичный API (ngrok): `./scripts/run_with_ngrok.sh`
 
 ## Быстрый запуск (MVP)
 
@@ -65,6 +66,13 @@ uvicorn bitrix_rag.api.main:app --host 0.0.0.0 --port 8000
 curl -s http://localhost:8000/health
 ```
 
+Опционально: запустить API с публичным ngrok‑endpoint:
+
+```bash
+chmod +x ./scripts/run_with_ngrok.sh
+./scripts/run_with_ngrok.sh
+```
+
 Дальше: индексация и API будут развиваться по плану в `../docs/RAG/RAG_PLAN.md`.
 
 ## Конфигурация (.env)
@@ -75,13 +83,21 @@ curl -s http://localhost:8000/health
 - `RAG_DATA_DIR=.rag` — локальные артефакты индекса
 - `QDRANT_URL=http://localhost:6333`
 - `QDRANT_COLLECTION=bitrix_docs`
-- `BGE_BASE_URL=https://<ngrok>.app`
-- `BGE_EMBED_PATH=/embed`
-- `BGE_RERANK_PATH=/rerank`
-- `BGE_API_KEY=...`
+- `BGE_PROVIDER=deepinfra` или `colab`
+- DeepInfra:
+  - `DEEPINFRA_BASE_URL=https://api.deepinfra.com/v1/inference`
+  - `DEEPINFRA_EMBED_PATH=/BAAI/bge-m3`
+  - `DEEPINFRA_RERANK_PATH=/Qwen/Qwen3-Reranker-0.6B`
+  - `DEEPINFRA_KEY=...`
+- Colab/ngrok:
+  - `COLAB_BASE_URL=https://<ngrok>.app`
+  - `COLAB_EMBED_PATH=/embed`
+  - `COLAB_RERANK_PATH=/rerank`
+  - `COLAB_API_KEY=...`
 - `OPENAI_API_KEY=...`
 - `OPENAI_MODEL=gpt-5.2`
 - `OPENAI_TIMEOUT_S=20`
+- `NGROK_AUTH_TOKEN=...` (для публичного API через ngrok)
 - `RAG_EMBED_BATCH=4`
 - `RAG_MAX_LATENCY_S=25`
 - `RAG_FAST_REST=1` (быстрый режим для REST: без vector/rerank/LLM)

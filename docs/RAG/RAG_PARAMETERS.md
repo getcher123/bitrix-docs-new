@@ -36,26 +36,54 @@
 | Batch size | 16–32 | По памяти |
 | Кеш | `sha256(chunk)` → vector | Для инкрементальных обновлений |
 
-## Эндпоинты моделей (Google Colab)
+## Эндпоинты моделей (DeepInfra или Google Colab)
 
 Эндпоинты используются для:
 - генерации эмбеддингов при индексации,
 - генерации эмбеддингов для запросов,
 - rerank top‑k кандидатов.
 
-Рекомендуемая конфигурация через переменные окружения:
+Переключение провайдера:
 
 | Переменная | Пример | Примечание |
 | --- | --- | --- |
-| `BGE_BASE_URL` | `https://cc2bb1b6c3b0.ngrok-free.app` | Без завершающего `/` |
-| `BGE_EMBED_PATH` | `/embed` | По умолчанию `/embed` |
-| `BGE_RERANK_PATH` | `/rerank` | По умолчанию `/rerank` |
-| `BGE_HEALTH_PATH` | `/health` | По умолчанию `/health` |
-| `BGE_API_KEY` | `<YOUR_KEY>` | Опционально (если включите защиту); не коммитить |
+| `BGE_PROVIDER` | `deepinfra` или `colab` | Управляет выбором набора эндпоинтов |
+
+Рекомендуемая конфигурация через переменные окружения (DeepInfra):
+
+| Переменная | Пример | Примечание |
+| --- | --- | --- |
+| `DEEPINFRA_BASE_URL` | `https://api.deepinfra.com/v1/inference` | Базовый URL |
+| `DEEPINFRA_EMBED_PATH` | `/BAAI/bge-m3` | DeepInfra embed endpoint |
+| `DEEPINFRA_RERANK_PATH` | `/Qwen/Qwen3-Reranker-0.6B` | DeepInfra rerank endpoint |
+| `DEEPINFRA_HEALTH_PATH` | `/health` | Опционально |
+| `DEEPINFRA_KEY` | `<YOUR_KEY>` | Обязателен; не коммитить |
 | `BGE_TIMEOUT_S` | `30` | Таймаут HTTP на запрос |
 | `BGE_RETRIES` | `3` | Повторы при временных сбоях |
 
-Контракт:
+Альтернатива (Colab/ngrok):
+
+| Переменная | Пример | Примечание |
+| --- | --- | --- |
+| `COLAB_BASE_URL` | `https://cc2bb1b6c3b0.ngrok-free.app` | Без завершающего `/` |
+| `COLAB_EMBED_PATH` | `/embed` | По умолчанию `/embed` |
+| `COLAB_RERANK_PATH` | `/rerank` | По умолчанию `/rerank` |
+| `COLAB_HEALTH_PATH` | `/health` | По умолчанию `/health` |
+| `COLAB_API_KEY` | `<YOUR_KEY>` | Опционально (если включите защиту); не коммитить |
+| `BGE_TIMEOUT_S` | `30` | Таймаут HTTP на запрос |
+| `BGE_RETRIES` | `3` | Повторы при временных сбоях |
+
+Контракт (DeepInfra):
+
+- `POST {BGE_BASE_URL}{BGE_EMBED_PATH}`  
+  Request: `{"inputs": ["text1", "text2"]}`  
+  Response: `{"embeddings": [[...], [...]]}`
+
+- `POST {BGE_BASE_URL}{BGE_RERANK_PATH}`  
+  Request: `{"queries": ["q"], "documents": ["d1", "d2"]}`  
+  Response: `{"scores": [0.12, 0.87]}`
+
+Контракт (Colab/ngrok):
 
 - `POST {BGE_BASE_URL}{BGE_EMBED_PATH}`  
   Request: `{"texts": ["text1", "text2"]}`  
@@ -69,6 +97,7 @@
   Response (пример): `{"status":"ok","embed_model":"BAAI/bge-m3","rerank_model":"BAAI/bge-reranker-v2-m3","device":"cuda"}`
 
 Если включена защита ключом — использовать заголовок `X-API-Key: <BGE_API_KEY>`.
+Для DeepInfra — `Authorization: bearer <DEEPINFRA_KEY>`.
 
 ### Быстрая проверка эндпоинтов
 
@@ -77,19 +106,19 @@ Python (requests):
 ```python
 import requests
 
-url = "https://cc2bb1b6c3b0.ngrok-free.app/embed"
-headers = {"X-API-Key": "<BGE_API_KEY>"}
-payload = {"texts": ["Hello world"]}
+url = "https://api.deepinfra.com/v1/inference/BAAI/bge-m3"
+headers = {"Authorization": "bearer <DEEPINFRA_KEY>"}
+payload = {"inputs": ["Hello world"]}
 print(requests.post(url, json=payload, headers=headers).json())
 ```
 
 cURL:
 
 ```bash
-curl -X POST https://cc2bb1b6c3b0.ngrok-free.app/embed \
-  -H 'X-API-Key: <BGE_API_KEY>' \
+curl -X POST https://api.deepinfra.com/v1/inference/BAAI/bge-m3 \
+  -H 'Authorization: bearer <DEEPINFRA_KEY>' \
   -H 'Content-Type: application/json' \
-  -d '{"texts": ["Hello world"]}'
+  -d '{"inputs": ["Hello world"]}'
 ```
 
 ## Векторная БД (Qdrant)

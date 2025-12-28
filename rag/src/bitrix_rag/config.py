@@ -87,6 +87,40 @@ class AppConfig:
     retrieval: RetrievalConfig
 
 
+def _select_bge_config() -> BgeEndpointsConfig:
+    provider = _env("BGE_PROVIDER", "").strip().lower()
+    if provider in {"deepinfra", "deep_infra"}:
+        base_url = _env("DEEPINFRA_BASE_URL", "https://api.deepinfra.com/v1/inference").rstrip(
+            "/"
+        )
+        embed_path = _env("DEEPINFRA_EMBED_PATH", "/BAAI/bge-m3")
+        rerank_path = _env("DEEPINFRA_RERANK_PATH", "/Qwen/Qwen3-Reranker-0.6B")
+        health_path = _env("DEEPINFRA_HEALTH_PATH", "/health")
+        api_key = _env("DEEPINFRA_KEY", "")
+    elif provider in {"colab", "ngrok"}:
+        base_url = _env("COLAB_BASE_URL", "").rstrip("/")
+        embed_path = _env("COLAB_EMBED_PATH", "/embed")
+        rerank_path = _env("COLAB_RERANK_PATH", "/rerank")
+        health_path = _env("COLAB_HEALTH_PATH", "/health")
+        api_key = _env("COLAB_API_KEY", "")
+    else:
+        base_url = _env("BGE_BASE_URL", "").rstrip("/")
+        embed_path = _env("BGE_EMBED_PATH", "/embed")
+        rerank_path = _env("BGE_RERANK_PATH", "/rerank")
+        health_path = _env("BGE_HEALTH_PATH", "/health")
+        api_key = _env("BGE_API_KEY", "") or _env("DEEPINFRA_KEY", "")
+
+    return BgeEndpointsConfig(
+        base_url=base_url,
+        embed_path=embed_path,
+        rerank_path=rerank_path,
+        health_path=health_path,
+        api_key=api_key,
+        timeout_s=_env_int("BGE_TIMEOUT_S", 30),
+        retries=_env_int("BGE_RETRIES", 3),
+    )
+
+
 def load_config(repo_root: Path) -> AppConfig:
     vault_root = _resolve_path(_env("VAULT_ROOT", "docs"), repo_root)
     rag_data_dir = _resolve_path(_env("RAG_DATA_DIR", ".rag"), repo_root)
@@ -96,15 +130,7 @@ def load_config(repo_root: Path) -> AppConfig:
         collection=_env("QDRANT_COLLECTION", "bitrix_docs"),
     )
 
-    bge = BgeEndpointsConfig(
-        base_url=_env("BGE_BASE_URL", "").rstrip("/"),
-        embed_path=_env("BGE_EMBED_PATH", "/embed"),
-        rerank_path=_env("BGE_RERANK_PATH", "/rerank"),
-        health_path=_env("BGE_HEALTH_PATH", "/health"),
-        api_key=_env("BGE_API_KEY", ""),
-        timeout_s=_env_int("BGE_TIMEOUT_S", 30),
-        retries=_env_int("BGE_RETRIES", 3),
-    )
+    bge = _select_bge_config()
 
     openai = OpenAIConfig(
         api_key=_env("OPENAI_API_KEY", ""),
