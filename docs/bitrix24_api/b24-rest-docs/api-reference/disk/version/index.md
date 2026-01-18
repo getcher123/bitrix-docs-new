@@ -14,3 +14,17 @@
 || **Метод** | **Описание** ||
 || [disk.version.get](./disk-version-get.md) | Возвращает версию по идентификатору. ||
 |#
+
+<!-- vault-nav:start -->
+## В этой папке
+
+<details>
+<summary>Показать файлы и папки</summary>
+
+### Файлы
+
+- [Получить версию файла disk.version.get](disk-version-get.md)
+
+</details>
+
+<!-- vault-nav:end -->

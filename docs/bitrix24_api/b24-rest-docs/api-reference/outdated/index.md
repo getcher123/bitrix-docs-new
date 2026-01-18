@@ -6,3 +6,17 @@
 || **Пространство** | **Описание** ||
 || [RPA](./rpa/index.md) | Методы роботизации. Рекомендуем использовать [универсальные типы CRM](../crm/universal/user-defined-object-types/index.md) ||
 |#
+
+<!-- vault-nav:start -->
+## В этой папке
+
+<details>
+<summary>Показать файлы и папки</summary>
+
+### Папки
+
+- [RPA: обзор методов](rpa/index.md)
+
+</details>
+
+<!-- vault-nav:end -->

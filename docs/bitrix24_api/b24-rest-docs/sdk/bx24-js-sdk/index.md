@@ -14,3 +14,21 @@
 ```
 
 Для внешних приложений и вебхуков библиотека использоваться не может.
+
+<!-- vault-nav:start -->
+## В этой папке
+
+<details>
+<summary>Показать файлы и папки</summary>
+
+### Папки
+
+- [Список дополнительных методов](additional-functions/index.md)
+- [Вызов методов REST](how-to-call-rest-methods/index.md)
+- [Обзор методов](options/index.md)
+- [Обзор методов системных диалогов](system-dialogues/index.md)
+- [Обзор системных функций](system-functions/index.md)
+
+</details>
+
+<!-- vault-nav:end -->

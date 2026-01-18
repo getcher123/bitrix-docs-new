@@ -15,3 +15,24 @@
 {% endnote %}
 
 {% endif %}
+
+<!-- vault-nav:start -->
+## В этой папке
+
+<details>
+<summary>Показать файлы и папки</summary>
+
+### Папки
+
+- [О создании приложения](create-app/index.md)
+
+### Файлы
+
+- [О приложениях для чата](chat-apps.md)
+- [Контекстные приложения](context.md)
+- [Создать иконку Приложения для чата](icon.md)
+- [Cоздать IFRAME-обработчик](iframe.md)
+
+</details>
+
+<!-- vault-nav:end -->

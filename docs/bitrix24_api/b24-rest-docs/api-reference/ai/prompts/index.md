@@ -33,3 +33,20 @@
 || [ai.prompt.register](./ai-prompt-register.md) | Добавляет промпт ||
 || [ai.prompt.unregister](./ai-prompt-unregister.md) | Удаляет промпт ||
 |#
+
+<!-- vault-nav:start -->
+## В этой папке
+
+<details>
+<summary>Показать файлы и папки</summary>
+
+### Файлы
+
+- [Добавить промпт ai.prompt.register](ai-prompt-register.md)
+- [Удалить промпт ai.prompt.unregister](ai-prompt-unregister.md)
+- [Условия в промптах](conditions.md)
+- [Маркеры в промптах](markers.md)
+
+</details>
+
+<!-- vault-nav:end -->

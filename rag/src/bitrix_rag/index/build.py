@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
+import subprocess
 
 from ..clients.bge import BgeClient
 from ..config import AppConfig
 from ..ingest.pipeline import ChunkRecord, iter_chunks
+from .incremental import build_incremental_records, build_manifest, save_manifest
 from .bm25 import Bm25Index
 from .qdrant_store import QdrantStore
 from .vector_index import build_vector_index
@@ -14,16 +17,36 @@ from .vector_index import build_vector_index
 CHUNKS_FILE = "chunks.jsonl"
 BM25_FILE = "bm25.json"
 EMBED_CACHE_FILE = "embedding_cache.jsonl"
+MANIFEST_FILE = "index_manifest.json"
+VERSION_FILE = "index_version.json"
 
 
-def build_indexes(cfg: AppConfig) -> None:
+def build_indexes(cfg: AppConfig, incremental: bool = False, strategy: str = "auto") -> None:
     cfg.rag_data_dir.mkdir(parents=True, exist_ok=True)
-    records = iter_chunks(
-        cfg.vault_root,
-        chunk_size=cfg.indexing.chunk_size,
-        chunk_overlap=cfg.indexing.chunk_overlap,
-        min_chunk=cfg.indexing.min_chunk,
-    )
+
+    if incremental:
+        records, manifest, changed = build_incremental_records(
+            vault_root=cfg.vault_root,
+            chunks_path=cfg.rag_data_dir / CHUNKS_FILE,
+            manifest_path=cfg.rag_data_dir / MANIFEST_FILE,
+            chunk_size=cfg.indexing.chunk_size,
+            chunk_overlap=cfg.indexing.chunk_overlap,
+            min_chunk=cfg.indexing.min_chunk,
+            strategy=strategy,
+            repo_root=cfg.vault_root.parent,
+        )
+        if not changed:
+            print("No changes detected; indexes are up to date.")
+            return
+        save_manifest(cfg.rag_data_dir / MANIFEST_FILE, manifest)
+    else:
+        records = iter_chunks(
+            cfg.vault_root,
+            chunk_size=cfg.indexing.chunk_size,
+            chunk_overlap=cfg.indexing.chunk_overlap,
+            min_chunk=cfg.indexing.min_chunk,
+        )
+        save_manifest(cfg.rag_data_dir / MANIFEST_FILE, build_manifest(cfg.vault_root))
 
     _write_chunks(cfg.rag_data_dir / CHUNKS_FILE, records)
 
@@ -36,6 +59,8 @@ def build_indexes(cfg: AppConfig) -> None:
             collection=cfg.qdrant.collection,
             vector_size=1024,
         )
+        if incremental:
+            store.recreate(vector_size=1024)
         bge = BgeClient(cfg.bge)
         build_vector_index(
             records,
@@ -47,6 +72,8 @@ def build_indexes(cfg: AppConfig) -> None:
         )
     except Exception as exc:
         print(f"Vector index skipped (qdrant unavailable): {exc}")
+
+    _write_version(cfg.rag_data_dir / VERSION_FILE, cfg.vault_root.parent, incremental)
 
 
 def _write_chunks(path: Path, records: list[ChunkRecord]) -> None:
@@ -70,3 +97,19 @@ def _write_chunks(path: Path, records: list[ChunkRecord]) -> None:
             )
         )
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _write_version(path: Path, repo_root: Path, incremental: bool) -> None:
+    commit = ""
+    try:
+        commit = subprocess.check_output(
+            ["git", "-C", str(repo_root), "rev-parse", "HEAD"], text=True
+        ).strip()
+    except Exception:
+        commit = ""
+    payload = {
+        "git_commit": commit,
+        "built_at": datetime.now(timezone.utc).isoformat(),
+        "incremental": incremental,
+    }
+    path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")

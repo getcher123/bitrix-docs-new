@@ -295,3 +295,18 @@ function b24BadTasks ($user) {
     - добавьте права приложению `task`, `task_extended`, `im`, `imbot`
 
 6. Нажмите кнопку *Сохранить*.
+
+<!-- vault-nav:start -->
+## В этой папке
+
+<details>
+<summary>Показать файлы и папки</summary>
+
+### Файлы
+
+- [Пример создания чат-бота для Открытых линий](open-lines-bot.md)
+- [Пример создания канала поддержки](support-bot.md)
+
+</details>
+
+<!-- vault-nav:end -->

@@ -5,3 +5,20 @@
 - [Отправка запроса](./bx24-call-method.md)
 - [Обработка результата запроса](./bx24-call-method.md#ajax-result)
 - [Пакетное выполнение запросов](./bx24-call-batch.md)
+
+<!-- vault-nav:start -->
+## В этой папке
+
+<details>
+<summary>Показать файлы и папки</summary>
+
+### Файлы
+
+- [Отправить пакет запросов BX24.callBatch](bx24-call-batch.md)
+- [Вызвать интерфейс регистрации нового обработчика события callBind](bx24-call-bind.md)
+- [Вызвать метод REST-сервиса с указанными параметрами BX24.callMethod](bx24-call-method.md)
+- [Вызвать интерфейс удаления зарегистрированного обработчика события BX24.callUnbind](bx24-call-unbind.md)
+
+</details>
+
+<!-- vault-nav:end -->

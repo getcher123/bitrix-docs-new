@@ -162,7 +162,7 @@
 
 ## Bitrix24 REST API
 
-- [Bitrix24 REST API](./bitrix24_api/index.md) — 2473 стр.
+- [Bitrix24 REST API](./bitrix24_api/index.md) — 2482 стр.
 
 <details>
 <summary>Разделы Bitrix24 REST (b24-rest-docs)</summary>
@@ -180,4 +180,4 @@
 
 ---
 
-Сгенерировано автоматически. Всего Markdown‑файлов в `docs/`: **6010**.
+Сгенерировано автоматически. Всего Markdown‑файлов в `docs/`: **6029**.

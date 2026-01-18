@@ -27,3 +27,19 @@
 - ONIMCOMMANDADD - событие на получение чат-ботом команды.
 - ONIMBOTJOINCHAT - событие на получение информации чат-ботом о включении его в чат (или личную переписку).
 - ONIMBOTDELETE - событие на удаление чат-бота.
+
+<!-- vault-nav:start -->
+## В этой папке
+
+<details>
+<summary>Показать файлы и папки</summary>
+
+### Файлы
+
+- [Пример кода обработчика для работы с событиями](example-handler-code.md)
+- [На установку приложения ONAPPINSTALL](on-app-install.md)
+- [На обновление приложения ONAPPUPDATE](on-app-update.md)
+
+</details>
+
+<!-- vault-nav:end -->

@@ -14,3 +14,17 @@
 || **Метод** | **Описание** ||
 || [disk.rights.getTasks](./disk-rights-get-tasks.md) | Метод позволяет получить список уровней доступов, которые можно использовать в назначении прав. ||
 |#
+
+<!-- vault-nav:start -->
+## В этой папке
+
+<details>
+<summary>Показать файлы и папки</summary>
+
+### Файлы
+
+- [Получить список доступных уровней доступа disk.rights.getTasks](disk-rights-get-tasks.md)
+
+</details>
+
+<!-- vault-nav:end -->

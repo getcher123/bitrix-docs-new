@@ -13,8 +13,12 @@
   - `docs/RAG/RAG_RISKS.md` — риски и минимизация
   - `docs/RAG/RAG_ACCEPTANCE.md` — критерии тестирования/приемки
   - `docs/RAG/RAG_TEST_SET.md` — контрольные вопросы с эталонными ссылками
+  - `docs/RAG/RAG_EVAL_REPORT.csv` — отчет по recall/MRR
+  - `docs/RAG/RAG_EVAL_SUMMARY.md` — краткая сводка метрик
   - `docs/RAG/RAG_QUESTIONNAIRE.md` — ответы на вводные вопросы (настроечный “источник правды”)
   - `docs/RAG/RAG_PROJECT_STRUCTURE.md` — структура проекта RAG (куда класть код/данные)
+  - `docs/RAG/RAG_UPDATE_PROCESS.md` — как обновлять индексы
+  - `docs/RAG/RAG_REGRESSION_PLAN.md` — регресс‑план и проверки
 
 - Код и инфраструктура RAG: `rag/`
 

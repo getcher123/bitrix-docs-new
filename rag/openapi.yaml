@@ -1,0 +1,159 @@
+openapi: 3.0.3
+info:
+  title: Bitrix RAG API
+  version: 0.1.0
+  description: |
+    Minimal OpenAPI schema for the Bitrix RAG service.
+    Use this file for client generation or debugging integrations.
+servers:
+  - url: http://localhost:8000
+  - url: https://{ngrok_id}.ngrok-free.app
+    variables:
+      ngrok_id:
+        default: example
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: Service status and config
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+  /search:
+    post:
+      summary: Search top documents
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchRequest"
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /answer:
+    post:
+      summary: Answer with sources
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnswerRequest"
+      responses:
+        "200":
+          description: Answer payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnswerResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    SearchRequest:
+      type: object
+      required:
+        - query
+      properties:
+        query:
+          type: string
+          example: "How to list iblock elements via CIBlockElement::GetList?"
+    AnswerRequest:
+      type: object
+      required:
+        - query
+      properties:
+        query:
+          type: string
+          example: "How to create a user?"
+    SearchResult:
+      type: object
+      properties:
+        path:
+          type: string
+          example: "docs/iblock/classes/ciblockelement/getlist.md"
+        title:
+          type: string
+          example: "CIBlockElement::GetList"
+        heading_path:
+          type: string
+          example: "Examples > Basic usage"
+        section:
+          type: string
+          example: "D7"
+        module:
+          type: string
+          example: "iblock"
+    SearchResponse:
+      type: object
+      properties:
+        query:
+          type: string
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/SearchResult"
+    AnswerResponse:
+      type: object
+      properties:
+        answer:
+          type: string
+        sources:
+          type: array
+          items:
+            type: string
+            example: "docs/iblock/classes/ciblockelement/getlist.md"
+        mode:
+          type: string
+          enum:
+            - llm
+            - extractive
+            - fallback
+        timings_ms:
+          type: object
+          additionalProperties:
+            type: number
+            format: float
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "ok"
+        vault_root:
+          type: string
+          example: "/mnt/c/informika/docs/bitrix-docs-new/docs"
+        qdrant_url:
+          type: string
+          example: "http://localhost:6333"
+        qdrant_collection:
+          type: string
+          example: "bitrix_docs"
+        bge_base_url_set:
+          type: boolean
+        openai_model:
+          type: string
+          example: "gpt-5.2"
+    ErrorResponse:
+      type: object
+      properties:
+        detail:
+          type: string

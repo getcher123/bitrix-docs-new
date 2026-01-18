@@ -87,3 +87,21 @@
 ## Продолжите изучение
 
 - [{#T}](users-rating.md)
+
+<!-- vault-nav:start -->
+## В этой папке
+
+<details>
+<summary>Показать файлы и папки</summary>
+
+### Файлы
+
+- [CRM-виджет](crm-widget.md)
+- [Выплаты вознаграждения для приложений Битрикс24 Маркетплейс](payments-subscription-details.md)
+- [Премиум-рейтинг](premium-rating.md)
+- [Отзывы в Битрикс24 Маркетплейс](users-rating.md)
+- [Яндекс Метрика](yandex-metrica.md)
+
+</details>
+
+<!-- vault-nav:end -->

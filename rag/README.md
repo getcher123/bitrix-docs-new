@@ -23,7 +23,7 @@
 - Поиск: `bitrix-rag --env-file .env search "запрос"`
 - Ответ: `bitrix-rag --env-file .env answer "запрос"`
 - API: `uvicorn bitrix_rag.api.main:app --host 0.0.0.0 --port 8000`
-- Публичный API (ngrok): `./scripts/run_with_ngrok.sh`
+- Публичный API (ngrok): `./scripts/run_with_ngrok.sh run`
 
 ## Быстрый запуск (MVP)
 
@@ -70,7 +70,7 @@ curl -s http://localhost:8000/health
 
 ```bash
 chmod +x ./scripts/run_with_ngrok.sh
-./scripts/run_with_ngrok.sh
+./scripts/run_with_ngrok.sh run
 ```
 
 Дальше: индексация и API будут развиваться по плану в `../docs/RAG/RAG_PLAN.md`.
@@ -97,6 +97,7 @@ chmod +x ./scripts/run_with_ngrok.sh
 - `OPENAI_API_KEY=...`
 - `OPENAI_MODEL=gpt-5.2`
 - `OPENAI_TIMEOUT_S=20`
+- `OPENAI_MAX_OUTPUT_TOKENS=800`
 - `NGROK_AUTH_TOKEN=...` (для публичного API через ngrok)
 - `RAG_EMBED_BATCH=4`
 - `RAG_MAX_LATENCY_S=25`
@@ -117,19 +118,46 @@ curl -s -X POST http://localhost:8000/answer \
   -d '{"query":"Как получить список элементов инфоблока через CIBlockElement::GetList"}'
 ```
 
+## OpenAPI и debug UI
+
+- Статическая OpenAPI спецификация: `openapi.yaml`
+- Фронт‑заглушка для отладки: `debug_frontend/index.html`
+
+Запуск:
+
+1) Запусти API (`uvicorn ...` или `./scripts/run_with_ngrok.sh run`).
+2) Открой `http://localhost:8000/debug` (или `${ngrok_url}/debug`).
+3) Проверь `POST /answer` или `POST /search`.
+
 ## Индексация
 
 Индексация создаёт файлы в `.rag/`:
 - `chunks.jsonl` — чанки и метаданные
 - `bm25.json` — индекс BM25
 - `embedding_cache.jsonl` — кеш эмбеддингов
+- `index_manifest.json` — mtime/size для инкрементальных обновлений
+- `index_version.json` — версия индекса (git commit + timestamp)
 
 Qdrant коллекция: `bitrix_docs`.
+
+Инкрементальная индексация:
+
+```bash
+bitrix-rag --env-file .env index --incremental --strategy auto
+```
+
+Стратегии: `auto` (git→mtime), `git`, `mtime`.
 
 ## Тестирование
 
 Тест‑набор: `../docs/RAG/RAG_TEST_SET.md`  
 Отчёт (пример): `../docs/RAG/RAG_TEST_REPORT_FULL.csv`
+
+Оценка recall/MRR:
+
+```bash
+python3 scripts/eval_test_set.py --env-file .env --top-k 10 --out ../docs/RAG/RAG_EVAL_REPORT.csv
+```
 
 ## Типичные проблемы
 
@@ -137,6 +165,7 @@ Qdrant коллекция: `bitrix_docs`.
 - Rerank/Embed дают 4xx/5xx: проверь `BGE_BASE_URL` и ключ.
 - LLM ошибки: проверь `OPENAI_MODEL` и `OPENAI_API_KEY`.
 - Медленная индексация: уменьшай `RAG_EMBED_BATCH`.
+- Логи запросов: `.rag/requests.log` (JSONL, включает timings).
 
 ## Остановка
 

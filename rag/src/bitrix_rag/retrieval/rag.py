@@ -168,7 +168,7 @@ class RagService:
         if not self._openai or _skip_llm(sections, self._cfg.retrieval.fast_rest):
             timings["total_ms"] = (time.monotonic() - started) * 1000
             return {
-                "answer": _attach_sources(_extractive_answer(query, top), sources),
+                "answer": _extractive_answer(query, top),
                 "sources": sources,
                 "mode": "extractive",
                 "timings_ms": timings,
@@ -188,7 +188,6 @@ class RagService:
             answer = self._openai.complete(prompt, timeout_s=llm_timeout)
             if not answer.strip():
                 raise RuntimeError("LLM returned empty response")
-            answer = _attach_sources(answer, sources)
             timings["llm_ms"] = (time.monotonic() - llm_started) * 1000
             timings["total_ms"] = (time.monotonic() - started) * 1000
             return {"answer": answer, "sources": sources, "mode": "llm", "timings_ms": timings}
@@ -196,7 +195,7 @@ class RagService:
             print(f"LLM fallback (reason: {exc})")
             timings["total_ms"] = (time.monotonic() - started) * 1000
             return {
-                "answer": _attach_sources(_extractive_answer(query, top), sources),
+                "answer": _extractive_answer(query, top),
                 "sources": sources,
                 "mode": "extractive",
                 "timings_ms": timings,
@@ -234,8 +233,13 @@ def _build_prompt(query: str, context: str, sources: list[str]) -> str:
     sources_block = "\n".join(f"- {src}" for src in sources)
     return (
         "Ты помощник по документации Bitrix. Отвечай на русском, кратко и по делу. "
-        "В ответе обязательно 2-4 локальные ссылки вида docs/.... Не выдумывай. "
-        "Используй только источники из списка ниже и указывай их пути дословно.\n\n"
+        "Добавляй ссылку только к тем предложениям или шагам, "
+        "которые прямо опираются на источники. Формат ссылки: ([docs/...](docs/...)). "
+        "Дисклеймеры, уточняющие вопросы и предположения — без ссылок. "
+        "Ссылки должны быть встроены в текст, отдельный список источников не выводи. "
+        "Используй только источники из списка ниже. "
+        "Если прямого ответа в источниках нет, сначала явно скажи об этом (без ссылки), "
+        "а затем предложи ближайшую альтернативу из доступных источников с ссылками.\n\n"
         f"Вопрос:\n{query}\n\n"
         f"Разрешенные источники:\n{sources_block}\n\n"
         f"Контекст:\n{context}\n\n"
@@ -247,18 +251,10 @@ def _extractive_answer(query: str, chunks: list[Chunk]) -> str:
     snippets = []
     for chunk in chunks[:3]:
         text = chunk.text.strip().replace("\n", " ")
-        snippets.append(text[:300])
-    return " ".join(snippets) or f"Не найдено точного ответа на запрос: {query}"
-
-
-def _attach_sources(answer: str, sources: list[str]) -> str:
-    if not sources:
-        return answer
-    missing = [src for src in sources if src not in answer]
-    if not missing:
-        return answer
-    tail = "\n\nСсылки:\n" + "\n".join(f"- {src}" for src in sources)
-    return answer.rstrip() + tail
+        link = f"docs/{chunk.path}"
+        snippet = f"{text[:300]} ([{link}]({link}))"
+        snippets.append(snippet)
+    return "\n\n".join(snippets) or f"Не найдено точного ответа на запрос: {query}"
 
 
 def _time_left(started: float, budget_s: int) -> float:

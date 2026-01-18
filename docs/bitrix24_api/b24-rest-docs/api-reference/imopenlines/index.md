@@ -15,3 +15,23 @@
 {% endnote %}
 
 {% endif %}
+
+<!-- vault-nav:start -->
+## В этой папке
+
+<details>
+<summary>Показать файлы и папки</summary>
+
+### Папки
+
+- [Коннекторы открытых линий: обзор методов](imconnector/index.md)
+- [Открытые линии в Битрикс24](openlines/index.md)
+
+### Файлы
+
+- [Типы данных и структура объектов в REST API Открытых линий](data-types.md)
+- [Сценарии с использованием открытых линий](tutorials.md)
+
+</details>
+
+<!-- vault-nav:end -->

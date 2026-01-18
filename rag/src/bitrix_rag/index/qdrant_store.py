@@ -26,6 +26,15 @@ class QdrantStore:
             )
         return cls(client=client, collection=collection)
 
+    def recreate(self, vector_size: int) -> None:
+        self.client.recreate_collection(
+            collection_name=self.collection,
+            vectors_config=qmodels.VectorParams(
+                size=vector_size,
+                distance=qmodels.Distance.COSINE,
+            ),
+        )
+
     def upsert(
         self,
         ids: list[str],

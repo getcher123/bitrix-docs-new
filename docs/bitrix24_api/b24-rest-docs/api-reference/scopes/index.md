@@ -14,3 +14,18 @@
 
 - [{#T}](./permissions.md)
 - [{#T}](./confirmation.md)
+
+<!-- vault-nav:start -->
+## В этой папке
+
+<details>
+<summary>Показать файлы и папки</summary>
+
+### Файлы
+
+- [Вызов методов с подтверждением](confirmation.md)
+- [Доступные скоупы Битрикс24](permissions.md)
+
+</details>
+
+<!-- vault-nav:end -->

@@ -55,6 +55,7 @@ class OpenAIConfig:
     api_key: str
     model: str = "gpt-5"
     timeout_s: int = 20
+    max_output_tokens: int = 800
 
 
 @dataclass(frozen=True)
@@ -136,6 +137,7 @@ def load_config(repo_root: Path) -> AppConfig:
         api_key=_env("OPENAI_API_KEY", ""),
         model=_env("OPENAI_MODEL", "gpt-5"),
         timeout_s=_env_int("OPENAI_TIMEOUT_S", 20),
+        max_output_tokens=_env_int("OPENAI_MAX_OUTPUT_TOKENS", 800),
     )
 
     indexing = IndexingConfig(

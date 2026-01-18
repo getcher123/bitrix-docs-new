@@ -163,3 +163,11 @@ curl -X POST https://api.deepinfra.com/v1/inference/BAAI/bge-m3 \
 - Источник изменений: `git diff --name-only` или `mtime`.
 - Пересчет только изменённых файлов и их чанков.
 - Версия индекса: `git rev-parse HEAD`.
+- Manifest: `.rag/index_manifest.json` (mtime/size для файлов `docs/`).
+- Версия индекса: `.rag/index_version.json` (git commit + timestamp).
+- Команда: `bitrix-rag --env-file .env index --incremental --strategy auto`.
+
+## Логирование и метрики
+
+- Файл логов: `.rag/requests.log` (JSONL).
+- Поля: `request_id`, `sections`, `mode`, `sources_count`, `timings_ms`, `latency_ms`.

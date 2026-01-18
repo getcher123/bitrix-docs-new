@@ -28,23 +28,44 @@ def iter_chunks(
 ) -> list[ChunkRecord]:
     records: list[ChunkRecord] = []
     for path in iter_markdown_files(vault_root):
-        doc = load_markdown(path)
-        rel_path = path.relative_to(vault_root)
-        title = extract_title(doc.text)
-        section = classify_section(rel_path)
-        module = infer_module(rel_path)
-        course_id, lesson_id = parse_course_ids(rel_path)
-        chunks = chunk_markdown(doc, chunk_size, chunk_overlap, min_chunk)
-        for chunk in chunks:
-            content_hash = _hash_text(chunk.text)
-            metadata = DocMetadata(
-                path=str(rel_path.as_posix()),
-                section=section,
-                module=module,
-                title=title or chunk.title,
-                heading_path=chunk.heading_path,
-                course_id=course_id,
-                lesson_id=lesson_id,
+        records.extend(
+            chunk_file(
+                path=path,
+                vault_root=vault_root,
+                chunk_size=chunk_size,
+                chunk_overlap=chunk_overlap,
+                min_chunk=min_chunk,
             )
-            records.append(ChunkRecord(chunk=chunk, metadata=metadata, content_hash=content_hash))
+        )
+    return records
+
+
+def chunk_file(
+    path: Path,
+    vault_root: Path,
+    chunk_size: int,
+    chunk_overlap: int,
+    min_chunk: int,
+) -> list[ChunkRecord]:
+    doc = load_markdown(path)
+    rel_path = path.relative_to(vault_root)
+    title = extract_title(doc.text)
+    section = classify_section(rel_path)
+    module = infer_module(rel_path)
+    course_id, lesson_id = parse_course_ids(rel_path)
+    chunks = chunk_markdown(doc, chunk_size, chunk_overlap, min_chunk)
+
+    records: list[ChunkRecord] = []
+    for chunk in chunks:
+        content_hash = _hash_text(chunk.text)
+        metadata = DocMetadata(
+            path=str(rel_path.as_posix()),
+            section=section,
+            module=module,
+            title=title or chunk.title,
+            heading_path=chunk.heading_path,
+            course_id=course_id,
+            lesson_id=lesson_id,
+        )
+        records.append(ChunkRecord(chunk=chunk, metadata=metadata, content_hash=content_hash))
     return records

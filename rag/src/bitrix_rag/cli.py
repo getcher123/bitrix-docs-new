@@ -15,7 +15,18 @@ def main() -> None:
     parser.add_argument("--env-file", default=".env", help="Path to .env (default: .env)")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    sub.add_parser("index", help="Build BM25 + vector indexes")
+    index_parser = sub.add_parser("index", help="Build BM25 + vector indexes")
+    index_parser.add_argument(
+        "--incremental",
+        action="store_true",
+        help="Update only changed files using manifest/git diff",
+    )
+    index_parser.add_argument(
+        "--strategy",
+        choices=["auto", "git", "mtime"],
+        default="auto",
+        help="Change detection strategy for incremental mode",
+    )
 
     search_parser = sub.add_parser("search", help="Search top chunks")
     search_parser.add_argument("query")
@@ -32,7 +43,7 @@ def main() -> None:
     cfg = load_config(repo_root)
 
     if args.command == "index":
-        build_indexes(cfg)
+        build_indexes(cfg, incremental=args.incremental, strategy=args.strategy)
         print("Indexes built.")
         return
 

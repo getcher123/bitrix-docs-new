@@ -5,6 +5,7 @@
 ## Основная документация (офлайн‑копия)
 
 - [Документация Bitrix24 REST API (b24-rest-docs)](./b24-rest-docs/index.md) — импорт официального репозитория.
+- [Локальные интеграции (apidocs)](./local-integrations/index.md) — раздел про локальные интеграции (вебхуки/локальные приложения).
 
 ## Быстрый поиск по методам
 
@@ -28,3 +29,18 @@ python3 scripts/vault_maintenance.py --index-only
 ```
 
 Текущий зафиксированный коммит upstream хранится в `docs/bitrix24_api/b24-rest-docs/UPSTREAM.md`.
+
+<!-- vault-nav:start -->
+## В этой папке
+
+<details>
+<summary>Показать файлы и папки</summary>
+
+### Папки
+
+- [Документация Bitrix24 REST API (b24-rest-docs)](b24-rest-docs/index.md)
+- [Обзор инструментов для локальных интеграций](local-integrations/index.md)
+
+</details>
+
+<!-- vault-nav:end -->

@@ -30,3 +30,20 @@ $data = [
 ];
 $url = $webHookUrl.$prefix.'.document.add/';
 ```
+
+<!-- vault-nav:start -->
+## В этой папке
+
+<details>
+<summary>Показать файлы и папки</summary>
+
+### Файлы
+
+- [Генерация документа с модификаторами даты и имени](document-date-name.md)
+- [Генерация документа с изображениями и печатями](document-images-seals.md)
+- [Генерация документа со сложными таблицами](document-table-complex.md)
+- [Генерация документа с табличными данными](document-table-data.md)
+
+</details>
+
+<!-- vault-nav:end -->

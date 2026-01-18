@@ -35,6 +35,20 @@
 4. Обновить чекбоксы в `docs/RAG/RAG_PLAN.md`.
 5. Свериться с рисками/критериями (RAG_RISKS / RAG_ACCEPTANCE).
 
+## Порядок индексации нового материала
+
+Если добавлен новый материал, спарсенный в Markdown:
+
+1. Убедиться, что ссылки и картинки локальные (соответствуют требованиям vault).
+2. Обновить навигацию: `python3 scripts/vault_maintenance.py --index-only` и `--nav-only`.
+3. Обновить индекс (для индексации используется только Colab endpoint):
+   - инкрементально: `bitrix-rag --env-file rag/.env index --incremental --strategy auto`
+   - полностью (после смены эмбеддингов/провайдера): `bitrix-rag --env-file rag/.env index`
+
+Подробная инструкция: `docs/RAG/RAG_UPDATE_PROCESS.md`  
+План работ: `docs/RAG/RAG_PLAN.md`  
+Регресс‑проверки: `docs/RAG/RAG_REGRESSION_PLAN.md`
+
 ## Критерии готовности этапов
 
 - Реализация соответствует параметрам в `docs/RAG/RAG_PARAMETERS.md`.
