@@ -1,6 +1,0 @@
-# Minimal Amvera configuration.
-# Amvera build currently fails when a Dockerfile path isn't available in the build context.
-# Keeping it explicit here (even if UI/build settings are used).
-build:
-  dockerfile: Dockerfile
-
