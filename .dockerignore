@@ -13,6 +13,4 @@
 .rag
 rag_data
 
-frontend/node_modules
-frontend/dist
-
+frontend/

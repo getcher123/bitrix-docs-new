@@ -1,14 +1,3 @@
-FROM node:20-alpine AS frontend-build
-
-WORKDIR /frontend
-
-COPY frontend/package.json frontend/package-lock.json ./
-RUN npm ci
-
-COPY frontend ./
-RUN npm run build
-
-
 FROM python:3.10-slim
 
 WORKDIR /app
@@ -27,7 +16,6 @@ RUN pip install --no-cache-dir -e /app/rag
 # Runtime files
 COPY rag/openapi.yaml /app/rag/openapi.yaml
 COPY rag/debug_frontend /app/rag/debug_frontend
-COPY --from=frontend-build /frontend/dist /app/frontend_dist
 COPY docs /app/docs
 COPY metadata.json /app/metadata.json
 COPY url_mapping.json /app/url_mapping.json

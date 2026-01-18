@@ -158,10 +158,10 @@ curl -s -X POST http://localhost:8000/answer \
 2) Открой `http://localhost:8000/debug` (или `${ngrok_url}/debug`).
 3) Проверь `POST /answer` или `POST /search`.
 
-## Продовый frontend
+## Frontend (отдельно)
 
-В прод‑контейнере фронтенд собирается и раздается как SPA на `/`.
-Если фронтенд не собран (локально без build), `/` не будет доступен.
+В текущем прод‑контейнере Amvera разворачивается **только backend**.  
+Frontend планируется деплоить отдельно (Amvera как второй сервис или GitHub Pages).
 
 ## Индексация
 
