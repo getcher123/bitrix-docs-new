@@ -1,3 +1,4 @@
 [submodule "frontend"]
 	path = frontend
 	url = git@github.com:getcher123/bitrix-scribe.git
+	branch = main

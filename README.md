@@ -48,6 +48,16 @@ rg "^#\\s+GetList\\b" docs/
 - `rag/README.md`
 - `docs/RAG/RAG_PLAN.md`
 
+## Frontend (bitrix-scribe)
+
+Фронтенд для RAG (участвует в деплое на Amvera) подключен как git submodule в `frontend/`.
+
+После клонирования репозитория и при обновлениях:
+
+```bash
+git submodule update --init --recursive
+```
+
 ## Источники
 
 - https://dev.1c-bitrix.ru/docs/ (документация, классическое API)

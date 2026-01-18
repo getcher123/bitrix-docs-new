@@ -25,6 +25,16 @@
 - API: `uvicorn bitrix_rag.api.main:app --host 0.0.0.0 --port 8000`
 - Публичный API (ngrok): `./scripts/run_with_ngrok.sh run`
 
+## Frontend
+
+Продовый фронтенд подключен как git submodule в `../frontend/`.
+
+Если после `git clone` папка `frontend/` пустая:
+
+```bash
+git submodule update --init --recursive
+```
+
 ## Быстрый запуск (MVP)
 
 1) Поднять Qdrant (если используем):
