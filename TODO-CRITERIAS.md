@@ -29,15 +29,15 @@
 
 **Amvera (проект `rag-bitrix`)**
 - ID: `119309`
-- Status: `BUILD_FAILED` (сообщение: `Project failed to build`)
+- Status: `CONFIG_ERROR` / `BUILD_FAILED` (последняя ошибка: missing `frontend/package.json`)
 - Instances: `requires=1`, `current=0`
 - Tariff (текущий): `BEGINNER_PLUS` (0.5 CPU / 1 GB RAM / 7 GB SSD)
 - Domain (internal): `amvera-getcher-run-rag-bitrix`
 - Git clone/remote:
   - `git clone https://git.amvera.ru/getcher/rag-bitrix`
   - `git remote add amvera https://git.amvera.ru/getcher/rag-bitrix`
-- Build log (ключевая ошибка):
-  - `error resolving dockerfile path: please provide a valid path to a Dockerfile within the build context with --dockerfile`
+- Build log (последняя ошибка):
+  - `lstat /workspace/frontend/package.json: no such file or directory`
 
 **Amvera Postgres (managed, pgvector)**
 - Текущая БД: `ps-db2` (`PS-DB2`, `RUNNING`)
@@ -68,10 +68,10 @@
 
 ## 1) Problem description (README) — 2/2
 
-- [ ] В корневом `README.md` описать: проблему, пользователей (админ+dev), ограничения (vault не публичный), expected behavior.
-- [ ] Добавить “User stories” (5–8 штук): поиск по D7, по REST, по курсам, “нет данных в базе”, “с источниками/без”.
-- [ ] Добавить схему high-level (1 картинка или ASCII): Frontend → API → Retrieval → (Postgres+pgvector/DB/LLM).
-- [ ] Раздел “Demo”: ссылка на прод‑URL (Amvera) + как воспроизвести локально.
+- [x] В корневом `README.md` описать: проблему, пользователей (админ+dev), ограничения (vault не публичный), expected behavior.
+- [x] Добавить “User stories” (5–8 штук): поиск по D7, по REST, по курсам, “нет данных в базе”, “с источниками/без”.
+- [x] Добавить схему high-level (1 картинка или ASCII): Frontend → API → Retrieval → (Postgres+pgvector/DB/LLM).
+- [ ] (ожидает пользователя) Раздел “Demo”: ссылка на прод‑URL (Amvera) + как воспроизвести локально.
 
 **Критерий готовности**
 - README объясняет “что это” за 1 минуту чтения + есть ссылка на рабочий демо‑URL.
@@ -80,8 +80,8 @@
 
 ## 2) AI system development (tools, workflow, MCP) — 2/2
 
-- [ ] В `AGENT.md` (и/или `docs/`) описать workflow разработки (инструменты, промпты, правила, как обновлять план).
-- [ ] Добавить “How we used AI tools”: какие задачи, какие правила, какие ограничения.
+- [x] В `AGENT.md` (и/или `docs/`) описать workflow разработки (инструменты, промпты, правила, как обновлять план).
+- [x] Добавить “How we used AI tools”: какие задачи, какие правила, какие ограничения.
 - [ ] Реализовать **MCP server** в репо: `mcp/` (или `rag/mcp/`) с инструментами:
   - [ ] `search_docs(query, top_k, filters)`
   - [ ] `answer(query, mode?)`
@@ -96,7 +96,7 @@
 
 ## 3) Technologies & architecture — 2/2
 
-- [ ] В `README.md` или `docs/ARCHITECTURE.md` описать стек:
+- [x] В `README.md` или `docs/ARCHITECTURE.md` описать стек:
   - Frontend: React+Vite
   - Backend: FastAPI
   - Vector DB: Postgres + pgvector (prod), Qdrant (опционально)
@@ -104,8 +104,8 @@
   - LLM: OpenAI (Responses API для `gpt-5.*`)
   - Embeddings/Rerank: выбранный провайдер (DeepInfra/Colab) и ограничения
   - Infra: docker compose + Amvera + CI/CD
-- [ ] Описать поток данных: ingestion → chunking → embed → upsert → retrieval → rerank → prompt → answer.
-- [ ] Описать observability: логи, метрики латентности, трассировка шагов.
+- [x] Описать поток данных: ingestion → chunking → embed → upsert → retrieval → rerank → prompt → answer.
+- [x] Описать observability: логи, метрики латентности, трассировка шагов.
 
 ---
 
@@ -123,7 +123,7 @@
 
 ## 5) API contract (OpenAPI) — 2/2
 
-- [ ] Привести `rag/openapi.yaml` к фактическому API (или наоборот — привести API к контракту).
+- [x] Привести `rag/openapi.yaml` к фактическому API (или наоборот — привести API к контракту).
 - [ ] Генерация клиента для фронта из OpenAPI (например, `openapi-typescript` + fetch wrapper).
 - [ ] Добавить CI-проверку: OpenAPI не “сломали” (lint/validate).
 - [ ] Документировать версии API (semver/changes).
@@ -168,7 +168,7 @@
 - [x] `amvera.yml` для деплоя в Amvera (Dockerfile + managed services).
 - [ ] (ожидает пользователя) `Dockerfile` (prod) — сборка backend + сборка/встраивание frontend (или отдельный контейнер, если Amvera это поддерживает). Сейчас деплой backend‑only.
 - [x] `make up/down/logs/test` (или `justfile`) для удобства.
-- [ ] Локальный запуск “одной командой” согласно README.
+- [x] Локальный запуск “одной командой” согласно README.
 
 ---
 
@@ -211,9 +211,9 @@
 
 ## 12) Reproducibility — 2/2
 
-- [ ] “One-command” локальный старт: `make up` или `docker compose up -d`.
+- [x] “One-command” локальный старт: `make up` или `docker compose up -d`.
 - [ ] “One-command” тесты: `make test` (unit) и `make test-integration`.
-- [ ] “One-command” ingestion: `make ingest` (по `docs/`).
+- [x] “One-command” ingestion: `make ingest` (по `docs/`).
 - [ ] Опционально для ускорения CI: `demo_vault/` (20–50 файлов) + `make ingest-demo`.
 
 ---

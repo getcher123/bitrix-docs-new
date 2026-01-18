@@ -141,6 +141,36 @@ components:
         vault_root:
           type: string
           example: "/mnt/c/informika/docs/bitrix-docs-new/docs"
+        rag_data_dir:
+          type: string
+          example: "/mnt/c/informika/docs/bitrix-docs-new/.rag"
+        indexes_present:
+          type: object
+          properties:
+            chunks:
+              type: boolean
+            bm25:
+              type: boolean
+        database:
+          type: object
+          properties:
+            ok:
+              type: boolean
+            dialect:
+              type: string
+              example: "postgresql"
+            pgvector:
+              type: boolean
+              nullable: true
+            error:
+              type: string
+              nullable: true
+        vector_backend:
+          type: string
+          enum:
+            - qdrant
+            - pgvector
+            - none
         qdrant_url:
           type: string
           example: "http://localhost:6333"
