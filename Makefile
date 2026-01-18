@@ -1,4 +1,4 @@
-.PHONY: up down logs api index index-inc test
+.PHONY: up down logs api index index-inc ingest ingest-inc test
 
 up:
 	docker compose up -d
@@ -17,6 +17,10 @@ index:
 
 index-inc:
 	PYTHONPATH=rag/src python3 -m bitrix_rag.cli --env-file rag/.env index --incremental --strategy auto
+
+ingest: index
+
+ingest-inc: index-inc
 
 test:
 	PYTHONPATH=rag/src python3 -m py_compile $(shell find rag/src -type f -name '*.py')
