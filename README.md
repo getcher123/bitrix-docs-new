@@ -1,5 +1,7 @@
 # Документация 1C‑Bitrix (Markdown‑vault)
 
+[![CI](https://github.com/getcher123/bitrix-docs-new/actions/workflows/ci.yml/badge.svg)](https://github.com/getcher123/bitrix-docs-new/actions/workflows/ci.yml)
+
 Это офлайн‑хранилище документации 1C‑Bitrix в виде обычных Markdown‑файлов для просмотра в VS Code/Obsidian (без сборщика сайта).
 
 ## Единая точка входа

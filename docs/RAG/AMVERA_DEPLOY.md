@@ -115,6 +115,17 @@ amvera domain --slug rag-bitrix
 (`Frontend bundle not found`). В этом случае проверьте доступ PAT к репозиторию submodule
 и опцию загрузки submodules в Amvera (если доступна).
 
+## GitHub Actions (CD)
+
+В репозитории есть workflow `deploy_amvera.yml`, который запускает `amvera rebuild`.
+Для работы нужно добавить secrets в GitHub:
+
+- `AMVERA_USERNAME`
+- `AMVERA_PASSWORD`
+- (опционально) `AMVERA_HEALTH_URL` для smoke‑проверки `/health`
+
+Workflow доступен как `workflow_dispatch` и запускается также на `push` в `main`.
+
 ## Переменные окружения
 
 Список:

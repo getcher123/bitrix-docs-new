@@ -1,0 +1,18 @@
+services:
+  api:
+    env_file:
+      - rag/.env
+
+  mcp:
+    image: python:3.10-slim
+    working_dir: /app
+    volumes:
+      - ./:/app
+    env_file:
+      - rag/.env
+    command: >
+      bash -lc "pip install -U pip &&
+      pip install -e /app/rag &&
+      python /app/mcp/server.py"
+    depends_on:
+      - api

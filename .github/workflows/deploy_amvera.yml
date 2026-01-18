@@ -1,0 +1,44 @@
+name: Deploy (Amvera)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    if: ${{ secrets.AMVERA_USERNAME != '' && secrets.AMVERA_PASSWORD != '' }}
+    runs-on: ubuntu-latest
+    env:
+      AMVERA_USERNAME: ${{ secrets.AMVERA_USERNAME }}
+      AMVERA_PASSWORD: ${{ secrets.AMVERA_PASSWORD }}
+      AMVERA_PROJECT_SLUG: rag-bitrix
+      AMVERA_CLI_VERSION: v1.0.6
+      AMVERA_HEALTH_URL: ${{ secrets.AMVERA_HEALTH_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Amvera CLI
+        run: |
+          curl -sSL https://raw.githubusercontent.com/amvera-cloud/cli/master/amvera-install.sh | bash -s -- "${AMVERA_CLI_VERSION}"
+
+      - name: Login
+        run: amvera login --user "${AMVERA_USERNAME}" --password "${AMVERA_PASSWORD}"
+
+      - name: Rebuild project
+        run: amvera rebuild --slug "${AMVERA_PROJECT_SLUG}"
+
+      - name: Smoke /health
+        if: ${{ env.AMVERA_HEALTH_URL != '' }}
+        run: |
+          echo "Waiting for ${AMVERA_HEALTH_URL}"
+          for i in {1..20}; do
+            if curl -fsS "${AMVERA_HEALTH_URL}" > /tmp/health.json; then
+              cat /tmp/health.json
+              exit 0
+            fi
+            sleep 6
+          done
+          echo "Health check failed"
+          exit 1

@@ -82,12 +82,12 @@
 
 - [x] В `AGENT.md` (и/или `docs/`) описать workflow разработки (инструменты, промпты, правила, как обновлять план).
 - [x] Добавить “How we used AI tools”: какие задачи, какие правила, какие ограничения.
-- [ ] Реализовать **MCP server** в репо: `mcp/` (или `rag/mcp/`) с инструментами:
-  - [ ] `search_docs(query, top_k, filters)`
-  - [ ] `answer(query, mode?)`
-  - [ ] `get_source(path)` (для выдачи конкретного чанка/страницы)
-- [ ] Документация подключения MCP (VS Code / Claude Desktop / Codex): где конфиг, как запускать.
-- [ ] Добавить минимальные тесты MCP (smoke): запуск, вызов 2–3 инструментов.
+- [x] Реализовать **MCP server** в репо: `mcp/` (или `rag/mcp/`) с инструментами:
+  - [x] `search_docs(query, top_k, filters)`
+  - [x] `answer(query, mode?)`
+  - [x] `get_source(path)` (для выдачи конкретного чанка/страницы)
+- [x] Документация подключения MCP (VS Code / Claude Desktop / Codex): где конфиг, как запускать.
+- [x] Добавить минимальные тесты MCP (smoke): запуск, вызов 2–3 инструментов.
 
 **Критерий готовности**
 - В репо есть реальный MCP server + инструкции + демонстрация использования.
@@ -197,15 +197,15 @@
 
 ## 11) CI/CD — 2/2
 
-- [ ] GitHub Actions CI:
-  - [ ] lint (python + frontend)
-  - [ ] unit tests (backend+frontend)
-  - [ ] integration tests (docker compose)
-  - [ ] OpenAPI validation
-- [ ] CD:
-  - [ ] deploy job на Amvera: push в `https://git.amvera.ru/getcher/rag-bitrix` + `amvera rebuild`
-  - [ ] после деплоя — smoke check `/health`
-- [ ] Badge в README (CI status).
+- [x] GitHub Actions CI:
+  - [x] lint (python + frontend)
+  - [x] unit tests (backend+frontend)
+  - [x] integration tests (docker compose)
+  - [x] OpenAPI validation
+- [ ] (ожидает пользователя) CD:
+  - [ ] deploy job на Amvera: `amvera rebuild` через GitHub Actions (нужны `AMVERA_USERNAME`/`AMVERA_PASSWORD` secrets)
+  - [ ] после деплоя — smoke check `/health` (нужен `AMVERA_HEALTH_URL` secret)
+- [x] Badge в README (CI status).
 
 ---
 
