@@ -3,8 +3,8 @@ FROM python:3.10-slim
 WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PYTHONPATH=/app/rag/src
+  PYTHONUNBUFFERED=1 \
+  PYTHONPATH=/app/rag/src
 
 RUN pip install --no-cache-dir -U pip
 
@@ -13,7 +13,7 @@ COPY rag/pyproject.toml /app/rag/pyproject.toml
 COPY rag/src /app/rag/src
 RUN pip install --no-cache-dir -e /app/rag
 
-# Runtime files
+# Runtime files 
 COPY rag/openapi.yaml /app/rag/openapi.yaml
 COPY rag/debug_frontend /app/rag/debug_frontend
 COPY docs /app/docs
