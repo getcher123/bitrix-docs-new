@@ -2,11 +2,11 @@
 
 Цель: закрыть **все 12 критериев** (максимальные баллы), с учетом принятых решений:
 
-- Репозиторий публичный, **без полного vault**; в репо только код + **demo‑датасет** + скрипты импорта. (Q1=A)
-- Деплой: **Amvera Cloud**, запуск всей системы через **docker compose**. (Q2=A)
+- Репозиторий публичный, включает полный `docs/` (личный проект). (Q1 обновлено)
+- Деплой: **Amvera Cloud** (Dockerfile + `amvera.yml` + managed services; `docker compose` — локально/CI). (Q2=A)
 - Аудитория: **смешанная** (админы + разработчики). (Q3=C)
 - Публичный доступ **без авторизации** (но с тех. защитами). (Q4=C)
-- DB: **Postgres (prod) + SQLite (dev/test)** + Qdrant. (Q5=A)
+- DB: **Postgres (prod) + SQLite (dev/test)**; вектора в Postgres через **pgvector** (Qdrant опционально). (Q5=A)
 - Frontend: **React+Vite SPA** + тесты. (Q6=A)
 - OpenAPI: `openapi.yaml` — **контракт**, из него генерируем клиент/типы. (Q7=A)
 - CI/CD: тесты + деплой на Amvera. (Q8=A)
@@ -39,9 +39,19 @@
 - Build log (ключевая ошибка):
   - `error resolving dockerfile path: please provide a valid path to a Dockerfile within the build context with --dockerfile`
 
+**Amvera Postgres (managed, pgvector)**
+- Текущая БД: `ps-db2` (`PS-DB2`, `RUNNING`)
+- Предыдущая БД: `ps-db` (`PS-DB`, `STOPPED`)
+- DB name: `PS-DB`
+- Owner: `USER-DB`
+- Superuser access: включен
+- Расширение `vector` (pgvector): включено (подтверждено пользователем)
+- INTERNAL домены: `amvera-getcher-cnpg-ps-db2-rw` (rw), `amvera-getcher-cnpg-ps-db2-ro` (ro)
+- Лимиты (tariff): 0.5 CPU / 1 GB RAM / 25 GB SSD (`amvera tariff --slug ps-db2`)
+
 **Frontend**
 - Подключен как submodule: `frontend/`
-- Репозиторий: `git@github.com:getcher123/bitrix-scribe.git` (branch `main`)
+- Репозиторий: `https://github.com/getcher123/bitrix-scribe.git` (branch `main`)
 - Участвует в деплое (Amvera) как frontend‑часть проекта.
 - Требует доработки под критерии (SPA + тесты + единый API‑клиент + экраны Ask/History/Eval).
 
@@ -49,8 +59,8 @@
 
 ## Этап 0 — “Гигиена репозитория” (обязательное до публичного релиза)
 
-- [ ] Убедиться, что секреты не закоммичены: `rag/.env`, токены ngrok, ключи OpenAI/DeepInfra.
-- [ ] Добавить/проверить `.gitignore` для: `.env`, `.rag/`, `rag_data/`, `__pycache__/`, `.venv/`, `node_modules/`, `dist/`.
+- [x] Убедиться, что секреты не закоммичены: `rag/.env`, токены ngrok, ключи OpenAI/DeepInfra.
+- [x] Добавить/проверить `.gitignore` для: `.env`, `.rag/`, `rag_data/`, `__pycache__/`, `.venv/`, `node_modules/`, `dist/`.
 - [ ] Ротация скомпрометированных ключей (если когда-либо попадали в git/логи/чат).
 - [ ] Описать политику данных: что хранится, где, как удалить (GDPR‑подобный минимум).
 
@@ -60,7 +70,7 @@
 
 - [ ] В корневом `README.md` описать: проблему, пользователей (админ+dev), ограничения (vault не публичный), expected behavior.
 - [ ] Добавить “User stories” (5–8 штук): поиск по D7, по REST, по курсам, “нет данных в базе”, “с источниками/без”.
-- [ ] Добавить схему high-level (1 картинка или ASCII): Frontend → API → Retrieval → (Qdrant/DB/LLM).
+- [ ] Добавить схему high-level (1 картинка или ASCII): Frontend → API → Retrieval → (Postgres+pgvector/DB/LLM).
 - [ ] Раздел “Demo”: ссылка на прод‑URL (Amvera) + как воспроизвести локально.
 
 **Критерий готовности**
@@ -89,7 +99,7 @@
 - [ ] В `README.md` или `docs/ARCHITECTURE.md` описать стек:
   - Frontend: React+Vite
   - Backend: FastAPI
-  - Vector DB: Qdrant
+  - Vector DB: Postgres + pgvector (prod), Qdrant (опционально)
   - DB: Postgres/SQLite (SQLAlchemy)
   - LLM: OpenAI (Responses API для `gpt-5.*`)
   - Embeddings/Rerank: выбранный провайдер (DeepInfra/Colab) и ограничения
@@ -135,23 +145,28 @@
 
 ## 7) Database integration — 2/2
 
-- [ ] Добавить слой DB (SQLAlchemy):
-  - [ ] таблица `queries` (query, mode, latency_ms, error, created_at)
-  - [ ] таблица `answers` (answer_text, model, tokens, sources_json)
-  - [ ] таблица `feedback` (rating, comment)
-- [ ] Конфиг окружений:
-  - [ ] `DATABASE_URL=sqlite:///...` для dev/test
-  - [ ] `DATABASE_URL=postgresql+psycopg://...` для prod
-- [ ] Миграции (Alembic) + команда “init/upgrade”.
-- [ ] Документация: где посмотреть историю, как чистить.
+- [x] Добавить слой DB (SQLAlchemy):
+  - [x] таблица `queries` (query, mode, latency_ms, error, created_at)
+  - [x] таблица `answers` (answer_text, model, tokens, sources_json)
+  - [x] таблица `feedback` (rating, comment)
+- [x] Добавить векторное хранилище в Postgres (pgvector):
+  - [x] `CREATE EXTENSION IF NOT EXISTS vector;`
+  - [x] таблица `embeddings` (`chunk_id`, `path`, `section`, `embedding vector(1024)`, ...)
+  - [x] индекс по вектору (HNSW/IVFFLAT) + стратегия обновления
+- [x] Проверка в `/health`: DB доступна, `pgvector` включен.
+- [x] Конфиг окружений:
+  - [x] `DATABASE_URL=sqlite:///...` для dev/test
+  - [x] `DATABASE_URL=postgresql+psycopg://...` для prod
+- [x] Миграции (Alembic) + команда “init/upgrade”.
+- [x] Документация: где посмотреть историю, как чистить.
 
 ---
 
 ## 8) Containerization — 2/2
 
-- [ ] `docker-compose.yml` для полного стека: `api`, `qdrant`, `postgres`, `frontend` (nginx).
-- [ ] `Dockerfile` backend (multi-stage, non-root).
-- [ ] `Dockerfile` frontend (build → nginx serve).
+- [x] `docker-compose.yml` для локального полного стека: `api`, `postgres(+pgvector)`, `frontend` (nginx).
+- [x] `amvera.yml` для деплоя в Amvera (Dockerfile + managed services).
+- [ ] `Dockerfile` (prod) — сборка backend + сборка/встраивание frontend (или отдельный контейнер, если Amvera это поддерживает).
 - [ ] `make up/down/logs/test` (или `justfile`) для удобства.
 - [ ] Локальный запуск “одной командой” согласно README.
 
@@ -160,7 +175,7 @@
 ## 9) Integration testing — 2/2
 
 - [ ] Отдельный набор integration tests (pytest marker `integration`):
-  - [ ] поднимает docker compose (qdrant+postgres+api) или использует testcontainers
+  - [ ] поднимает docker compose (postgres+api) или использует testcontainers
   - [ ] выполняет 3–5 ключевых сценариев: answer, search, history, eval
 - [ ] Отчет по прогону (CSV/JSON) с latency и flags (answer_has_sources, exact/whitelist).
 - [ ] Документация: как запускать локально и в CI.
@@ -171,9 +186,10 @@
 
 - [ ] Описать “как деплоим на Amvera” (infra-as-doc):
   - [ ] переменные окружения
-  - [ ] volume для Qdrant/DB
+  - [ ] managed Postgres (pgvector): подключение rw/ro + `DATABASE_URL`
   - [ ] healthchecks
-  - [ ] домен/URL
+  - [ ] внешний домен/публичный URL (для demo/peer-review)
+- [ ] (опционально) Поднять Qdrant как отдельный проект/сервис в Amvera и подключить по внутренней сети (в `QDRANT_URL`) если pgvector не устроит.
 - [ ] Дать рабочий прод‑URL (в README) + доказательство (скрин/лог deploy).
 - [ ] Smoke endpoint: `/health` + версия сборки (git sha).
 
@@ -187,7 +203,7 @@
   - [ ] integration tests (docker compose)
   - [ ] OpenAPI validation
 - [ ] CD:
-  - [ ] deploy job на Amvera (авто или manual approval)
+  - [ ] deploy job на Amvera: push в `https://git.amvera.ru/getcher/rag-bitrix` + `amvera rebuild`
   - [ ] после деплоя — smoke check `/health`
 - [ ] Badge в README (CI status).
 
@@ -197,15 +213,14 @@
 
 - [ ] “One-command” локальный старт: `make up` или `docker compose up -d`.
 - [ ] “One-command” тесты: `make test` (unit) и `make test-integration`.
-- [ ] “One-command” ingestion (demo vault): `make ingest-demo`.
-- [ ] `docs/DEMO_VAULT.md`: что в demo‑датасете, как его обновлять.
-- [ ] Отдельный “public demo dataset”: `demo_vault/` (20–50 файлов) без лиценз. рисков.
+- [ ] “One-command” ingestion: `make ingest` (по `docs/`).
+- [ ] Опционально для ускорения CI: `demo_vault/` (20–50 файлов) + `make ingest-demo`.
 
 ---
 
 ## Рекомендуемый минимальный тариф (из предложенных)
 
-Для выбранной архитектуры (API + Qdrant + Postgres + frontend в одном окружении) и нагрузки A:
+Для выбранной архитектуры (API + Postgres(pgvector) + frontend; embeddings/rerank внешние) и нагрузки A:
 
 - [ ] Выбрать тариф **“Стандартный — 1 CPU, 2.5GB RAM, 15GB SSD”** как минимум.
 
@@ -214,3 +229,14 @@
 ## Порядок выполнения (предлагаемый)
 
 1) Этап 0 (секреты/чистота) → 2) Docker-compose full stack → 3) DB слой + миграции → 4) Frontend SPA + OpenAPI client → 5) CI (unit) → 6) Integration tests → 7) CD deploy Amvera → 8) MCP server + docs → 9) Финальная полировка README/Architecture.
+
+---
+
+## Результаты опроса (Amvera/Deploy)
+
+- Формат деплоя (Amvera): один проект (Dockerfile) = API + раздача собранного frontend; Postgres (pgvector) как managed DB; Qdrant опционально.
+- Submodule фронта: `bitrix-scribe` делаем публичным и используем HTTPS URL для `frontend/` в `.gitmodules`.
+- Демо/peer-review: нужен внешний публичный URL/домен.
+- Данные: публикуем полный `docs/` (без отдельного demo dataset).
+- Embeddings/rerank (prod): облачный провайдер (DeepInfra) + ключи в env Amvera.
+- CD: GitHub Actions пушит в Amvera git remote и запускает сборку/деплой.

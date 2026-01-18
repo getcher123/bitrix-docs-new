@@ -51,6 +51,16 @@ class QdrantConfig:
 
 
 @dataclass(frozen=True)
+class DatabaseConfig:
+    url: str
+
+
+@dataclass(frozen=True)
+class VectorStoreConfig:
+    backend: str  # qdrant | pgvector | none
+
+
+@dataclass(frozen=True)
 class OpenAIConfig:
     api_key: str
     model: str = "gpt-5"
@@ -81,6 +91,8 @@ class RetrievalConfig:
 class AppConfig:
     vault_root: Path
     rag_data_dir: Path
+    database: DatabaseConfig
+    vector_store: VectorStoreConfig
     qdrant: QdrantConfig
     bge: BgeEndpointsConfig
     openai: OpenAIConfig
@@ -126,6 +138,15 @@ def load_config(repo_root: Path) -> AppConfig:
     vault_root = _resolve_path(_env("VAULT_ROOT", "docs"), repo_root)
     rag_data_dir = _resolve_path(_env("RAG_DATA_DIR", ".rag"), repo_root)
 
+    database = DatabaseConfig(url=_env("DATABASE_URL", "sqlite:///./.rag/app.db"))
+
+    vector_backend = _env("VECTOR_BACKEND", "").strip().lower()
+    if not vector_backend:
+        vector_backend = "pgvector" if database.url.startswith("postgres") else "qdrant"
+    if vector_backend not in {"qdrant", "pgvector", "none"}:
+        raise RuntimeError(f"Unsupported VECTOR_BACKEND: {vector_backend}")
+    vector_store = VectorStoreConfig(backend=vector_backend)
+
     qdrant = QdrantConfig(
         url=_env("QDRANT_URL", "http://localhost:6333"),
         collection=_env("QDRANT_COLLECTION", "bitrix_docs"),
@@ -160,6 +181,8 @@ def load_config(repo_root: Path) -> AppConfig:
     return AppConfig(
         vault_root=vault_root,
         rag_data_dir=rag_data_dir,
+        database=database,
+        vector_store=vector_store,
         qdrant=qdrant,
         bge=bge,
         openai=openai,

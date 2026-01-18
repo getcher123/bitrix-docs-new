@@ -91,6 +91,8 @@ chmod +x ./scripts/run_with_ngrok.sh
 
 - `VAULT_ROOT=docs` — путь к vault
 - `RAG_DATA_DIR=.rag` — локальные артефакты индекса
+- `DATABASE_URL=sqlite:///./.rag/app.db` (dev) или `postgresql+psycopg://...` (prod)
+- `VECTOR_BACKEND=pgvector` (Postgres+pgvector) или `qdrant` (Qdrant), либо пусто (авто)
 - `QDRANT_URL=http://localhost:6333`
 - `QDRANT_COLLECTION=bitrix_docs`
 - `BGE_PROVIDER=deepinfra` или `colab`
@@ -112,6 +114,23 @@ chmod +x ./scripts/run_with_ngrok.sh
 - `RAG_EMBED_BATCH=4`
 - `RAG_MAX_LATENCY_S=25`
 - `RAG_FAST_REST=1` (быстрый режим для REST: без vector/rerank/LLM)
+
+## Миграции (Alembic)
+
+Для PostgreSQL (prod) применить миграции:
+
+```bash
+alembic -c alembic.ini upgrade head
+```
+
+Для SQLite (dev) таблицы создаются автоматически при старте API.
+
+## История запросов
+
+API сохраняет историю запросов/ответов в БД:
+- `queries` — запрос, режим, латентность, ошибки
+- `answers` — текст ответа, модель, sources JSON
+- `feedback` — оценка/комментарий пользователя (позже подключим UI)
 
 ## API endpoints
 

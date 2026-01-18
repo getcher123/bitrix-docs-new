@@ -14,9 +14,16 @@ src/bitrix_rag/api/main.py
 src/bitrix_rag/clients/__init__.py
 src/bitrix_rag/clients/bge.py
 src/bitrix_rag/clients/openai_client.py
+src/bitrix_rag/db/__init__.py
+src/bitrix_rag/db/engine.py
+src/bitrix_rag/db/health.py
+src/bitrix_rag/db/models.py
 src/bitrix_rag/index/__init__.py
 src/bitrix_rag/index/bm25.py
 src/bitrix_rag/index/build.py
+src/bitrix_rag/index/incremental.py
+src/bitrix_rag/index/pgvector_index.py
+src/bitrix_rag/index/pgvector_store.py
 src/bitrix_rag/index/qdrant_store.py
 src/bitrix_rag/index/vector_index.py
 src/bitrix_rag/ingest/__init__.py

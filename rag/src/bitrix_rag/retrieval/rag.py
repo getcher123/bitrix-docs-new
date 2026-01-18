@@ -11,8 +11,10 @@ from qdrant_client.http import models as qmodels
 from ..clients.bge import BgeClient
 from ..clients.openai_client import OpenAIClient
 from ..config import AppConfig
+from ..db.engine import create_db_engine
 from ..index.bm25 import Bm25Index
 from ..index.build import BM25_FILE, CHUNKS_FILE
+from ..index.pgvector_store import PgVectorStore
 from ..index.qdrant_store import QdrantStore
 from .hybrid import rrf_fuse
 from .router import route_sections
@@ -32,6 +34,8 @@ class Chunk:
 class ChunkStore:
     def __init__(self, chunks_path: Path) -> None:
         self._chunks: dict[str, Chunk] = {}
+        if not chunks_path.exists():
+            return
         for line in chunks_path.read_text(encoding="utf-8").splitlines():
             if not line.strip():
                 continue
@@ -55,15 +59,22 @@ class RagService:
         self._cfg = cfg
         self._chunks = ChunkStore(cfg.rag_data_dir / CHUNKS_FILE)
         self._bm25 = Bm25Index.load(cfg.rag_data_dir / BM25_FILE)
-        self._qdrant = None
-        try:
-            self._qdrant = QdrantStore.connect(
-                url=cfg.qdrant.url,
-                collection=cfg.qdrant.collection,
-                vector_size=1024,
-            )
-        except Exception:
-            self._qdrant = None
+        self._qdrant: QdrantStore | None = None
+        self._pgvector: PgVectorStore | None = None
+        if cfg.vector_store.backend == "qdrant":
+            try:
+                self._qdrant = QdrantStore.connect(
+                    url=cfg.qdrant.url,
+                    collection=cfg.qdrant.collection,
+                    vector_size=1024,
+                )
+            except Exception:
+                self._qdrant = None
+        elif cfg.vector_store.backend == "pgvector":
+            try:
+                self._pgvector = PgVectorStore(create_db_engine(cfg.database.url))
+            except Exception:
+                self._pgvector = None
         self._bge = BgeClient(cfg.bge)
         self._openai = OpenAIClient(cfg.openai) if cfg.openai.api_key else None
 
@@ -77,7 +88,6 @@ class RagService:
     ) -> list[Chunk]:
         search_started = time.monotonic()
         sections = sections_override or route_sections(query)
-        filter_ = _sections_filter(sections) if sections else None
 
         bm25_started = time.monotonic()
         bm25_results = self._bm25.query(query, top_k=self._cfg.retrieval.bm25_k)
@@ -91,7 +101,9 @@ class RagService:
             timings["bm25_ms"] = (time.monotonic() - bm25_started) * 1000
 
         vector_results: list[tuple[str, float]] = []
-        if self._qdrant and not _skip_vector(sections, self._cfg.retrieval.fast_rest):
+        if (self._qdrant or self._pgvector) and not _skip_vector(
+            sections, self._cfg.retrieval.fast_rest
+        ):
             try:
                 if started is not None and budget_s is not None:
                     if _time_left(started, budget_s) < 5:
@@ -101,14 +113,25 @@ class RagService:
                 vector = self._bge.embed([query], timeout_s=embed_timeout)[0]
                 if timings is not None:
                     timings["embed_ms"] = (time.monotonic() - embed_started) * 1000
-                qdrant_started = time.monotonic()
-                vector_results = self._qdrant.search(
-                    vector=vector,
-                    top_k=self._cfg.retrieval.vector_k,
-                    filter_=filter_,
-                )
-                if timings is not None:
-                    timings["qdrant_ms"] = (time.monotonic() - qdrant_started) * 1000
+                if self._qdrant:
+                    qdrant_started = time.monotonic()
+                    filter_ = _sections_filter(sections) if sections else None
+                    vector_results = self._qdrant.search(
+                        vector=vector,
+                        top_k=self._cfg.retrieval.vector_k,
+                        filter_=filter_,
+                    )
+                    if timings is not None:
+                        timings["qdrant_ms"] = (time.monotonic() - qdrant_started) * 1000
+                elif self._pgvector:
+                    pg_started = time.monotonic()
+                    vector_results = self._pgvector.search(
+                        vector=vector,
+                        top_k=self._cfg.retrieval.vector_k,
+                        sections=sections,
+                    )
+                    if timings is not None:
+                        timings["pgvector_ms"] = (time.monotonic() - pg_started) * 1000
             except Exception as exc:
                 print(f"Vector search skipped (reason: {exc})")
 

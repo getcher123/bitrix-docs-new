@@ -145,24 +145,110 @@ amvera tariff --slug rag-bitrix
 amvera tariff update --slug rag-bitrix
 ```
 
-## PostgreSQL (опционально)
+## PostgreSQL (managed) — текущая БД для проекта
 
-Если решим использовать managed PostgreSQL вместо контейнера:
+Текущий кластер (создан пользователем):
+
+- Slug: `ps-db2` (name: `PS-DB2`)
+- Status: `RUNNING`
+- DB name: `PS-DB`
+- DB owner: `USER-DB`
+- Superuser access: включен
+- Лимиты (tariff): 0.5 CPU / 1 GB RAM / 25 GB SSD (`amvera tariff --slug ps-db2`)
+- Postgres image (из UI): `harbor.amvera.ru/cnpg/extensions:17.5`
+- INTERNAL домены:
+  - RW: `amvera-getcher-cnpg-ps-db2-rw`
+  - RO: `amvera-getcher-cnpg-ps-db2-ro`
+
+Проверить наличие кластера:
 
 ```bash
-amvera create postgresql
 amvera get psql
-amvera describe postgresql --slug <psql-slug>
+amvera describe postgresql --slug ps-db2
 ```
 
 Бэкапы:
 
 ```bash
-amvera psql backup list --slug <psql-slug>
-amvera psql backup create --slug <psql-slug>
-amvera psql backup delete --slug <psql-slug>
-amvera psql restore --slug <psql-slug>
+amvera psql backup list --slug ps-db2
+amvera psql backup create --slug ps-db2
+amvera psql backup delete --slug ps-db2
+amvera psql restore --slug ps-db2
 ```
+
+### Подключение из `rag-bitrix`
+
+В Amvera сервисы видят друг друга по INTERNAL DNS. Для backend достаточно выставить `DATABASE_URL`
+на rw‑endpoint (пароль хранить только в Amvera env, не в git):
+
+```text
+DATABASE_URL=postgresql+psycopg://USER-DB:<PASSWORD>@amvera-getcher-cnpg-ps-db2-rw:5432/PS-DB
+VECTOR_BACKEND=pgvector
+```
+
+Примечание: INTERNAL домены (`...-rw`, `...-ro`) не резолвятся из локальной машины/интернета.
+Проверки подключения и расширений выполняйте:
+- внутри приложения (например, через `/health`), или
+- из контейнера/окружения, запущенного в Amvera.
+
+### Миграции (Alembic)
+
+Перед индексацией и запуском сервиса в prod (Postgres) нужно применить миграции:
+
+```bash
+alembic -c rag/alembic.ini upgrade head
+```
+
+### pgvector (расширение `vector`)
+
+Расширение `vector` включено пользователем. Для самопроверки в рантайме (или при отладке),
+выполнить:
+
+```sql
+SELECT extname FROM pg_extension WHERE extname = 'vector';
+```
+
+Если нужно включить:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS vector;
+```
+
+## Qdrant (опционально): минимальные требования и выбор тарифа
+
+Qdrant не имеет “жёсткого” минимума по CPU/RAM — ресурсы зависят от:
+кол-ва векторов, размерности (у нас `1024`), payload, индексов (HNSW), репликации и квантования.
+
+Базовые требования:
+- 64‑битная система (x86_64/arm64)
+- персистентное хранилище с **POSIX‑совместимой** файловой системой (не NFS/S3)
+
+Практический ориентир по нашему текущему индексу (локально):
+- размер вектора: `1024`
+- число чанков/векторов: ~`4.4k`
+- размер qdrant storage: ~`0.6 GB`
+
+Для отдельного проекта Qdrant в Amvera минимум:
+- `0.5 CPU / 1 GB RAM / 7 GB SSD` (на малом индексе)
+
+Рекомендуемый минимум “на рост” (полный `docs/` и HNSW при >10k векторов):
+- `1 CPU / 2.5 GB RAM / 15 GB SSD`
+
+## Альтернатива: Postgres + pgvector вместо Qdrant
+
+Если хотим не поднимать отдельный проект Qdrant, можно хранить вектора в managed PostgreSQL
+через расширение `pgvector` и делать поиск по косинусной близости из Postgres.
+
+Важно: наличие `pgvector` в managed Postgres нужно **проверить**. Для `ps-db2` — включено пользователем.
+
+Проверка (любой клиент Postgres, где есть доступ к `DATABASE_URL`):
+
+```sql
+CREATE EXTENSION IF NOT EXISTS vector;
+SELECT extname FROM pg_extension WHERE extname = 'vector';
+```
+
+Если `CREATE EXTENSION vector` недоступен — остаёмся на Qdrant.
 
 ## Troubleshooting
 

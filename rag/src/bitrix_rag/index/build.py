@@ -7,9 +7,12 @@ import subprocess
 
 from ..clients.bge import BgeClient
 from ..config import AppConfig
+from ..db.engine import create_db_engine
 from ..ingest.pipeline import ChunkRecord, iter_chunks
 from .incremental import build_incremental_records, build_manifest, save_manifest
 from .bm25 import Bm25Index
+from .pgvector_index import build_pgvector_index
+from .pgvector_store import PgVectorStore
 from .qdrant_store import QdrantStore
 from .vector_index import build_vector_index
 
@@ -54,24 +57,39 @@ def build_indexes(cfg: AppConfig, incremental: bool = False, strategy: str = "au
     bm25.save(cfg.rag_data_dir / BM25_FILE)
 
     try:
-        store = QdrantStore.connect(
-            url=cfg.qdrant.url,
-            collection=cfg.qdrant.collection,
-            vector_size=1024,
-        )
-        if incremental:
-            store.recreate(vector_size=1024)
         bge = BgeClient(cfg.bge)
-        build_vector_index(
-            records,
-            store=store,
-            bge=bge,
-            cache_path=cfg.rag_data_dir / EMBED_CACHE_FILE,
-            batch_size=cfg.indexing.embed_batch_size,
-            max_text_chars=cfg.indexing.max_rerank_chars,
-        )
+        if cfg.vector_store.backend == "qdrant":
+            store = QdrantStore.connect(
+                url=cfg.qdrant.url,
+                collection=cfg.qdrant.collection,
+                vector_size=1024,
+            )
+            store.recreate(vector_size=1024)
+            build_vector_index(
+                records,
+                store=store,
+                bge=bge,
+                cache_path=cfg.rag_data_dir / EMBED_CACHE_FILE,
+                batch_size=cfg.indexing.embed_batch_size,
+                max_text_chars=cfg.indexing.max_rerank_chars,
+            )
+        elif cfg.vector_store.backend == "pgvector":
+            engine = create_db_engine(cfg.database.url)
+            store = PgVectorStore(engine)
+            try:
+                store.recreate()
+            except Exception:
+                pass
+            build_pgvector_index(
+                records,
+                store=store,
+                bge=bge,
+                cache_path=cfg.rag_data_dir / EMBED_CACHE_FILE,
+                batch_size=cfg.indexing.embed_batch_size,
+                max_text_chars=cfg.indexing.max_rerank_chars,
+            )
     except Exception as exc:
-        print(f"Vector index skipped (qdrant unavailable): {exc}")
+        print(f"Vector index skipped (reason: {exc})")
 
     _write_version(cfg.rag_data_dir / VERSION_FILE, cfg.vault_root.parent, incremental)
 
