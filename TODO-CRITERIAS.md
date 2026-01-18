@@ -166,8 +166,8 @@
 
 - [x] `docker-compose.yml` для локального полного стека: `api`, `postgres(+pgvector)`, `frontend` (nginx).
 - [x] `amvera.yml` для деплоя в Amvera (Dockerfile + managed services).
-- [ ] `Dockerfile` (prod) — сборка backend + сборка/встраивание frontend (или отдельный контейнер, если Amvera это поддерживает).
-- [ ] `make up/down/logs/test` (или `justfile`) для удобства.
+- [x] `Dockerfile` (prod) — сборка backend + сборка/встраивание frontend (или отдельный контейнер, если Amvera это поддерживает).
+- [x] `make up/down/logs/test` (или `justfile`) для удобства.
 - [ ] Локальный запуск “одной командой” согласно README.
 
 ---

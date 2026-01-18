@@ -122,6 +122,11 @@ def create_app() -> FastAPI:
         )
         return result
 
+    frontend_dir = repo_root / "frontend_dist"
+    if frontend_dir.exists():
+        # Mount after API routes to keep /health, /search, /answer working.
+        app.mount("/", StaticFiles(directory=str(frontend_dir), html=True), name="frontend")
+
     return app
 
 

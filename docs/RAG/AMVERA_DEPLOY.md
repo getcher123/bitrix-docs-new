@@ -93,6 +93,23 @@ Error: error resolving dockerfile path: please provide a valid path to a Dockerf
 amvera domain --slug rag-bitrix
 ```
 
+## GitHub интеграция (webhook)
+
+Если проект разворачивается из GitHub (без `git.amvera.ru`):
+
+1) В Amvera UI откройте раздел интеграции GitHub и включите событие `Push`.
+2) Укажите ветку, например `main`.
+3) Скопируйте `URL` и `Secret` из Amvera UI.
+4) В GitHub: `Settings → Webhooks → Add webhook`:
+   - Payload URL: `URL` из Amvera
+   - Content type: `application/json`
+   - Secret: `Secret` из Amvera
+   - Events: `Just the push event`
+5) В поле `Token` в Amvera UI вставьте GitHub PAT с доступом **read** к репозиторию
+   (и ко всем submodule, если используются).
+
+Если build не стартует — проверьте Deliveries в GitHub Webhooks и логи Amvera.
+
 ## Переменные окружения
 
 Список:
