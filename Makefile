@@ -27,7 +27,9 @@ test:
 	$(MAKE) test-unit
 
 test-unit:
+	mkdir -p .rag/tmp
 	PYTHONPATH=rag/src pytest -q -s --rootdir . --basetemp .rag/tmp rag/tests/unit
 
 test-integration:
+	mkdir -p .rag/tmp
 	PYTHONPATH=rag/src pytest -q -s --rootdir . --basetemp .rag/tmp rag/tests/integration
