@@ -25,6 +25,7 @@ from ..db import (
     run_migrations,
 )
 from ..retrieval.rag import RagService
+from ..index.migrate_qdrant import migrate_qdrant_to_pgvector
 from ..retrieval.router import route_sections
 
 
@@ -63,6 +64,14 @@ def create_app() -> FastAPI:
             run_migrations(repo_root, cfg.database.url)
         except Exception:
             logging.exception("Database migrations failed")
+
+    migrate_on_startup = os.getenv("MIGRATE_QDRANT_ON_STARTUP", "").lower() in {"1", "true", "yes"}
+    if migrate_on_startup:
+        try:
+            result = migrate_qdrant_to_pgvector(repo_root, cfg)
+            logging.info("Qdrant migration completed: %s", result)
+        except Exception:
+            logging.exception("Qdrant migration failed")
 
     db_engine = create_db_engine(cfg.database.url)
     db_session_factory: sessionmaker = create_session_factory(db_engine)
