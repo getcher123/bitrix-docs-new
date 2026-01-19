@@ -64,6 +64,7 @@ class VectorStoreConfig:
 class OpenAIConfig:
     api_key: str
     model: str = "gpt-5"
+    base_url: str = "https://api.openai.com/v1"
     timeout_s: int = 20
     max_output_tokens: int = 800
 
@@ -154,9 +155,14 @@ def load_config(repo_root: Path) -> AppConfig:
 
     bge = _select_bge_config()
 
+    openai_base_url = _env("OPENAI_BASE_URL", "https://api.openai.com/v1")
+    openai_key = _env("OPENAI_API_KEY", "")
+    if "deepinfra.com" in openai_base_url and _env("DEEPINFRA_KEY", ""):
+        openai_key = _env("DEEPINFRA_KEY", "")
     openai = OpenAIConfig(
-        api_key=_env("OPENAI_API_KEY", ""),
+        api_key=openai_key,
         model=_env("OPENAI_MODEL", "gpt-5"),
+        base_url=openai_base_url,
         timeout_s=_env_int("OPENAI_TIMEOUT_S", 20),
         max_output_tokens=_env_int("OPENAI_MAX_OUTPUT_TOKENS", 800),
     )

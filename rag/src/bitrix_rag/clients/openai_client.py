@@ -26,7 +26,7 @@ def _use_responses_api(model: str) -> bool:
 
 
 def _complete_chat(cfg: OpenAIConfig, prompt: str, timeout_s: int | None = None) -> str:
-    url = "https://api.openai.com/v1/chat/completions"
+    url = _api_url(cfg, "/chat/completions")
     headers = {"Authorization": f"Bearer {cfg.api_key}"}
     payload = {
         "model": cfg.model,
@@ -65,7 +65,7 @@ def _complete_chat(cfg: OpenAIConfig, prompt: str, timeout_s: int | None = None)
 
 
 def _complete_responses(cfg: OpenAIConfig, prompt: str, timeout_s: int | None = None) -> str:
-    url = "https://api.openai.com/v1/responses"
+    url = _api_url(cfg, "/responses")
     headers = {"Authorization": f"Bearer {cfg.api_key}"}
     payload = {
         "model": cfg.model,
@@ -112,3 +112,9 @@ def _extract_responses_text(data: dict) -> str:
             elif isinstance(block, str):
                 parts.append(block)
     return "\n".join(part.strip() for part in parts if part and part.strip()).strip()
+
+
+def _api_url(cfg: OpenAIConfig, path: str) -> str:
+    base = (cfg.base_url or "https://api.openai.com/v1").rstrip("/")
+    tail = path.lstrip("/")
+    return f"{base}/{tail}"

@@ -85,6 +85,27 @@ chmod +x ./scripts/run_with_ngrok.sh
 
 Дальше: индексация и API будут развиваться по плану в `../docs/RAG/RAG_PLAN.md`.
 
+## Dev стенд (Docker + MCP)
+
+Dev‑стенд поднимает API + Postgres + MCP и подхватывает `rag/.env`:
+
+```bash
+docker compose -f ../docker-compose.yml -f ../docker-compose.dev.yml up -d db api mcp
+```
+
+Проверки:
+
+```bash
+curl -s http://localhost:8000/health
+python ../mcp/smoke.py
+```
+
+Публичный доступ через ngrok (если нужен):
+
+```bash
+ngrok http 8000
+```
+
 ## Конфигурация (.env)
 
 Файл `.env` не коммитится. Основные переменные:
@@ -102,18 +123,27 @@ chmod +x ./scripts/run_with_ngrok.sh
   - `DEEPINFRA_RERANK_PATH=/Qwen/Qwen3-Reranker-0.6B`
   - `DEEPINFRA_KEY=...`
 - Colab/ngrok:
-  - `COLAB_BASE_URL=https://<ngrok>.app`
-  - `COLAB_EMBED_PATH=/embed`
-  - `COLAB_RERANK_PATH=/rerank`
-  - `COLAB_API_KEY=...`
+- `COLAB_BASE_URL=https://<ngrok>.app`
+- `COLAB_EMBED_PATH=/embed`
+- `COLAB_RERANK_PATH=/rerank`
+- `COLAB_API_KEY=...`
 - `OPENAI_API_KEY=...`
 - `OPENAI_MODEL=gpt-5.2`
+- `OPENAI_BASE_URL=https://api.openai.com/v1`
 - `OPENAI_TIMEOUT_S=20`
 - `OPENAI_MAX_OUTPUT_TOKENS=800`
 - `NGROK_AUTH_TOKEN=...` (для публичного API через ngrok)
 - `RAG_EMBED_BATCH=4`
 - `RAG_MAX_LATENCY_S=25`
 - `RAG_FAST_REST=1` (быстрый режим для REST: без vector/rerank/LLM)
+
+### Пример LLM через DeepInfra (OpenAI‑совместимый API)
+
+```env
+OPENAI_BASE_URL=https://api.deepinfra.com/v1/openai
+OPENAI_MODEL=Qwen/Qwen3-Next-80B-A3B-Instruct
+DEEPINFRA_KEY=...
+```
 
 ## Миграции (Alembic)
 
