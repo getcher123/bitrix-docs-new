@@ -31,6 +31,7 @@ def create_app() -> FastAPI:
     repo_root = Path(__file__).resolve().parents[4]
     load_dotenv(repo_root / "rag" / ".env")
     cfg = load_config(repo_root)
+    cfg.rag_data_dir.mkdir(parents=True, exist_ok=True)
 
     db_engine = create_db_engine(cfg.database.url)
     db_session_factory: sessionmaker = create_session_factory(db_engine)
