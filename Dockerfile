@@ -14,6 +14,8 @@ COPY rag/src /app/rag/src
 RUN pip install --no-cache-dir -e /app/rag
 
 # Runtime files 
+COPY rag/alembic.ini /app/rag/alembic.ini
+COPY rag/alembic /app/rag/alembic
 COPY rag/openapi.yaml /app/rag/openapi.yaml
 COPY rag/debug_frontend /app/rag/debug_frontend
 COPY docs /app/docs
