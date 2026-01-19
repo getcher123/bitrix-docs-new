@@ -71,8 +71,8 @@
 - [x] В корневом `README.md` описать: проблему, пользователей (админ+dev), ограничения (vault не публичный), expected behavior.
 - [x] Добавить “User stories” (5–8 штук): поиск по D7, по REST, по курсам, “нет данных в базе”, “с источниками/без”.
 - [x] Добавить схему high-level (1 картинка или ASCII): Frontend → API → Retrieval → (Postgres+pgvector/DB/LLM).
-- [ ] (ожидает пользователя) Раздел “Demo”: ссылка на прод‑URL (Amvera) + как воспроизвести локально.
-  - URL: `https://rag-bitrix-getcher.amvera.io/` (получен от пользователя, добавить в README)
+- [x] Раздел “Demo”: ссылка на прод‑URL (Amvera) + как воспроизвести локально.
+  - URL: `https://rag-bitrix-getcher.amvera.io/`
 
 **Критерий готовности**
 - README объясняет “что это” за 1 минуту чтения + есть ссылка на рабочий демо‑URL.
@@ -127,7 +127,7 @@
 - [x] Привести `rag/openapi.yaml` к фактическому API (или наоборот — привести API к контракту).
 - [x] Генерация клиента для фронта из OpenAPI (например, `openapi-typescript` + fetch wrapper).
 - [x] Добавить CI-проверку: OpenAPI не “сломали” (lint/validate).
-- [ ] Документировать версии API (semver/changes).
+- [x] Документировать версии API (semver/changes).
 
 ---
 

@@ -84,6 +84,14 @@ Frontend (SPA) -> FastAPI /answer
 - Прод: `https://rag-bitrix-getcher.amvera.io/`
 - Smoke: `https://rag-bitrix-getcher.amvera.io/health` (включает `build.git_sha`, если задано)
 
+Как воспроизвести локально:
+
+```bash
+make up
+make ingest
+curl -s http://localhost:8000/health
+```
+
 ### Локальный запуск (1 команда)
 
 ```bash
@@ -101,6 +109,28 @@ make ingest
 ```bash
 git submodule update --init --recursive
 ```
+
+## API versioning
+
+Версия API фиксируется в `rag/openapi.yaml` (`info.version`) и следует семантическому версионированию:
+- `MAJOR` — breaking changes (смена контрактов/ответов)
+- `MINOR` — новые эндпоинты/поля
+- `PATCH` — исправления без изменения контракта
+
+При изменениях API обновляйте `info.version` и синхронизируйте типы в фронте:
+
+```bash
+cd frontend
+npm run gen:api
+```
+
+## CI/CD (Amvera)
+
+Workflow: `.github/workflows/deploy_amvera.yml`  
+Secrets в GitHub:
+- `AMVERA_USERNAME`
+- `AMVERA_PASSWORD`
+- `AMVERA_HEALTH_URL` (опционально, для smoke `/health`)
 
 ## Integration tests report
 

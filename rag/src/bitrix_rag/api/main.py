@@ -118,6 +118,7 @@ def create_app() -> FastAPI:
             "openai_model": cfg.openai.model,
         }
 
+
     @app.post("/search")
     def search(req: SearchRequest):
         if not req.query.strip():
