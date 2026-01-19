@@ -82,9 +82,7 @@ Frontend (SPA) -> FastAPI /answer
 ### Demo
 
 - Прод: `https://rag-bitrix-getcher.amvera.io/`
-
-Публичный URL (будет активирован после успешной сборки в Amvera):  
-`https://rag-bitrix-getcher.amvera.io`
+- Smoke: `https://rag-bitrix-getcher.amvera.io/health` (включает `build.git_sha`, если задано)
 
 ### Локальный запуск (1 команда)
 
@@ -103,6 +101,18 @@ make ingest
 ```bash
 git submodule update --init --recursive
 ```
+
+## Integration tests report
+
+Сгенерировать локальный отчет (CSV/JSON):
+
+```bash
+python3 rag/scripts/generate_integration_report.py
+```
+
+Файлы отчета:
+- `docs/RAG/RAG_INTEGRATION_REPORT.json`
+- `docs/RAG/RAG_INTEGRATION_REPORT.csv`
 
 ## Источники
 

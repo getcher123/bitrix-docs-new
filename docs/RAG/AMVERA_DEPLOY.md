@@ -2,7 +2,7 @@
 
 Этот документ — краткая шпаргалка по CLI Amvera для деплоя RAG‑сервиса и фронтенда.
 
-Сейчас деплой в Amvera настроен **только для backend**. Frontend будет добавлен отдельно.
+Сейчас деплой в Amvera настроен **только для backend**. Frontend разворачивается отдельно (GitHub Pages).
 
 ## Установка CLI
 
@@ -63,13 +63,13 @@ amvera get projects
 amvera describe project --slug rag-bitrix
 ```
 
-## Текущее состояние проекта `rag-bitrix` (снято через amvera CLI)
+## Текущее состояние проекта `rag-bitrix` (актуализировано)
 
 - ID: `119309`
 - Name: `RAG-Bitrix`
 - Slug: `rag-bitrix`
-- Status: `BUILD_FAILED` (сообщение: `Project failed to build`)
-- Instances: `requires=1`, `current=0`
+- Status: `RUNNING` (последняя проверка через UI)
+- Instances: `requires=1`, `current=1`
 - Tariff: `BEGINNER_PLUS` (0.5 CPU / 1.0 GB RAM / 7 GB SSD)
 - Git clone:
   - `git clone https://git.amvera.ru/getcher/rag-bitrix`
@@ -78,16 +78,10 @@ amvera describe project --slug rag-bitrix
   - `amvera-getcher-run-rag-bitrix` (INTERNAL, HTTP, active, default)
 - Переменные окружения: список пуст (env list не вернул значений)
 
-### Диагностика build failure (последние логи)
+### Логи (CLI)
 
-Из `amvera logs build --slug rag-bitrix --last 200`:
-
-```
-Error: error resolving dockerfile path: please provide a valid path to a Dockerfile within the build context with --dockerfile
-```
-
-Вероятная причина: в репозитории нет `Dockerfile` в корне или в Amvera не указан путь к Dockerfile/контекст сборки.
-Нужна проверка настроек build‑контекста и расположения Dockerfile.
+В текущей версии CLI команды `amvera logs build/run` могут быть недоступны.
+Логи собираются через Amvera UI (Run logs / Build logs).
 
 ## Домен и публичный URL
 
@@ -126,7 +120,7 @@ amvera domain --slug rag-bitrix
 
 Workflow доступен как `workflow_dispatch` и запускается также на `push` в `main`.
 
-## Переменные окружения
+## Переменные окружения (prod)
 
 Список:
 
@@ -142,19 +136,25 @@ amvera env update --slug rag-bitrix
 amvera env delete --slug rag-bitrix
 ```
 
+Минимальный набор (backend):
+
+```
+DATABASE_URL=postgresql+psycopg://USER-DB:<PASSWORD>@amvera-getcher-cnpg-ps-db2-rw:5432/PS-DB
+VECTOR_BACKEND=pgvector
+RUN_MIGRATIONS=1
+OPENAI_API_KEY=...
+OPENAI_MODEL=...
+BGE_PROVIDER=deepinfra
+DEEPINFRA_KEY=...
+QDRANT_URL=... (опционально)
+QDRANT_COLLECTION=bitrix_docs
+GIT_SHA=<git_commit> (опционально, для /health)
+```
+
 ## Логи
 
-Логи билда:
-
-```bash
-amvera logs build --slug rag-bitrix --last 120
-```
-
-Логи запуска:
-
-```bash
-amvera logs run --slug rag-bitrix --last 120
-```
+Если CLI не поддерживает логи, используйте Amvera UI:
+`Project → Logs → Build/Run`.
 
 ## Управление процессом
 
@@ -226,7 +226,8 @@ VECTOR_BACKEND=pgvector
 
 ### Миграции (Alembic)
 
-Перед индексацией и запуском сервиса в prod (Postgres) нужно применить миграции:
+Миграции запускаются на старте (env `RUN_MIGRATIONS=1`).
+Если нужно вручную:
 
 ```bash
 alembic -c rag/alembic.ini upgrade head
@@ -282,6 +283,21 @@ SELECT extname FROM pg_extension WHERE extname = 'vector';
 ```
 
 Если `CREATE EXTENSION vector` недоступен — остаёмся на Qdrant.
+
+### Временная миграция Qdrant → pgvector (ngrok)
+
+Если Qdrant доступен только локально, можно временно открыть его через ngrok.
+После получения публичного URL выставить в Amvera:
+
+```
+QDRANT_URL=https://<ngrok-host>.ngrok-free.app
+MIGRATE_QDRANT_ON_STARTUP=1
+```
+
+Если в контейнере нет `.rag/chunks.jsonl`, при старте будет создан индекс
+`chunks.jsonl` + `bm25.json` из `docs/` (может занять время).
+
+После успешного переноса **обязательно** убрать `MIGRATE_QDRANT_ON_STARTUP`.
 
 ## Troubleshooting
 

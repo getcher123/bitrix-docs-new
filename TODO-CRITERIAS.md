@@ -178,21 +178,21 @@
 - [x] Отдельный набор integration tests (pytest marker `integration`):
   - [x] использует FastAPI TestClient + sqlite (без docker)
   - [x] выполняет ключевые сценарии: answer, search, history
-- [ ] Отчет по прогону (CSV/JSON) с latency и flags (answer_has_sources, exact/whitelist).
+- [x] Отчет по прогону (CSV/JSON) с latency и flags (answer_has_sources, exact/whitelist).
 - [x] Документация: как запускать локально и в CI.
 
 ---
 
 ## 10) Deployment — 2/2
 
-- [ ] Описать “как деплоим на Amvera” (infra-as-doc):
-  - [ ] переменные окружения
-  - [ ] managed Postgres (pgvector): подключение rw/ro + `DATABASE_URL`
-  - [ ] healthchecks
-  - [ ] внешний домен/публичный URL (для demo/peer-review)
+- [x] Описать “как деплоим на Amvera” (infra-as-doc):
+  - [x] переменные окружения
+  - [x] managed Postgres (pgvector): подключение rw/ro + `DATABASE_URL`
+  - [x] healthchecks
+  - [x] внешний домен/публичный URL (для demo/peer-review)
 - [ ] (опционально) Поднять Qdrant как отдельный проект/сервис в Amvera и подключить по внутренней сети (в `QDRANT_URL`) если pgvector не устроит.
-- [ ] Дать рабочий прод‑URL (в README) + доказательство (скрин/лог deploy).
-- [ ] Smoke endpoint: `/health` + версия сборки (git sha).
+- [x] Дать рабочий прод‑URL (в README) + доказательство (скрин/лог deploy).
+- [x] Smoke endpoint: `/health` + версия сборки (git sha).
 
 ---
 

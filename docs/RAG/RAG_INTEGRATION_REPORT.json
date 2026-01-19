@@ -1,0 +1,94 @@
+{
+  "results": [
+    {
+      "method": "GET",
+      "path": "/health",
+      "status_code": 200,
+      "latency_ms": 26.32,
+      "ok": true,
+      "response_body": {
+        "status": "ok",
+        "vault_root": "/mnt/c/Users/Ivan/AppData/Local/Temp/tmphb5h4bv5/docs",
+        "rag_data_dir": "/mnt/c/Users/Ivan/AppData/Local/Temp/tmphb5h4bv5/.rag",
+        "build": {
+          "git_sha": null
+        },
+        "indexes_present": {
+          "chunks": true,
+          "bm25": true
+        },
+        "database": {
+          "ok": true,
+          "dialect": "sqlite",
+          "pgvector": null,
+          "error": null
+        },
+        "vector_backend": "none",
+        "qdrant_url": "http://localhost:6333",
+        "qdrant_collection": "bitrix_docs",
+        "bge_base_url_set": true,
+        "openai_model": "Qwen/Qwen3-Next-80B-A3B-Instruct"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/search",
+      "status_code": 200,
+      "latency_ms": 11.53,
+      "ok": true,
+      "response_body": {
+        "query": "REST api",
+        "results": [
+          {
+            "path": "rest/example.md",
+            "title": "REST Example",
+            "heading_path": "Intro",
+            "section": "REST",
+            "module": "rest"
+          }
+        ]
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/answer",
+      "status_code": 200,
+      "latency_ms": 36.2,
+      "ok": true,
+      "response_body": {
+        "answer": "REST API usage guide ([docs/rest/example.md](docs/rest/example.md))",
+        "sources": [
+          "docs/rest/example.md"
+        ],
+        "mode": "extractive",
+        "timings_ms": {
+          "bm25_ms": 0.10500600910745561,
+          "search_ms": 0.11920600081793964,
+          "total_ms": 0.1426069939043373
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/history?limit=20",
+      "status_code": 200,
+      "latency_ms": 18.65,
+      "ok": true,
+      "response_body": {
+        "items": [
+          {
+            "id": 1,
+            "query": "REST api",
+            "mode": "extractive",
+            "latency_ms": 0.15,
+            "created_at": "2026-01-19T18:45:19",
+            "answer": "REST API usage guide ([docs/rest/example.md](docs/rest/example.md))",
+            "sources": [
+              "docs/rest/example.md"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

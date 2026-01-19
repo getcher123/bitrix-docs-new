@@ -8,6 +8,8 @@ from qdrant_client import QdrantClient
 from ..config import AppConfig
 from ..db import run_migrations
 from ..db.engine import create_db_engine
+from ..ingest.pipeline import iter_chunks
+from .bm25 import Bm25Index
 from .pgvector_store import PgVectorStore
 
 
@@ -19,7 +21,7 @@ def migrate_qdrant_to_pgvector(repo_root: Path, cfg: AppConfig) -> dict[str, int
 
     chunks_path = cfg.rag_data_dir / "chunks.jsonl"
     if not chunks_path.exists():
-        raise FileNotFoundError(f"Chunks file not found: {chunks_path}")
+        _build_chunks_and_bm25(cfg, chunks_path)
 
     chunks: dict[str, dict] = {}
     for line in chunks_path.read_text(encoding="utf-8").splitlines():
@@ -98,3 +100,39 @@ def migrate_qdrant_to_pgvector(repo_root: Path, cfg: AppConfig) -> dict[str, int
         "skipped": skipped,
         "chunks_loaded": len(chunks),
     }
+
+
+def _build_chunks_and_bm25(cfg: AppConfig, chunks_path: Path) -> None:
+    records = iter_chunks(
+        cfg.vault_root,
+        chunk_size=cfg.indexing.chunk_size,
+        chunk_overlap=cfg.indexing.chunk_overlap,
+        min_chunk=cfg.indexing.min_chunk,
+    )
+    chunks_path.parent.mkdir(parents=True, exist_ok=True)
+    _write_chunks(chunks_path, records)
+    bm25 = Bm25Index.build(records)
+    bm25.save(cfg.rag_data_dir / "bm25.json")
+
+
+def _write_chunks(path: Path, records: list) -> None:
+    lines = []
+    for record in records:
+        lines.append(
+            json.dumps(
+                {
+                    "id": record.chunk.chunk_id,
+                    "text": record.chunk.text,
+                    "path": record.metadata.path,
+                    "section": record.metadata.section,
+                    "module": record.metadata.module,
+                    "title": record.metadata.title,
+                    "heading_path": record.metadata.heading_path,
+                    "course_id": record.metadata.course_id,
+                    "lesson_id": record.metadata.lesson_id,
+                    "hash": record.content_hash,
+                },
+                ensure_ascii=False,
+            )
+        )
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")

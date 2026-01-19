@@ -100,6 +100,7 @@ def create_app() -> FastAPI:
             "status": "ok",
             "vault_root": str(cfg.vault_root),
             "rag_data_dir": str(cfg.rag_data_dir),
+            "build": _load_build_info(cfg.rag_data_dir),
             "indexes_present": {
                 "chunks": (cfg.rag_data_dir / "chunks.jsonl").exists(),
                 "bm25": (cfg.rag_data_dir / "bm25.json").exists(),
@@ -269,6 +270,21 @@ def _persist_request(
     except Exception:
         # Never fail the API request because DB logging failed.
         return
+
+
+def _load_build_info(rag_data_dir: Path) -> dict:
+    env_sha = os.getenv("GIT_SHA") or os.getenv("BUILD_SHA") or ""
+    info: dict[str, str | None] = {"git_sha": env_sha or None}
+    version_path = rag_data_dir / "index_version.json"
+    if version_path.exists():
+        try:
+            data = json.loads(version_path.read_text(encoding="utf-8"))
+            info.setdefault("git_sha", data.get("git_commit"))
+            info["indexed_at"] = data.get("built_at")
+            info["incremental"] = data.get("incremental")
+        except Exception:
+            return info
+    return info
 
 
 app = create_app()

@@ -1,0 +1,5 @@
+method,path,status_code,latency_ms,ok
+GET,/health,200,26.32,True
+POST,/search,200,11.53,True
+POST,/answer,200,36.2,True
+GET,/history?limit=20,200,18.65,True
