@@ -1,9 +1,9 @@
 import json
+import os
 from pathlib import Path
 
 from fastapi.testclient import TestClient
 
-from bitrix_rag.api.main import create_app
 from bitrix_rag.index.bm25 import tokenize
 
 
@@ -36,6 +36,9 @@ def test_api_search_answer_history(tmp_path, monkeypatch):
     monkeypatch.setenv("BGE_BASE_URL", "http://localhost:9999")
     monkeypatch.setenv("OPENAI_API_KEY", "")
     monkeypatch.setenv("RAG_FAST_REST", "1")
+    monkeypatch.setenv("SKIP_APP_INIT", "1")
+
+    from bitrix_rag.api.main import create_app
 
     app = create_app()
     client = TestClient(app)

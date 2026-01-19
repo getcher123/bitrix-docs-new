@@ -288,4 +288,5 @@ def _load_build_info(rag_data_dir: Path) -> dict:
     return info
 
 
-app = create_app()
+_skip_init = os.getenv("SKIP_APP_INIT", "").strip().lower() in {"1", "true", "yes"}
+app = None if _skip_init else create_app()
