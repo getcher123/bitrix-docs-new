@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 import json
 import logging
+import os
 import time
 import uuid
 
@@ -14,7 +15,15 @@ from pydantic import BaseModel
 from sqlalchemy.orm import sessionmaker
 
 from ..config import load_config
-from ..db import AnswerRecord, Base, QueryRecord, check_database_health, create_db_engine, create_session_factory
+from ..db import (
+    AnswerRecord,
+    Base,
+    QueryRecord,
+    check_database_health,
+    create_db_engine,
+    create_session_factory,
+    run_migrations,
+)
 from ..retrieval.rag import RagService
 from ..retrieval.router import route_sections
 
@@ -25,6 +34,21 @@ class SearchRequest(BaseModel):
 
 class AnswerRequest(BaseModel):
     query: str
+    mode: str | None = None
+
+
+class HistoryItem(BaseModel):
+    id: int
+    query: str
+    mode: str | None
+    latency_ms: float | None
+    created_at: str
+    answer: str | None
+    sources: list[str]
+
+
+class HistoryResponse(BaseModel):
+    items: list[HistoryItem]
 
 
 def create_app() -> FastAPI:
@@ -32,6 +56,13 @@ def create_app() -> FastAPI:
     load_dotenv(repo_root / "rag" / ".env")
     cfg = load_config(repo_root)
     cfg.rag_data_dir.mkdir(parents=True, exist_ok=True)
+
+    should_run_migrations = os.getenv("RUN_MIGRATIONS", "1").lower() in {"1", "true", "yes"}
+    if should_run_migrations and not cfg.database.url.startswith("sqlite:"):
+        try:
+            run_migrations(repo_root, cfg.database.url)
+        except Exception:
+            logging.exception("Database migrations failed")
 
     db_engine = create_db_engine(cfg.database.url)
     db_session_factory: sessionmaker = create_session_factory(db_engine)
@@ -100,10 +131,13 @@ def create_app() -> FastAPI:
     def answer(req: AnswerRequest):
         if not req.query.strip():
             raise HTTPException(status_code=400, detail="Empty query")
+        mode = (req.mode or "auto").strip().lower()
+        if mode not in {"auto", "llm", "extractive"}:
+            raise HTTPException(status_code=400, detail=f"Unsupported mode: {mode}")
         request_id = uuid.uuid4().hex[:8]
         sections = route_sections(req.query)
         started = time.time()
-        result = service.answer(req.query)
+        result = service.answer(req.query, mode=mode)
         latency_ms = (time.time() - started) * 1000
         _log_request(
             logger,
@@ -122,6 +156,38 @@ def create_app() -> FastAPI:
             model=cfg.openai.model,
         )
         return result
+
+    @app.get("/history", response_model=HistoryResponse)
+    def history(limit: int = 20):
+        items: list[HistoryItem] = []
+        try:
+            with db_session_factory() as session:
+                rows = (
+                    session.query(QueryRecord, AnswerRecord)
+                    .outerjoin(AnswerRecord, AnswerRecord.query_id == QueryRecord.id)
+                    .order_by(QueryRecord.created_at.desc())
+                    .limit(limit)
+                    .all()
+                )
+                for query_record, answer_record in rows:
+                    sources = []
+                    if answer_record and answer_record.sources_json:
+                        if isinstance(answer_record.sources_json, list):
+                            sources = [str(item) for item in answer_record.sources_json]
+                    items.append(
+                        HistoryItem(
+                            id=query_record.id,
+                            query=query_record.query,
+                            mode=query_record.mode,
+                            latency_ms=query_record.latency_ms,
+                            created_at=query_record.created_at.isoformat(),
+                            answer=answer_record.answer_text if answer_record else None,
+                            sources=sources,
+                        )
+                    )
+        except Exception:
+            return HistoryResponse(items=[])
+        return HistoryResponse(items=items)
 
     frontend_dir = repo_root / "frontend_dist"
     if frontend_dir.exists():

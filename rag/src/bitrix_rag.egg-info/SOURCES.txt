@@ -18,6 +18,9 @@ src/bitrix_rag/db/__init__.py
 src/bitrix_rag/db/engine.py
 src/bitrix_rag/db/health.py
 src/bitrix_rag/db/models.py
+src/bitrix_rag/eval/__init__.py
+src/bitrix_rag/eval/report.py
+src/bitrix_rag/eval/test_set.py
 src/bitrix_rag/index/__init__.py
 src/bitrix_rag/index/bm25.py
 src/bitrix_rag/index/build.py

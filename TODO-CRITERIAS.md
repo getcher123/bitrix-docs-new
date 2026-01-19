@@ -29,7 +29,7 @@
 
 **Amvera (проект `rag-bitrix`)**
 - ID: `119309`
-- Status: `CONFIG_ERROR` / `BUILD_FAILED` (последняя ошибка: missing `frontend/package.json`)
+- Status: `RUN_FAILED` (последняя ошибка: `FileNotFoundError: /app/.rag/requests.log`)
 - Instances: `requires=1`, `current=0`
 - Tariff (текущий): `BEGINNER_PLUS` (0.5 CPU / 1 GB RAM / 7 GB SSD)
 - Domain (internal): `amvera-getcher-run-rag-bitrix`
@@ -52,7 +52,7 @@
 **Frontend**
 - Подключен как submodule: `frontend/`
 - Репозиторий: `https://github.com/getcher123/bitrix-scribe.git` (branch `main`)
-- Участвует в деплое (Amvera) как frontend‑часть проекта.
+- Деплой через **GitHub Pages** (отдельно от backend).
 - Требует доработки под критерии (SPA + тесты + единый API‑клиент + экраны Ask/History/Eval).
 
 ---
@@ -72,6 +72,7 @@
 - [x] Добавить “User stories” (5–8 штук): поиск по D7, по REST, по курсам, “нет данных в базе”, “с источниками/без”.
 - [x] Добавить схему high-level (1 картинка или ASCII): Frontend → API → Retrieval → (Postgres+pgvector/DB/LLM).
 - [ ] (ожидает пользователя) Раздел “Demo”: ссылка на прод‑URL (Amvera) + как воспроизвести локально.
+  - URL: `https://rag-bitrix-getcher.amvera.io/` (получен от пользователя, добавить в README)
 
 **Критерий готовности**
 - README объясняет “что это” за 1 минуту чтения + есть ссылка на рабочий демо‑URL.
@@ -111,33 +112,33 @@
 
 ## 4) Front-end — 3/3
 
-- [ ] Создать `frontend/` (React+Vite) с единой точкой общения с API (client module):
-  - [ ] Экран “Ask”: вопрос → ответ + источники (только после утверждений).
-  - [ ] Экран “History”: последние запросы/ответы (из DB).
-  - [ ] Экран “Eval/Smoke”: прогон тест‑набора + таблица результатов.
-- [ ] Добавить настройки в UI: base URL (локально/прод), таймаут, режим (llm/extractive/auto).
-- [ ] Добавить unit‑тесты фронта (Vitest): клиент API, парсинг sources, отображение ошибок.
-- [ ] Добавить e2e (Playwright): “задал вопрос → получил ответ → вижу источники”.
+- [x] Создать `frontend/` (React+Vite) с единой точкой общения с API (client module):
+  - [x] Экран “Ask”: вопрос → ответ + источники (только после утверждений).
+  - [x] Экран “History”: последние запросы/ответы (из DB).
+  - [x] Экран “Eval/Smoke”: прогон тест‑набора + таблица результатов.
+- [x] Добавить настройки в UI: base URL (локально/прод), таймаут, режим (llm/extractive/auto).
+- [x] Добавить unit‑тесты фронта (Vitest): клиент API, парсинг sources, отображение ошибок.
+- [x] Добавить e2e (Playwright): “задал вопрос → получил ответ → вижу источники”.
 
 ---
 
 ## 5) API contract (OpenAPI) — 2/2
 
 - [x] Привести `rag/openapi.yaml` к фактическому API (или наоборот — привести API к контракту).
-- [ ] Генерация клиента для фронта из OpenAPI (например, `openapi-typescript` + fetch wrapper).
-- [ ] Добавить CI-проверку: OpenAPI не “сломали” (lint/validate).
+- [x] Генерация клиента для фронта из OpenAPI (например, `openapi-typescript` + fetch wrapper).
+- [x] Добавить CI-проверку: OpenAPI не “сломали” (lint/validate).
 - [ ] Документировать версии API (semver/changes).
 
 ---
 
 ## 6) Back-end — 3/3
 
-- [ ] Привести структуру `rag/src/bitrix_rag` к чистым слоям: `api/`, `retrieval/`, `clients/`, `db/`, `ingest/`, `eval/`.
-- [ ] Добавить тесты backend:
-  - [ ] unit: роутер/фильтры/форматирование sources/citations
-  - [ ] unit: OpenAI client (mock)
-  - [ ] unit: embed/rerank clients (mock)
-  - [ ] integration: FastAPI endpoint `/answer` (TestClient) + sqlite/postgres
+- [x] Привести структуру `rag/src/bitrix_rag` к чистым слоям: `api/`, `retrieval/`, `clients/`, `db/`, `ingest/`, `eval/`.
+- [x] Добавить тесты backend:
+  - [x] unit: роутер/фильтры/форматирование sources/citations
+  - [x] unit: OpenAI client (mock)
+  - [x] unit: embed/rerank clients (mock)
+  - [x] integration: FastAPI endpoint `/answer` (TestClient) + sqlite/postgres
 - [ ] Гарантировать SLA по таймаутам: `RAG_MAX_LATENCY_S`, `OPENAI_TIMEOUT_S`, per-step timeouts.
 - [ ] Единый формат ответа: `answer` без “sources:” текста внутри; источники — в `sources` (и/или отдельный `citations` массив).
 
@@ -174,11 +175,11 @@
 
 ## 9) Integration testing — 2/2
 
-- [ ] Отдельный набор integration tests (pytest marker `integration`):
-  - [ ] поднимает docker compose (postgres+api) или использует testcontainers
-  - [ ] выполняет 3–5 ключевых сценариев: answer, search, history, eval
+- [x] Отдельный набор integration tests (pytest marker `integration`):
+  - [x] использует FastAPI TestClient + sqlite (без docker)
+  - [x] выполняет ключевые сценарии: answer, search, history
 - [ ] Отчет по прогону (CSV/JSON) с latency и flags (answer_has_sources, exact/whitelist).
-- [ ] Документация: как запускать локально и в CI.
+- [x] Документация: как запускать локально и в CI.
 
 ---
 
@@ -212,7 +213,7 @@
 ## 12) Reproducibility — 2/2
 
 - [x] “One-command” локальный старт: `make up` или `docker compose up -d`.
-- [ ] “One-command” тесты: `make test` (unit) и `make test-integration`.
+- [x] “One-command” тесты: `make test` (unit) и `make test-integration`.
 - [x] “One-command” ingestion: `make ingest` (по `docs/`).
 - [ ] Опционально для ускорения CI: `demo_vault/` (20–50 файлов) + `make ingest-demo`.
 
@@ -222,7 +223,7 @@
 
 Для выбранной архитектуры (API + Postgres(pgvector) + frontend; embeddings/rerank внешние) и нагрузки A:
 
-- [ ] Выбрать тариф **“Стандартный — 1 CPU, 2.5GB RAM, 15GB SSD”** как минимум.
+- [ ] (ожидает пользователя) Решение по тарифу: **не повышаем** (остаёмся на `BEGINNER_PLUS`).
 
 ---
 
@@ -234,9 +235,9 @@
 
 ## Результаты опроса (Amvera/Deploy)
 
-- Формат деплоя (Amvera): один проект (Dockerfile) = API + раздача собранного frontend; Postgres (pgvector) как managed DB; Qdrant опционально.
+- Формат деплоя (Amvera): один проект (Dockerfile) = **backend**; frontend — **GitHub Pages**.
 - Submodule фронта: `bitrix-scribe` делаем публичным и используем HTTPS URL для `frontend/` в `.gitmodules`.
-- Демо/peer-review: нужен внешний публичный URL/домен.
+- Демо/peer-review: внешний URL `https://rag-bitrix-getcher.amvera.io/`.
 - Данные: публикуем полный `docs/` (без отдельного demo dataset).
 - Embeddings/rerank (prod): облачный провайдер (DeepInfra) + ключи в env Amvera.
 - CD: GitHub Actions пушит в Amvera git remote и запускает сборку/деплой.

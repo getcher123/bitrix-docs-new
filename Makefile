@@ -1,4 +1,4 @@
-.PHONY: up down logs api index index-inc ingest ingest-inc test
+.PHONY: up down logs api index index-inc ingest ingest-inc test test-unit test-integration
 
 up:
 	docker compose up -d
@@ -24,3 +24,10 @@ ingest-inc: index-inc
 
 test:
 	PYTHONPATH=rag/src python3 -m py_compile $(shell find rag/src -type f -name '*.py')
+	$(MAKE) test-unit
+
+test-unit:
+	PYTHONPATH=rag/src pytest -q -s --rootdir . --basetemp .rag/tmp rag/tests/unit
+
+test-integration:
+	PYTHONPATH=rag/src pytest -q -s --rootdir . --basetemp .rag/tmp rag/tests/integration

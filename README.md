@@ -81,6 +81,8 @@ Frontend (SPA) -> FastAPI /answer
 
 ### Demo
 
+- Прод: `https://rag-bitrix-getcher.amvera.io/`
+
 Публичный URL (будет активирован после успешной сборки в Amvera):  
 `https://rag-bitrix-getcher.amvera.io`
 

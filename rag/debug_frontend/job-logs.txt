@@ -1,0 +1,872 @@
+﻿2026-01-19T16:11:00.9521172Z ##[debug]Starting: build
+2026-01-19T16:11:00.9551663Z ##[debug]Cleaning runner temp folder: /home/runner/work/_temp
+2026-01-19T16:11:00.9696858Z ##[debug]Starting: Set up job
+2026-01-19T16:11:00.9698403Z Current runner version: '2.331.0'
+2026-01-19T16:11:00.9726371Z ##[group]Runner Image Provisioner
+2026-01-19T16:11:00.9727524Z Hosted Compute Agent
+2026-01-19T16:11:00.9728393Z Version: 20251211.462
+2026-01-19T16:11:00.9729041Z Commit: 6cbad8c2bb55d58165063d031ccabf57e2d2db61
+2026-01-19T16:11:00.9730111Z Build Date: 2025-12-11T16:28:49Z
+2026-01-19T16:11:00.9731115Z Worker ID: {b709abcb-cb71-4fc5-86fc-2137860f4d78}
+2026-01-19T16:11:00.9732256Z ##[endgroup]
+2026-01-19T16:11:00.9733032Z ##[group]Operating System
+2026-01-19T16:11:00.9733913Z Ubuntu
+2026-01-19T16:11:00.9734617Z 24.04.3
+2026-01-19T16:11:00.9735347Z LTS
+2026-01-19T16:11:00.9736094Z ##[endgroup]
+2026-01-19T16:11:00.9736811Z ##[group]Runner Image
+2026-01-19T16:11:00.9737779Z Image: ubuntu-24.04
+2026-01-19T16:11:00.9738544Z Version: 20260111.209.1
+2026-01-19T16:11:00.9740315Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260111.209/images/ubuntu/Ubuntu2404-Readme.md
+2026-01-19T16:11:00.9742705Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260111.209
+2026-01-19T16:11:00.9744528Z ##[endgroup]
+2026-01-19T16:11:00.9746011Z ##[group]GITHUB_TOKEN Permissions
+2026-01-19T16:11:00.9748440Z Contents: read
+2026-01-19T16:11:00.9749455Z Metadata: read
+2026-01-19T16:11:00.9750036Z Pages: write
+2026-01-19T16:11:00.9750539Z ##[endgroup]
+2026-01-19T16:11:00.9753618Z Secret source: Actions
+2026-01-19T16:11:00.9755229Z ##[debug]Primary repository: getcher123/bitrix-scribe
+2026-01-19T16:11:00.9756251Z Prepare workflow directory
+2026-01-19T16:11:00.9851747Z ##[debug]Creating pipeline directory: '/home/runner/work/bitrix-scribe'
+2026-01-19T16:11:00.9856706Z ##[debug]Creating workspace directory: '/home/runner/work/bitrix-scribe/bitrix-scribe'
+2026-01-19T16:11:00.9859127Z ##[debug]Update context data
+2026-01-19T16:11:00.9864018Z ##[debug]Evaluating job-level environment variables
+2026-01-19T16:11:01.0166213Z ##[debug]Evaluating job container
+2026-01-19T16:11:01.0170553Z ##[debug]Evaluating job service containers
+2026-01-19T16:11:01.0174426Z ##[debug]Evaluating job defaults
+2026-01-19T16:11:01.0209018Z Prepare all required actions
+2026-01-19T16:11:01.0256506Z Getting action download info
+2026-01-19T16:11:01.5054117Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+2026-01-19T16:11:01.5089630Z ##[debug]Copied action archive '/opt/actionarchivecache/actions_checkout/34e114876b0b11c390a56381ad16ebd13914f8d5.tar.gz' to '/home/runner/work/_actions/_temp_6b1578b1-3da8-40d9-b96d-d3c56ec6bc9e/e4ef53f5-9f3d-4e9b-a64b-a04e0c80b9a4.tar.gz'
+2026-01-19T16:11:01.5794749Z ##[debug]Unwrap 'actions-checkout-34e1148' to '/home/runner/work/_actions/actions/checkout/v4'
+2026-01-19T16:11:01.5917910Z ##[debug]Archive '/home/runner/work/_actions/_temp_6b1578b1-3da8-40d9-b96d-d3c56ec6bc9e/e4ef53f5-9f3d-4e9b-a64b-a04e0c80b9a4.tar.gz' has been unzipped into '/home/runner/work/_actions/actions/checkout/v4'.
+2026-01-19T16:11:01.6021998Z Download action repository 'actions/jekyll-build-pages@v1' (SHA:44a6e6beabd48582f863aeeb6cb2151cc1716697)
+2026-01-19T16:11:02.1724665Z ##[debug]Download 'https://api.github.com/repos/actions/jekyll-build-pages/tarball/44a6e6beabd48582f863aeeb6cb2151cc1716697' to '/home/runner/work/_actions/_temp_39a54ad0-bcc1-46fd-b033-d0701aef52f4/10afbbde-73f1-4eb1-839b-5408c1199d23.tar.gz'
+2026-01-19T16:11:02.1945235Z ##[debug]Unwrap 'actions-jekyll-build-pages-44a6e6b' to '/home/runner/work/_actions/actions/jekyll-build-pages/v1'
+2026-01-19T16:11:02.2162075Z ##[debug]Archive '/home/runner/work/_actions/_temp_39a54ad0-bcc1-46fd-b033-d0701aef52f4/10afbbde-73f1-4eb1-839b-5408c1199d23.tar.gz' has been unzipped into '/home/runner/work/_actions/actions/jekyll-build-pages/v1'.
+2026-01-19T16:11:02.2241857Z Download action repository 'actions/upload-pages-artifact@v3' (SHA:56afc609e74202658d3ffba0e8f6dda462b719fa)
+2026-01-19T16:11:02.6763335Z ##[debug]Download 'https://api.github.com/repos/actions/upload-pages-artifact/tarball/56afc609e74202658d3ffba0e8f6dda462b719fa' to '/home/runner/work/_actions/_temp_50a0cf20-4227-43c7-9bfc-286854e66253/393fe5a4-64bd-4c0c-a4e7-535b13b030e5.tar.gz'
+2026-01-19T16:11:02.6850683Z ##[debug]Unwrap 'actions-upload-pages-artifact-56afc60' to '/home/runner/work/_actions/actions/upload-pages-artifact/v3'
+2026-01-19T16:11:02.6869263Z ##[debug]Archive '/home/runner/work/_actions/_temp_50a0cf20-4227-43c7-9bfc-286854e66253/393fe5a4-64bd-4c0c-a4e7-535b13b030e5.tar.gz' has been unzipped into '/home/runner/work/_actions/actions/upload-pages-artifact/v3'.
+2026-01-19T16:11:02.6900199Z ##[debug]action.yml for action: '/home/runner/work/_actions/actions/checkout/v4/action.yml'.
+2026-01-19T16:11:02.7900066Z ##[debug]action.yml for action: '/home/runner/work/_actions/actions/jekyll-build-pages/v1/action.yml'.
+2026-01-19T16:11:02.7974826Z ##[debug]Container image for action: 'ghcr.io/actions/jekyll-build-pages:v1.0.13'.
+2026-01-19T16:11:02.8032391Z ##[debug]action.yml for action: '/home/runner/work/_actions/actions/upload-pages-artifact/v3/action.yml'.
+2026-01-19T16:11:02.8233463Z Getting action download info
+2026-01-19T16:11:03.0495298Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-01-19T16:11:03.0565092Z ##[debug]Copied action archive '/opt/actionarchivecache/actions_upload-artifact/ea165f8d65b6e75b540449e92b4886f43607fa02.tar.gz' to '/home/runner/work/_actions/_temp_cbfdd04c-acea-4691-95ae-f0ab7f7838e4/22a95202-e79a-4a08-aaf4-7cfa041a5281.tar.gz'
+2026-01-19T16:11:03.1300699Z ##[debug]Unwrap 'actions-upload-artifact-ea165f8' to '/home/runner/work/_actions/actions/upload-artifact/v4'
+2026-01-19T16:11:03.1617797Z ##[debug]Archive '/home/runner/work/_actions/_temp_cbfdd04c-acea-4691-95ae-f0ab7f7838e4/22a95202-e79a-4a08-aaf4-7cfa041a5281.tar.gz' has been unzipped into '/home/runner/work/_actions/actions/upload-artifact/v4'.
+2026-01-19T16:11:03.1691628Z ##[debug]action.yml for action: '/home/runner/work/_actions/actions/upload-artifact/v4/action.yml'.
+2026-01-19T16:11:03.2010460Z ##[debug]Set step '__actions_checkout' display name to: 'Checkout'
+2026-01-19T16:11:03.2015886Z ##[debug]Set step '__actions_jekyll-build-pages' display name to: 'Build with Jekyll'
+2026-01-19T16:11:03.2020209Z ##[debug]Set step '__actions_upload-pages-artifact' display name to: 'Upload artifact'
+2026-01-19T16:11:03.2021894Z Complete job name: build
+2026-01-19T16:11:03.2059033Z ##[debug]Collect running processes for tracking orphan processes.
+2026-01-19T16:11:03.2282862Z ##[debug]Finishing: Set up job
+2026-01-19T16:11:03.2411644Z ##[debug]Evaluating condition for step: 'Pull ghcr.io/actions/jekyll-build-pages:v1.0.13'
+2026-01-19T16:11:03.2449822Z ##[debug]Evaluating: success()
+2026-01-19T16:11:03.2455588Z ##[debug]Evaluating success:
+2026-01-19T16:11:03.2471857Z ##[debug]=> true
+2026-01-19T16:11:03.2478529Z ##[debug]Result: true
+2026-01-19T16:11:03.2501504Z ##[debug]Starting: Pull ghcr.io/actions/jekyll-build-pages:v1.0.13
+2026-01-19T16:11:03.2524511Z ##[group]Pull down action image 'ghcr.io/actions/jekyll-build-pages:v1.0.13'
+2026-01-19T16:11:03.2578538Z ##[command]/usr/bin/docker pull ghcr.io/actions/jekyll-build-pages:v1.0.13
+2026-01-19T16:11:04.0693753Z v1.0.13: Pulling from actions/jekyll-build-pages
+2026-01-19T16:11:04.0694588Z efc2b5ad9eec: Pulling fs layer
+2026-01-19T16:11:04.0694899Z 165b60d1bb48: Pulling fs layer
+2026-01-19T16:11:04.0695169Z 2a328af1ca3a: Pulling fs layer
+2026-01-19T16:11:04.0695438Z 32b58fa44788: Pulling fs layer
+2026-01-19T16:11:04.0695762Z 590ab93c22d2: Pulling fs layer
+2026-01-19T16:11:04.0696211Z 26ea96c4c14c: Pulling fs layer
+2026-01-19T16:11:04.0696481Z bd7e451dfea1: Pulling fs layer
+2026-01-19T16:11:04.0696779Z c209e9dadc51: Pulling fs layer
+2026-01-19T16:11:04.0697261Z a4925b5c711a: Pulling fs layer
+2026-01-19T16:11:04.0697732Z cd9459784e3c: Pulling fs layer
+2026-01-19T16:11:04.0698168Z 590ab93c22d2: Waiting
+2026-01-19T16:11:04.0698794Z 26ea96c4c14c: Waiting
+2026-01-19T16:11:04.0699117Z bd7e451dfea1: Waiting
+2026-01-19T16:11:04.0699352Z c209e9dadc51: Waiting
+2026-01-19T16:11:04.0699645Z a4925b5c711a: Waiting
+2026-01-19T16:11:04.0699862Z cd9459784e3c: Waiting
+2026-01-19T16:11:04.0700124Z 32b58fa44788: Waiting
+2026-01-19T16:11:04.3055754Z 2a328af1ca3a: Verifying Checksum
+2026-01-19T16:11:04.3056635Z 2a328af1ca3a: Download complete
+2026-01-19T16:11:04.4591041Z 165b60d1bb48: Verifying Checksum
+2026-01-19T16:11:04.4594614Z 165b60d1bb48: Download complete
+2026-01-19T16:11:04.5361500Z efc2b5ad9eec: Download complete
+2026-01-19T16:11:04.6943800Z 590ab93c22d2: Verifying Checksum
+2026-01-19T16:11:04.6950861Z 590ab93c22d2: Download complete
+2026-01-19T16:11:04.8242954Z 32b58fa44788: Verifying Checksum
+2026-01-19T16:11:04.8248174Z 32b58fa44788: Download complete
+2026-01-19T16:11:04.9412403Z bd7e451dfea1: Verifying Checksum
+2026-01-19T16:11:04.9413074Z bd7e451dfea1: Download complete
+2026-01-19T16:11:05.2550351Z a4925b5c711a: Verifying Checksum
+2026-01-19T16:11:05.2552900Z a4925b5c711a: Download complete
+2026-01-19T16:11:05.3180178Z c209e9dadc51: Verifying Checksum
+2026-01-19T16:11:05.3181051Z c209e9dadc51: Download complete
+2026-01-19T16:11:05.5059506Z cd9459784e3c: Verifying Checksum
+2026-01-19T16:11:05.5060688Z cd9459784e3c: Download complete
+2026-01-19T16:11:05.5618073Z 26ea96c4c14c: Download complete
+2026-01-19T16:11:05.9026524Z efc2b5ad9eec: Pull complete
+2026-01-19T16:11:08.3855578Z 165b60d1bb48: Pull complete
+2026-01-19T16:11:08.4008328Z 2a328af1ca3a: Pull complete
+2026-01-19T16:11:09.4028674Z 32b58fa44788: Pull complete
+2026-01-19T16:11:09.4139994Z 590ab93c22d2: Pull complete
+2026-01-19T16:11:13.5783043Z 26ea96c4c14c: Pull complete
+2026-01-19T16:11:13.5887722Z bd7e451dfea1: Pull complete
+2026-01-19T16:11:15.7166952Z c209e9dadc51: Pull complete
+2026-01-19T16:11:15.7435320Z a4925b5c711a: Pull complete
+2026-01-19T16:11:15.7545045Z cd9459784e3c: Pull complete
+2026-01-19T16:11:15.7582307Z Digest: sha256:6791ebfd912185ed59bfb5fb102664fa872496b79f87ff8b9cfba292a7345041
+2026-01-19T16:11:15.7597444Z Status: Downloaded newer image for ghcr.io/actions/jekyll-build-pages:v1.0.13
+2026-01-19T16:11:15.7610956Z ghcr.io/actions/jekyll-build-pages:v1.0.13
+2026-01-19T16:11:15.7638807Z ##[endgroup]
+2026-01-19T16:11:15.7649966Z ##[debug]Finishing: Pull ghcr.io/actions/jekyll-build-pages:v1.0.13
+2026-01-19T16:11:15.7667645Z ##[debug]Evaluating condition for step: 'Checkout'
+2026-01-19T16:11:15.7674565Z ##[debug]Evaluating: success()
+2026-01-19T16:11:15.7674976Z ##[debug]Evaluating success:
+2026-01-19T16:11:15.7675503Z ##[debug]=> true
+2026-01-19T16:11:15.7675961Z ##[debug]Result: true
+2026-01-19T16:11:15.7676967Z ##[debug]Starting: Checkout
+2026-01-19T16:11:15.7755859Z ##[debug]Register post job cleanup for action: actions/checkout@v4
+2026-01-19T16:11:15.7831695Z ##[debug]Loading inputs
+2026-01-19T16:11:15.7855876Z ##[debug]Evaluating: github.repository
+2026-01-19T16:11:15.7856751Z ##[debug]Evaluating Index:
+2026-01-19T16:11:15.7858439Z ##[debug]..Evaluating github:
+2026-01-19T16:11:15.7859344Z ##[debug]..=> Object
+2026-01-19T16:11:15.7865307Z ##[debug]..Evaluating String:
+2026-01-19T16:11:15.7865920Z ##[debug]..=> 'repository'
+2026-01-19T16:11:15.7869693Z ##[debug]=> 'getcher123/bitrix-scribe'
+2026-01-19T16:11:15.7870956Z ##[debug]Result: 'getcher123/bitrix-scribe'
+2026-01-19T16:11:15.7873674Z ##[debug]Evaluating: github.token
+2026-01-19T16:11:15.7873951Z ##[debug]Evaluating Index:
+2026-01-19T16:11:15.7874359Z ##[debug]..Evaluating github:
+2026-01-19T16:11:15.7874628Z ##[debug]..=> Object
+2026-01-19T16:11:15.7874835Z ##[debug]..Evaluating String:
+2026-01-19T16:11:15.7875054Z ##[debug]..=> 'token'
+2026-01-19T16:11:15.7875905Z ##[debug]=> '***'
+2026-01-19T16:11:15.7876228Z ##[debug]Result: '***'
+2026-01-19T16:11:15.7890298Z ##[debug]Loading env
+2026-01-19T16:11:15.7951810Z ##[group]Run actions/checkout@v4
+2026-01-19T16:11:15.7952257Z with:
+2026-01-19T16:11:15.7952446Z   ref: zoomcamp
+2026-01-19T16:11:15.7952638Z   submodules: recursive
+2026-01-19T16:11:15.7952870Z   repository: getcher123/bitrix-scribe
+2026-01-19T16:11:15.7953618Z   token: ***
+2026-01-19T16:11:15.7953824Z   ssh-strict: true
+2026-01-19T16:11:15.7954009Z   ssh-user: git
+2026-01-19T16:11:15.7954421Z   persist-credentials: true
+2026-01-19T16:11:15.7954639Z   clean: true
+2026-01-19T16:11:15.7954829Z   sparse-checkout-cone-mode: true
+2026-01-19T16:11:15.7955083Z   fetch-depth: 1
+2026-01-19T16:11:15.7955254Z   fetch-tags: false
+2026-01-19T16:11:15.7955438Z   show-progress: true
+2026-01-19T16:11:15.7955619Z   lfs: false
+2026-01-19T16:11:15.7955794Z   set-safe-directory: true
+2026-01-19T16:11:15.7956272Z ##[endgroup]
+2026-01-19T16:11:15.9006948Z ##[debug]GITHUB_WORKSPACE = '/home/runner/work/bitrix-scribe/bitrix-scribe'
+2026-01-19T16:11:15.9008725Z ##[debug]qualified repository = 'getcher123/bitrix-scribe'
+2026-01-19T16:11:15.9009954Z ##[debug]ref = 'zoomcamp'
+2026-01-19T16:11:15.9010675Z ##[debug]commit = 'undefined'
+2026-01-19T16:11:15.9011328Z ##[debug]clean = true
+2026-01-19T16:11:15.9011699Z ##[debug]filter = undefined
+2026-01-19T16:11:15.9012097Z ##[debug]fetch depth = 1
+2026-01-19T16:11:15.9012438Z ##[debug]fetch tags = false
+2026-01-19T16:11:15.9012775Z ##[debug]show progress = true
+2026-01-19T16:11:15.9013126Z ##[debug]lfs = false
+2026-01-19T16:11:15.9013453Z ##[debug]submodules = true
+2026-01-19T16:11:15.9014014Z ##[debug]recursive submodules = true
+2026-01-19T16:11:15.9014843Z ##[debug]GitHub Host URL = 
+2026-01-19T16:11:15.9016026Z ::add-matcher::/home/runner/work/_actions/actions/checkout/v4/dist/problem-matcher.json
+2026-01-19T16:11:15.9098071Z ##[debug]Added matchers: 'checkout-git'. Problem matchers scan action output for known warning or error strings and report these inline.
+2026-01-19T16:11:15.9102746Z Syncing repository: getcher123/bitrix-scribe
+2026-01-19T16:11:15.9103745Z ::group::Getting Git version info
+2026-01-19T16:11:15.9105050Z ##[group]Getting Git version info
+2026-01-19T16:11:15.9105485Z Working directory is '/home/runner/work/bitrix-scribe/bitrix-scribe'
+2026-01-19T16:11:15.9106228Z ##[debug]Getting git version
+2026-01-19T16:11:15.9106533Z [command]/usr/bin/git version
+2026-01-19T16:11:15.9183264Z git version 2.52.0
+2026-01-19T16:11:15.9207830Z ##[debug]0
+2026-01-19T16:11:15.9208232Z ##[debug]git version 2.52.0
+2026-01-19T16:11:15.9208450Z ##[debug]
+2026-01-19T16:11:15.9210738Z ##[debug]Set git useragent to: git/2.52.0 (github-actions-checkout)
+2026-01-19T16:11:15.9211731Z ::endgroup::
+2026-01-19T16:11:15.9212000Z ##[endgroup]
+2026-01-19T16:11:15.9216816Z ::add-mask::***
+2026-01-19T16:11:15.9227100Z Temporarily overriding HOME='/home/runner/work/_temp/702c17cc-c556-4934-9dfc-e6c437a3db97' before making global git config changes
+2026-01-19T16:11:15.9227857Z Adding repository directory to the temporary git global config as a safe directory
+2026-01-19T16:11:15.9242185Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/bitrix-scribe/bitrix-scribe
+2026-01-19T16:11:15.9283053Z ##[debug]0
+2026-01-19T16:11:15.9289383Z ##[debug]
+2026-01-19T16:11:15.9290007Z Deleting the contents of '/home/runner/work/bitrix-scribe/bitrix-scribe'
+2026-01-19T16:11:15.9293352Z ::group::Initializing the repository
+2026-01-19T16:11:15.9293901Z ##[group]Initializing the repository
+2026-01-19T16:11:15.9299140Z [command]/usr/bin/git init /home/runner/work/bitrix-scribe/bitrix-scribe
+2026-01-19T16:11:15.9418407Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-01-19T16:11:15.9419406Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-01-19T16:11:15.9420082Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-01-19T16:11:15.9420525Z hint: call:
+2026-01-19T16:11:15.9420819Z hint:
+2026-01-19T16:11:15.9421283Z hint: 	git config --global init.defaultBranch <name>
+2026-01-19T16:11:15.9421796Z hint:
+2026-01-19T16:11:15.9422166Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-01-19T16:11:15.9422679Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-01-19T16:11:15.9423402Z hint:
+2026-01-19T16:11:15.9423742Z hint: 	git branch -m <name>
+2026-01-19T16:11:15.9424113Z hint:
+2026-01-19T16:11:15.9424835Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-01-19T16:11:15.9425858Z Initialized empty Git repository in /home/runner/work/bitrix-scribe/bitrix-scribe/.git/
+2026-01-19T16:11:15.9430413Z ##[debug]0
+2026-01-19T16:11:15.9431345Z ##[debug]Initialized empty Git repository in /home/runner/work/bitrix-scribe/bitrix-scribe/.git/
+2026-01-19T16:11:15.9432070Z ##[debug]
+2026-01-19T16:11:15.9437738Z [command]/usr/bin/git remote add origin https://github.com/getcher123/bitrix-scribe
+2026-01-19T16:11:15.9477448Z ##[debug]0
+2026-01-19T16:11:15.9478112Z ##[debug]
+2026-01-19T16:11:15.9478824Z ::endgroup::
+2026-01-19T16:11:15.9479109Z ##[endgroup]
+2026-01-19T16:11:15.9479692Z ::group::Disabling automatic garbage collection
+2026-01-19T16:11:15.9480218Z ##[group]Disabling automatic garbage collection
+2026-01-19T16:11:15.9483803Z [command]/usr/bin/git config --local gc.auto 0
+2026-01-19T16:11:15.9514761Z ##[debug]0
+2026-01-19T16:11:15.9515139Z ##[debug]
+2026-01-19T16:11:15.9515485Z ::endgroup::
+2026-01-19T16:11:15.9515768Z ##[endgroup]
+2026-01-19T16:11:15.9516073Z ::group::Setting up auth
+2026-01-19T16:11:15.9516296Z ##[group]Setting up auth
+2026-01-19T16:11:15.9523546Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-01-19T16:11:15.9551937Z ##[debug]1
+2026-01-19T16:11:15.9552268Z ##[debug]
+2026-01-19T16:11:15.9558377Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-01-19T16:11:15.9917955Z ##[debug]0
+2026-01-19T16:11:15.9918378Z ##[debug]
+2026-01-19T16:11:15.9924785Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-01-19T16:11:15.9953355Z ##[debug]1
+2026-01-19T16:11:15.9953936Z ##[debug]
+2026-01-19T16:11:15.9959446Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-01-19T16:11:16.0191731Z ##[debug]0
+2026-01-19T16:11:16.0192442Z ##[debug]
+2026-01-19T16:11:16.0200627Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-01-19T16:11:16.0229939Z ##[debug]1
+2026-01-19T16:11:16.0230598Z ##[debug]
+2026-01-19T16:11:16.0236124Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-01-19T16:11:16.0466544Z ##[debug]0
+2026-01-19T16:11:16.0467420Z ##[debug]
+2026-01-19T16:11:16.0476973Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-01-19T16:11:16.0509010Z ##[debug]0
+2026-01-19T16:11:16.0509495Z ##[debug]
+2026-01-19T16:11:16.0518284Z ::endgroup::
+2026-01-19T16:11:16.0518592Z ##[endgroup]
+2026-01-19T16:11:16.0519087Z ::group::Fetching the repository
+2026-01-19T16:11:16.0519356Z ##[group]Fetching the repository
+2026-01-19T16:11:16.0527853Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +refs/heads/zoomcamp*:refs/remotes/origin/zoomcamp* +refs/tags/zoomcamp*:refs/tags/zoomcamp*
+2026-01-19T16:11:16.6613172Z From https://github.com/getcher123/bitrix-scribe
+2026-01-19T16:11:16.6613856Z  * [new branch]      zoomcamp   -> origin/zoomcamp
+2026-01-19T16:11:16.6647667Z ##[debug]0
+2026-01-19T16:11:16.6648262Z ##[debug]
+2026-01-19T16:11:16.6648765Z ::endgroup::
+2026-01-19T16:11:16.6649034Z ##[endgroup]
+2026-01-19T16:11:16.6649375Z ::group::Determining the checkout info
+2026-01-19T16:11:16.6649665Z ##[group]Determining the checkout info
+2026-01-19T16:11:16.6656317Z [command]/usr/bin/git branch --list --remote origin/zoomcamp
+2026-01-19T16:11:16.6680649Z   origin/zoomcamp
+2026-01-19T16:11:16.6684881Z ##[debug]0
+2026-01-19T16:11:16.6685392Z ##[debug]  origin/zoomcamp
+2026-01-19T16:11:16.6685892Z ##[debug]
+2026-01-19T16:11:16.6686258Z ::endgroup::
+2026-01-19T16:11:16.6686433Z ##[endgroup]
+2026-01-19T16:11:16.6690106Z [command]/usr/bin/git sparse-checkout disable
+2026-01-19T16:11:16.6726997Z ##[debug]0
+2026-01-19T16:11:16.6727554Z ##[debug]
+2026-01-19T16:11:16.6732154Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-01-19T16:11:16.6759113Z ##[debug]0
+2026-01-19T16:11:16.6759701Z ##[debug]
+2026-01-19T16:11:16.6760258Z ::group::Checking out the ref
+2026-01-19T16:11:16.6760662Z ##[group]Checking out the ref
+2026-01-19T16:11:16.6764852Z [command]/usr/bin/git checkout --progress --force -B zoomcamp refs/remotes/origin/zoomcamp
+2026-01-19T16:11:16.6879455Z Switched to a new branch 'zoomcamp'
+2026-01-19T16:11:16.6881502Z branch 'zoomcamp' set up to track 'origin/zoomcamp'.
+2026-01-19T16:11:16.6887378Z ##[debug]0
+2026-01-19T16:11:16.6888094Z ##[debug]branch 'zoomcamp' set up to track 'origin/zoomcamp'.
+2026-01-19T16:11:16.6888609Z ##[debug]
+2026-01-19T16:11:16.6889229Z ::endgroup::
+2026-01-19T16:11:16.6889522Z ##[endgroup]
+2026-01-19T16:11:16.6890137Z ::group::Setting up auth for fetching submodules
+2026-01-19T16:11:16.6890663Z ##[group]Setting up auth for fetching submodules
+2026-01-19T16:11:16.6896685Z [command]/usr/bin/git config --global http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-01-19T16:11:16.6926554Z ##[debug]0
+2026-01-19T16:11:16.6927113Z ##[debug]
+2026-01-19T16:11:16.6939226Z [command]/usr/bin/git config --global --unset-all url.https://github.com/.insteadOf
+2026-01-19T16:11:16.6970049Z ##[debug]5
+2026-01-19T16:11:16.6970568Z ##[debug]
+2026-01-19T16:11:16.6977786Z [command]/usr/bin/git config --global --add url.https://github.com/.insteadOf git@github.com:
+2026-01-19T16:11:16.7007980Z ##[debug]0
+2026-01-19T16:11:16.7008480Z ##[debug]
+2026-01-19T16:11:16.7014071Z [command]/usr/bin/git config --global --add url.https://github.com/.insteadOf org-60815740@github.com:
+2026-01-19T16:11:16.7044842Z ##[debug]0
+2026-01-19T16:11:16.7045867Z ##[debug]
+2026-01-19T16:11:16.7046361Z ::endgroup::
+2026-01-19T16:11:16.7046666Z ##[endgroup]
+2026-01-19T16:11:16.7047036Z ::group::Fetching submodules
+2026-01-19T16:11:16.7047279Z ##[group]Fetching submodules
+2026-01-19T16:11:16.7052254Z [command]/usr/bin/git submodule sync --recursive
+2026-01-19T16:11:16.7307515Z ##[debug]0
+2026-01-19T16:11:16.7308135Z ##[debug]
+2026-01-19T16:11:16.7313824Z [command]/usr/bin/git -c protocol.version=2 submodule update --init --force --depth=1 --recursive
+2026-01-19T16:11:16.7566162Z ##[debug]0
+2026-01-19T16:11:16.7566967Z ##[debug]
+2026-01-19T16:11:16.7573398Z [command]/usr/bin/git submodule foreach --recursive git config --local gc.auto 0
+2026-01-19T16:11:16.7828693Z ##[debug]0
+2026-01-19T16:11:16.7829273Z ##[debug]
+2026-01-19T16:11:16.7829791Z ::endgroup::
+2026-01-19T16:11:16.7829990Z ##[endgroup]
+2026-01-19T16:11:16.7830340Z ::group::Persisting credentials for submodules
+2026-01-19T16:11:16.7830677Z ##[group]Persisting credentials for submodules
+2026-01-19T16:11:16.7839363Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'url\.https\:\/\/github\.com\/\.insteadOf' && git config --local --unset-all 'url.https://github.com/.insteadOf' || :"
+2026-01-19T16:11:16.8088004Z ##[debug]0
+2026-01-19T16:11:16.8088606Z ##[debug]
+2026-01-19T16:11:16.8095873Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local 'http.https://github.com/.extraheader' 'AUTHORIZATION: basic ***' && git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-01-19T16:11:16.8339226Z ##[debug]0
+2026-01-19T16:11:16.8339806Z ##[debug]
+2026-01-19T16:11:16.8347469Z [command]/usr/bin/git submodule foreach --recursive git config --local --add 'url.https://github.com/.insteadOf' 'git@github.com:'
+2026-01-19T16:11:16.8596644Z ##[debug]0
+2026-01-19T16:11:16.8597956Z ##[debug]
+2026-01-19T16:11:16.8602848Z [command]/usr/bin/git submodule foreach --recursive git config --local --add 'url.https://github.com/.insteadOf' 'org-60815740@github.com:'
+2026-01-19T16:11:16.8853575Z ##[debug]0
+2026-01-19T16:11:16.8854408Z ##[debug]
+2026-01-19T16:11:16.8854934Z ::endgroup::
+2026-01-19T16:11:16.8855244Z ##[endgroup]
+2026-01-19T16:11:16.8892923Z ##[debug]0
+2026-01-19T16:11:16.8893638Z ##[debug]commit 8bc1f0f08ca94d4607c0c0c62862245746099cf5
+2026-01-19T16:11:16.8894423Z ##[debug]Author: Your Name <you@example.com>
+2026-01-19T16:11:16.8894929Z ##[debug]Date:   Mon Jan 19 18:56:09 2026 +0300
+2026-01-19T16:11:16.8895376Z ##[debug]
+2026-01-19T16:11:16.8895700Z ##[debug]    Fix GitHub Pages build path
+2026-01-19T16:11:16.8896114Z ##[debug]
+2026-01-19T16:11:16.8898018Z [command]/usr/bin/git log -1 --format=%H
+2026-01-19T16:11:16.8932609Z 8bc1f0f08ca94d4607c0c0c62862245746099cf5
+2026-01-19T16:11:16.8936545Z ##[debug]0
+2026-01-19T16:11:16.8937184Z ##[debug]8bc1f0f08ca94d4607c0c0c62862245746099cf5
+2026-01-19T16:11:16.8937647Z ##[debug]
+2026-01-19T16:11:16.8943194Z ##[debug]Unsetting HOME override
+2026-01-19T16:11:16.8951898Z ::remove-matcher owner=checkout-git::
+2026-01-19T16:11:16.8962276Z ##[debug]Removed matchers: 'checkout-git'
+2026-01-19T16:11:16.9023492Z ##[debug]Node Action run completed with exit code 0
+2026-01-19T16:11:16.9059423Z ##[debug]Save intra-action state isPost = true
+2026-01-19T16:11:16.9059883Z ##[debug]Save intra-action state setSafeDirectory = true
+2026-01-19T16:11:16.9060380Z ##[debug]Save intra-action state repositoryPath = /home/runner/work/bitrix-scribe/bitrix-scribe
+2026-01-19T16:11:16.9063801Z ##[debug]Set output commit = 8bc1f0f08ca94d4607c0c0c62862245746099cf5
+2026-01-19T16:11:16.9064480Z ##[debug]Set output ref = zoomcamp
+2026-01-19T16:11:16.9066231Z ##[debug]Finishing: Checkout
+2026-01-19T16:11:16.9075156Z ##[debug]Evaluating condition for step: 'Build with Jekyll'
+2026-01-19T16:11:16.9077136Z ##[debug]Evaluating: success()
+2026-01-19T16:11:16.9077479Z ##[debug]Evaluating success:
+2026-01-19T16:11:16.9077965Z ##[debug]=> true
+2026-01-19T16:11:16.9078279Z ##[debug]Result: true
+2026-01-19T16:11:16.9078905Z ##[debug]Starting: Build with Jekyll
+2026-01-19T16:11:16.9101194Z ##[debug]Loading inputs
+2026-01-19T16:11:16.9103550Z ##[debug]Evaluating: github.sha
+2026-01-19T16:11:16.9103836Z ##[debug]Evaluating Index:
+2026-01-19T16:11:16.9104077Z ##[debug]..Evaluating github:
+2026-01-19T16:11:16.9104555Z ##[debug]..=> Object
+2026-01-19T16:11:16.9104779Z ##[debug]..Evaluating String:
+2026-01-19T16:11:16.9105006Z ##[debug]..=> 'sha'
+2026-01-19T16:11:16.9105307Z ##[debug]=> 'cf3cba4f54dfa480583ba222007ca03d62861970'
+2026-01-19T16:11:16.9105661Z ##[debug]Result: 'cf3cba4f54dfa480583ba222007ca03d62861970'
+2026-01-19T16:11:16.9107729Z ##[debug]Evaluating: github.token
+2026-01-19T16:11:16.9108020Z ##[debug]Evaluating Index:
+2026-01-19T16:11:16.9108251Z ##[debug]..Evaluating github:
+2026-01-19T16:11:16.9108505Z ##[debug]..=> Object
+2026-01-19T16:11:16.9108714Z ##[debug]..Evaluating String:
+2026-01-19T16:11:16.9108926Z ##[debug]..=> 'token'
+2026-01-19T16:11:16.9109369Z ##[debug]=> '***'
+2026-01-19T16:11:16.9109696Z ##[debug]Result: '***'
+2026-01-19T16:11:16.9110510Z ##[debug]Loading env
+2026-01-19T16:11:16.9117522Z ##[group]Run actions/jekyll-build-pages@v1
+2026-01-19T16:11:16.9117778Z with:
+2026-01-19T16:11:16.9117940Z   source: .
+2026-01-19T16:11:16.9118112Z   destination: ./_site
+2026-01-19T16:11:16.9118296Z   future: false
+2026-01-19T16:11:16.9118531Z   build_revision: cf3cba4f54dfa480583ba222007ca03d62861970
+2026-01-19T16:11:16.9118815Z   verbose: true
+2026-01-19T16:11:16.9119119Z   token: ***
+2026-01-19T16:11:16.9119292Z ##[endgroup]
+2026-01-19T16:11:16.9213247Z ##[command]/usr/bin/docker run --name ghcrioactionsjekyllbuildpagesv1013_53c9c4 --label 007fff --workdir /github/workspace --rm -e "INPUT_SOURCE" -e "INPUT_DESTINATION" -e "INPUT_FUTURE" -e "INPUT_BUILD_REVISION" -e "INPUT_VERBOSE" -e "INPUT_TOKEN" -e "HOME" -e "GITHUB_JOB" -e "GITHUB_REF" -e "GITHUB_SHA" -e "GITHUB_REPOSITORY" -e "GITHUB_REPOSITORY_OWNER" -e "GITHUB_REPOSITORY_OWNER_ID" -e "GITHUB_RUN_ID" -e "GITHUB_RUN_NUMBER" -e "GITHUB_RETENTION_DAYS" -e "GITHUB_RUN_ATTEMPT" -e "GITHUB_ACTOR_ID" -e "GITHUB_ACTOR" -e "GITHUB_WORKFLOW" -e "GITHUB_HEAD_REF" -e "GITHUB_BASE_REF" -e "GITHUB_EVENT_NAME" -e "GITHUB_SERVER_URL" -e "GITHUB_API_URL" -e "GITHUB_GRAPHQL_URL" -e "GITHUB_REF_NAME" -e "GITHUB_REF_PROTECTED" -e "GITHUB_REF_TYPE" -e "GITHUB_WORKFLOW_REF" -e "GITHUB_WORKFLOW_SHA" -e "GITHUB_REPOSITORY_ID" -e "GITHUB_TRIGGERING_ACTOR" -e "GITHUB_WORKSPACE" -e "GITHUB_ACTION" -e "GITHUB_EVENT_PATH" -e "GITHUB_ACTION_REPOSITORY" -e "GITHUB_ACTION_REF" -e "GITHUB_PATH" -e "GITHUB_ENV" -e "GITHUB_STEP_SUMMARY" -e "GITHUB_STATE" -e "GITHUB_OUTPUT" -e "RUNNER_DEBUG" -e "RUNNER_OS" -e "RUNNER_ARCH" -e "RUNNER_NAME" -e "RUNNER_ENVIRONMENT" -e "RUNNER_TOOL_CACHE" -e "RUNNER_TEMP" -e "RUNNER_WORKSPACE" -e "ACTIONS_RUNTIME_URL" -e "ACTIONS_RUNTIME_TOKEN" -e "ACTIONS_CACHE_URL" -e "ACTIONS_ID_TOKEN_REQUEST_URL" -e "ACTIONS_ID_TOKEN_REQUEST_TOKEN" -e "ACTIONS_RESULTS_URL" -e GITHUB_ACTIONS=true -e CI=true -v "/var/run/docker.sock":"/var/run/docker.sock" -v "/home/runner/work/_temp":"/github/runner_temp" -v "/home/runner/work/_temp/_github_home":"/github/home" -v "/home/runner/work/_temp/_github_workflow":"/github/workflow" -v "/home/runner/work/_temp/_runner_file_commands":"/github/file_commands" -v "/home/runner/work/bitrix-scribe/bitrix-scribe":"/github/workspace" ghcr.io/actions/jekyll-build-pages:v1.0.13
+2026-01-19T16:11:17.7275200Z [33mConfiguration file: none[0m
+2026-01-19T16:11:17.8491341Z To use retry middleware with Faraday v2.0+, install `faraday-retry` gem
+2026-01-19T16:11:19.4018466Z   Logging at level: debug
+2026-01-19T16:11:19.4018952Z       GitHub Pages: github-pages v232
+2026-01-19T16:11:19.4019434Z       GitHub Pages: jekyll v3.10.0
+2026-01-19T16:11:19.4020308Z              Theme: jekyll-theme-primer
+2026-01-19T16:11:19.4020875Z       Theme source: /usr/local/bundle/gems/jekyll-theme-primer-0.6.0
+2026-01-19T16:11:19.4021468Z          Requiring: jekyll-github-metadata
+2026-01-19T16:11:19.4021892Z          Requiring: jekyll-seo-tag
+2026-01-19T16:11:19.4022285Z          Requiring: jekyll-coffeescript
+2026-01-19T16:11:19.4022757Z          Requiring: jekyll-commonmark-ghpages
+2026-01-19T16:11:19.4026241Z          Requiring: jekyll-gist
+2026-01-19T16:11:19.4026653Z          Requiring: jekyll-github-metadata
+2026-01-19T16:11:19.4027080Z          Requiring: jekyll-paginate
+2026-01-19T16:11:19.4027497Z          Requiring: jekyll-relative-links
+2026-01-19T16:11:19.4027950Z          Requiring: jekyll-optional-front-matter
+2026-01-19T16:11:19.4028415Z          Requiring: jekyll-readme-index
+2026-01-19T16:11:19.4028836Z          Requiring: jekyll-default-layout
+2026-01-19T16:11:19.4029300Z          Requiring: jekyll-titles-from-headings
+2026-01-19T16:11:19.4029778Z    GitHub Metadata: Initializing...
+2026-01-19T16:11:19.4030181Z             Source: /github/workspace/.
+2026-01-19T16:11:19.4030605Z        Destination: /github/workspace/./_site
+2026-01-19T16:11:19.4031112Z  Incremental build: disabled. Enable with --incremental
+2026-01-19T16:11:19.4031608Z       Generating... 
+2026-01-19T16:11:19.4037393Z         Generating: JekyllOptionalFrontMatter::Generator finished in 0.000212747 seconds.
+2026-01-19T16:11:19.4038264Z         Generating: JekyllReadmeIndex::Generator finished in 0.001654299 seconds.
+2026-01-19T16:11:19.4039084Z         Generating: Jekyll::Paginate::Pagination finished in 7.855e-06 seconds.
+2026-01-19T16:11:19.4039881Z         Generating: JekyllRelativeLinks::Generator finished in 2.4977e-05 seconds.
+2026-01-19T16:11:19.4040720Z         Generating: JekyllDefaultLayout::Generator finished in 1.8584e-05 seconds.
+2026-01-19T16:11:19.4044449Z         Generating: JekyllTitlesFromHeadings::Generator finished in 1.2723e-05 seconds.
+2026-01-19T16:11:19.4045190Z          Rendering: assets/css/style.scss
+2026-01-19T16:11:19.4045605Z   Pre-Render Hooks: assets/css/style.scss
+2026-01-19T16:11:19.4046019Z   Rendering Markup: assets/css/style.scss
+2026-01-19T16:11:19.4046504Z            Writing: /github/workspace/_site/assets/css/style.css
+2026-01-19T16:11:19.4047129Z                     done in 1.25 seconds.
+2026-01-19T16:11:19.4047857Z  Auto-regeneration: disabled. Use --watch to enable.
+2026-01-19T16:11:19.5129957Z ##[debug]Docker Action run completed with exit code 0
+2026-01-19T16:11:19.5133623Z ##[debug]Finishing: Build with Jekyll
+2026-01-19T16:11:19.5141460Z ##[debug]Evaluating condition for step: 'Upload artifact'
+2026-01-19T16:11:19.5143085Z ##[debug]Evaluating: success()
+2026-01-19T16:11:19.5143443Z ##[debug]Evaluating success:
+2026-01-19T16:11:19.5143833Z ##[debug]=> true
+2026-01-19T16:11:19.5144544Z ##[debug]Result: true
+2026-01-19T16:11:19.5145205Z ##[debug]Starting: Upload artifact
+2026-01-19T16:11:19.5202007Z ##[debug]Loading inputs
+2026-01-19T16:11:19.5206077Z ##[debug]Loading env
+2026-01-19T16:11:19.5214327Z ##[group]Run actions/upload-pages-artifact@v3
+2026-01-19T16:11:19.5214614Z with:
+2026-01-19T16:11:19.5214783Z   path: ./_site
+2026-01-19T16:11:19.5214971Z   name: github-pages
+2026-01-19T16:11:19.5215161Z   retention-days: 1
+2026-01-19T16:11:19.5215354Z ##[endgroup]
+2026-01-19T16:11:19.5267569Z ##[debug]Evaluating: inputs.path
+2026-01-19T16:11:19.5267877Z ##[debug]Evaluating Index:
+2026-01-19T16:11:19.5268115Z ##[debug]..Evaluating inputs:
+2026-01-19T16:11:19.5268387Z ##[debug]..=> Object
+2026-01-19T16:11:19.5268678Z ##[debug]..Evaluating String:
+2026-01-19T16:11:19.5268923Z ##[debug]..=> 'path'
+2026-01-19T16:11:19.5269251Z ##[debug]=> './_site'
+2026-01-19T16:11:19.5269550Z ##[debug]Result: './_site'
+2026-01-19T16:11:19.5274478Z ##[debug]Evaluating condition for step: 'run'
+2026-01-19T16:11:19.5279947Z ##[debug]Evaluating: (success() && (runner.os == 'Linux'))
+2026-01-19T16:11:19.5280424Z ##[debug]Evaluating And:
+2026-01-19T16:11:19.5282444Z ##[debug]..Evaluating success:
+2026-01-19T16:11:19.5283188Z ##[debug]..=> true
+2026-01-19T16:11:19.5283526Z ##[debug]..Evaluating Equal:
+2026-01-19T16:11:19.5285026Z ##[debug]....Evaluating Index:
+2026-01-19T16:11:19.5285359Z ##[debug]......Evaluating runner:
+2026-01-19T16:11:19.5285679Z ##[debug]......=> Object
+2026-01-19T16:11:19.5286003Z ##[debug]......Evaluating String:
+2026-01-19T16:11:19.5286298Z ##[debug]......=> 'os'
+2026-01-19T16:11:19.5286652Z ##[debug]....=> 'Linux'
+2026-01-19T16:11:19.5286933Z ##[debug]....Evaluating String:
+2026-01-19T16:11:19.5287240Z ##[debug]....=> 'Linux'
+2026-01-19T16:11:19.5290315Z ##[debug]..=> true
+2026-01-19T16:11:19.5290818Z ##[debug]=> true
+2026-01-19T16:11:19.5294610Z ##[debug]Expanded: (true && ('Linux' == 'Linux'))
+2026-01-19T16:11:19.5295014Z ##[debug]Result: true
+2026-01-19T16:11:19.5302591Z ##[debug]Starting: run
+2026-01-19T16:11:19.5311392Z ##[debug]Loading inputs
+2026-01-19T16:11:19.5312382Z ##[debug]Loading env
+2026-01-19T16:11:19.5327115Z ##[group]Run echo ::group::Archive artifact
+2026-01-19T16:11:19.5327469Z [36;1mecho ::group::Archive artifact[0m
+2026-01-19T16:11:19.5327721Z [36;1mtar \[0m
+2026-01-19T16:11:19.5327942Z [36;1m  --dereference --hard-dereference \[0m
+2026-01-19T16:11:19.5328234Z [36;1m  --directory "$INPUT_PATH" \[0m
+2026-01-19T16:11:19.5328499Z [36;1m  -cvf "$RUNNER_TEMP/artifact.tar" \[0m
+2026-01-19T16:11:19.5328775Z [36;1m  --exclude=.git \[0m
+2026-01-19T16:11:19.5328992Z [36;1m  --exclude=.github \[0m
+2026-01-19T16:11:19.5329204Z [36;1m  .[0m
+2026-01-19T16:11:19.5329383Z [36;1mecho ::endgroup::[0m
+2026-01-19T16:11:19.5527332Z shell: /usr/bin/sh -e {0}
+2026-01-19T16:11:19.5527602Z env:
+2026-01-19T16:11:19.5527793Z   INPUT_PATH: ./_site
+2026-01-19T16:11:19.5528010Z ##[endgroup]
+2026-01-19T16:11:19.5604697Z ##[debug]/usr/bin/sh -e /home/runner/work/_temp/045a8c0d-22a8-4a0f-825d-7e2cfeb15b14.sh
+2026-01-19T16:11:19.5618971Z ::group::Archive artifact
+2026-01-19T16:11:19.5619441Z ##[group]Archive artifact
+2026-01-19T16:11:19.5634066Z ./
+2026-01-19T16:11:19.5635286Z ./tsconfig.node.json
+2026-01-19T16:11:19.5636015Z ./index.html
+2026-01-19T16:11:19.5636284Z ./bun.lockb
+2026-01-19T16:11:19.5636944Z ./playwright.config.ts
+2026-01-19T16:11:19.5637296Z ./assets/
+2026-01-19T16:11:19.5637586Z ./assets/css/
+2026-01-19T16:11:19.5637840Z ./assets/css/style.css
+2026-01-19T16:11:19.5639041Z ./package-lock.json
+2026-01-19T16:11:19.5642469Z ./README.md
+2026-01-19T16:11:19.5642790Z ./components.json
+2026-01-19T16:11:19.5643120Z ./public/
+2026-01-19T16:11:19.5643409Z ./public/robots.txt
+2026-01-19T16:11:19.5644063Z ./public/favicon.ico
+2026-01-19T16:11:19.5644633Z ./public/placeholder.svg
+2026-01-19T16:11:19.5645005Z ./eslint.config.js
+2026-01-19T16:11:19.5645304Z ./package.json
+2026-01-19T16:11:19.5645600Z ./tests/
+2026-01-19T16:11:19.5645863Z ./tests/e2e/
+2026-01-19T16:11:19.5646175Z ./tests/e2e/smoke.spec.ts
+2026-01-19T16:11:19.5646520Z ./vite.config.ts
+2026-01-19T16:11:19.5646827Z ./tsconfig.app.json
+2026-01-19T16:11:19.5647118Z ./tsconfig.json
+2026-01-19T16:11:19.5647397Z ./src/
+2026-01-19T16:11:19.5647663Z ./src/api/
+2026-01-19T16:11:19.5647933Z ./src/api/schema.ts
+2026-01-19T16:11:19.5648238Z ./src/types/
+2026-01-19T16:11:19.5648514Z ./src/types/api.ts
+2026-01-19T16:11:19.5648805Z ./src/services/
+2026-01-19T16:11:19.5649095Z ./src/services/api.ts
+2026-01-19T16:11:19.5649436Z ./src/services/api.test.ts
+2026-01-19T16:11:19.5649773Z ./src/pages/
+2026-01-19T16:11:19.5650069Z ./src/pages/Index.test.tsx
+2026-01-19T16:11:19.5650415Z ./src/pages/NotFound.tsx
+2026-01-19T16:11:19.5650760Z ./src/pages/Index.tsx
+2026-01-19T16:11:19.5651090Z ./src/components/
+2026-01-19T16:11:19.5652570Z ./src/components/eval/
+2026-01-19T16:11:19.5652939Z ./src/components/eval/EvalPanel.tsx
+2026-01-19T16:11:19.5653351Z ./src/components/NavLink.tsx
+2026-01-19T16:11:19.5653698Z ./src/components/ui/
+2026-01-19T16:11:19.5654009Z ./src/components/ui/badge.tsx
+2026-01-19T16:11:19.5654610Z ./src/components/ui/tabs.tsx
+2026-01-19T16:11:19.5654963Z ./src/components/ui/resizable.tsx
+2026-01-19T16:11:19.5655341Z ./src/components/ui/slider.tsx
+2026-01-19T16:11:19.5655695Z ./src/components/ui/sheet.tsx
+2026-01-19T16:11:19.5656059Z ./src/components/ui/alert-dialog.tsx
+2026-01-19T16:11:19.5656452Z ./src/components/ui/popover.tsx
+2026-01-19T16:11:19.5656822Z ./src/components/ui/input.tsx
+2026-01-19T16:11:19.5657182Z ./src/components/ui/toggle-group.tsx
+2026-01-19T16:11:19.5657602Z ./src/components/ui/input-otp.tsx
+2026-01-19T16:11:19.5657988Z ./src/components/ui/select.tsx
+2026-01-19T16:11:19.5658355Z ./src/components/ui/progress.tsx
+2026-01-19T16:11:19.5658753Z ./src/components/ui/aspect-ratio.tsx
+2026-01-19T16:11:19.5659150Z ./src/components/ui/collapsible.tsx
+2026-01-19T16:11:19.5659556Z ./src/components/ui/dropdown-menu.tsx
+2026-01-19T16:11:19.5659965Z ./src/components/ui/carousel.tsx
+2026-01-19T16:11:19.5660404Z ./src/components/ui/toast.tsx
+2026-01-19T16:11:19.5660764Z ./src/components/ui/card.tsx
+2026-01-19T16:11:19.5661107Z ./src/components/ui/table.tsx
+2026-01-19T16:11:19.5661468Z ./src/components/ui/menubar.tsx
+2026-01-19T16:11:19.5661834Z ./src/components/ui/context-menu.tsx
+2026-01-19T16:11:19.5662232Z ./src/components/ui/hover-card.tsx
+2026-01-19T16:11:19.5662610Z ./src/components/ui/calendar.tsx
+2026-01-19T16:11:19.5662982Z ./src/components/ui/textarea.tsx
+2026-01-19T16:11:19.5663340Z ./src/components/ui/avatar.tsx
+2026-01-19T16:11:19.5663717Z ./src/components/ui/separator.tsx
+2026-01-19T16:11:19.5664085Z ./src/components/ui/drawer.tsx
+2026-01-19T16:11:19.5664578Z ./src/components/ui/command.tsx
+2026-01-19T16:11:19.5664960Z ./src/components/ui/navigation-menu.tsx
+2026-01-19T16:11:19.5665381Z ./src/components/ui/tooltip.tsx
+2026-01-19T16:11:19.5665757Z ./src/components/ui/checkbox.tsx
+2026-01-19T16:11:19.5666115Z ./src/components/ui/toggle.tsx
+2026-01-19T16:11:19.5666473Z ./src/components/ui/skeleton.tsx
+2026-01-19T16:11:19.5666830Z ./src/components/ui/chart.tsx
+2026-01-19T16:11:19.5667178Z ./src/components/ui/toaster.tsx
+2026-01-19T16:11:19.5667527Z ./src/components/ui/button.tsx
+2026-01-19T16:11:19.5667880Z ./src/components/ui/dialog.tsx
+2026-01-19T16:11:19.5668241Z ./src/components/ui/use-toast.ts
+2026-01-19T16:11:19.5668617Z ./src/components/ui/scroll-area.tsx
+2026-01-19T16:11:19.5668999Z ./src/components/ui/sonner.tsx
+2026-01-19T16:11:19.5669346Z ./src/components/ui/sidebar.tsx
+2026-01-19T16:11:19.5669726Z ./src/components/ui/pagination.tsx
+2026-01-19T16:11:19.5670395Z ./src/components/ui/breadcrumb.tsx
+2026-01-19T16:11:19.5670780Z ./src/components/ui/label.tsx
+2026-01-19T16:11:19.5671151Z ./src/components/ui/switch.tsx
+2026-01-19T16:11:19.5671705Z ./src/components/ui/accordion.tsx
+2026-01-19T16:11:19.5672091Z ./src/components/ui/alert.tsx
+2026-01-19T16:11:19.5672436Z ./src/components/ui/form.tsx
+2026-01-19T16:11:19.5672805Z ./src/components/ui/radio-group.tsx
+2026-01-19T16:11:19.5673183Z ./src/components/search/
+2026-01-19T16:11:19.5673594Z ./src/components/search/AnswerDisplay.tsx
+2026-01-19T16:11:19.5674083Z ./src/components/search/SearchResults.tsx
+2026-01-19T16:11:19.5674695Z ./src/components/search/SearchBar.tsx
+2026-01-19T16:11:19.5675363Z ./src/components/search/AnswerRating.tsx
+2026-01-19T16:11:19.5675835Z ./src/components/search/HistoryPanel.tsx
+2026-01-19T16:11:19.5676240Z ./src/components/search/AnswerDisplay.test.tsx
+2026-01-19T16:11:19.5676528Z ./src/components/settings/
+2026-01-19T16:11:19.5676779Z ./src/components/settings/SettingsPanel.tsx
+2026-01-19T16:11:19.5677042Z ./src/components/layout/
+2026-01-19T16:11:19.5677250Z ./src/components/layout/Header.tsx
+2026-01-19T16:11:19.5677485Z ./src/components/status/
+2026-01-19T16:11:19.5677722Z ./src/components/status/StatusPanel.tsx
+2026-01-19T16:11:19.5677972Z ./src/lib/
+2026-01-19T16:11:19.5678132Z ./src/lib/utils.ts
+2026-01-19T16:11:19.5678317Z ./src/vite-env.d.ts
+2026-01-19T16:11:19.5678490Z ./src/hooks/
+2026-01-19T16:11:19.5678658Z ./src/hooks/useSearch.ts
+2026-01-19T16:11:19.5678856Z ./src/hooks/use-mobile.tsx
+2026-01-19T16:11:19.5679050Z ./src/hooks/use-toast.ts
+2026-01-19T16:11:19.5679234Z ./src/index.css
+2026-01-19T16:11:19.5679395Z ./src/App.css
+2026-01-19T16:11:19.5679562Z ./src/main.tsx
+2026-01-19T16:11:19.5679719Z ./src/test/
+2026-01-19T16:11:19.5679876Z ./src/test/setup.ts
+2026-01-19T16:11:19.5680048Z ./src/contexts/
+2026-01-19T16:11:19.5680227Z ./src/contexts/AppContext.tsx
+2026-01-19T16:11:19.5680440Z ./src/App.tsx
+2026-01-19T16:11:19.5680615Z ./postcss.config.js
+2026-01-19T16:11:19.5680787Z ./tailwind.config.ts
+2026-01-19T16:11:19.5681336Z ::endgroup::
+2026-01-19T16:11:19.5681508Z ##[endgroup]
+2026-01-19T16:11:19.5690631Z ##[debug]Finished: run
+2026-01-19T16:11:19.5696952Z ##[debug]Evaluating: inputs.path
+2026-01-19T16:11:19.5697233Z ##[debug]Evaluating Index:
+2026-01-19T16:11:19.5697455Z ##[debug]..Evaluating inputs:
+2026-01-19T16:11:19.5697732Z ##[debug]..=> Object
+2026-01-19T16:11:19.5697985Z ##[debug]..Evaluating String:
+2026-01-19T16:11:19.5698218Z ##[debug]..=> 'path'
+2026-01-19T16:11:19.5698458Z ##[debug]=> './_site'
+2026-01-19T16:11:19.5698679Z ##[debug]Result: './_site'
+2026-01-19T16:11:19.5699126Z ##[debug]Evaluating condition for step: 'run'
+2026-01-19T16:11:19.5700584Z ##[debug]Evaluating: (success() && (runner.os == 'macOS'))
+2026-01-19T16:11:19.5700986Z ##[debug]Evaluating And:
+2026-01-19T16:11:19.5701286Z ##[debug]..Evaluating success:
+2026-01-19T16:11:19.5701712Z ##[debug]..=> true
+2026-01-19T16:11:19.5701979Z ##[debug]..Evaluating Equal:
+2026-01-19T16:11:19.5702268Z ##[debug]....Evaluating Index:
+2026-01-19T16:11:19.5702563Z ##[debug]......Evaluating runner:
+2026-01-19T16:11:19.5702960Z ##[debug]......=> Object
+2026-01-19T16:11:19.5703248Z ##[debug]......Evaluating String:
+2026-01-19T16:11:19.5703534Z ##[debug]......=> 'os'
+2026-01-19T16:11:19.5703880Z ##[debug]....=> 'Linux'
+2026-01-19T16:11:19.5704378Z ##[debug]....Evaluating String:
+2026-01-19T16:11:19.5704671Z ##[debug]....=> 'macOS'
+2026-01-19T16:11:19.5704929Z ##[debug]..=> false
+2026-01-19T16:11:19.5705171Z ##[debug]=> false
+2026-01-19T16:11:19.5705628Z ##[debug]Expanded: (true && ('Linux' == 'macOS'))
+2026-01-19T16:11:19.5706004Z ##[debug]Result: false
+2026-01-19T16:11:19.5708933Z ##[debug]Evaluating: inputs.path
+2026-01-19T16:11:19.5709198Z ##[debug]Evaluating Index:
+2026-01-19T16:11:19.5709436Z ##[debug]..Evaluating inputs:
+2026-01-19T16:11:19.5709678Z ##[debug]..=> Object
+2026-01-19T16:11:19.5709887Z ##[debug]..Evaluating String:
+2026-01-19T16:11:19.5710106Z ##[debug]..=> 'path'
+2026-01-19T16:11:19.5710537Z ##[debug]=> './_site'
+2026-01-19T16:11:19.5710746Z ##[debug]Result: './_site'
+2026-01-19T16:11:19.5711148Z ##[debug]Evaluating condition for step: 'run'
+2026-01-19T16:11:19.5712448Z ##[debug]Evaluating: (success() && (runner.os == 'Windows'))
+2026-01-19T16:11:19.5712848Z ##[debug]Evaluating And:
+2026-01-19T16:11:19.5713134Z ##[debug]..Evaluating success:
+2026-01-19T16:11:19.5713470Z ##[debug]..=> true
+2026-01-19T16:11:19.5713733Z ##[debug]..Evaluating Equal:
+2026-01-19T16:11:19.5714011Z ##[debug]....Evaluating Index:
+2026-01-19T16:11:19.5714637Z ##[debug]......Evaluating runner:
+2026-01-19T16:11:19.5714956Z ##[debug]......=> Object
+2026-01-19T16:11:19.5715250Z ##[debug]......Evaluating String:
+2026-01-19T16:11:19.5715541Z ##[debug]......=> 'os'
+2026-01-19T16:11:19.5715828Z ##[debug]....=> 'Linux'
+2026-01-19T16:11:19.5716098Z ##[debug]....Evaluating String:
+2026-01-19T16:11:19.5716382Z ##[debug]....=> 'Windows'
+2026-01-19T16:11:19.5716647Z ##[debug]..=> false
+2026-01-19T16:11:19.5716899Z ##[debug]=> false
+2026-01-19T16:11:19.5717425Z ##[debug]Expanded: (true && ('Linux' == 'Windows'))
+2026-01-19T16:11:19.5717799Z ##[debug]Result: false
+2026-01-19T16:11:19.5718930Z ##[debug]Evaluating condition for step: 'run'
+2026-01-19T16:11:19.5719878Z ##[debug]Evaluating: success()
+2026-01-19T16:11:19.5720189Z ##[debug]Evaluating success:
+2026-01-19T16:11:19.5720515Z ##[debug]=> true
+2026-01-19T16:11:19.5720807Z ##[debug]Result: true
+2026-01-19T16:11:19.5721175Z ##[debug]Starting: run
+2026-01-19T16:11:19.5741890Z ##[debug]Loading inputs
+2026-01-19T16:11:19.5743078Z ##[debug]Evaluating: inputs.name
+2026-01-19T16:11:19.5743342Z ##[debug]Evaluating Index:
+2026-01-19T16:11:19.5743562Z ##[debug]..Evaluating inputs:
+2026-01-19T16:11:19.5743806Z ##[debug]..=> Object
+2026-01-19T16:11:19.5744026Z ##[debug]..Evaluating String:
+2026-01-19T16:11:19.5744640Z ##[debug]..=> 'name'
+2026-01-19T16:11:19.5744883Z ##[debug]=> 'github-pages'
+2026-01-19T16:11:19.5745111Z ##[debug]Result: 'github-pages'
+2026-01-19T16:11:19.5747278Z ##[debug]Evaluating: format('{0}/artifact.tar', runner.temp)
+2026-01-19T16:11:19.5747627Z ##[debug]Evaluating format:
+2026-01-19T16:11:19.5751713Z ##[debug]..Evaluating String:
+2026-01-19T16:11:19.5752018Z ##[debug]..=> '{0}/artifact.tar'
+2026-01-19T16:11:19.5764923Z ##[debug]..Evaluating Index:
+2026-01-19T16:11:19.5765186Z ##[debug]....Evaluating runner:
+2026-01-19T16:11:19.5765450Z ##[debug]....=> Object
+2026-01-19T16:11:19.5765695Z ##[debug]....Evaluating String:
+2026-01-19T16:11:19.5765926Z ##[debug]....=> 'temp'
+2026-01-19T16:11:19.5766170Z ##[debug]..=> '/home/runner/work/_temp'
+2026-01-19T16:11:19.5767182Z ##[debug]=> '/home/runner/work/_temp/artifact.tar'
+2026-01-19T16:11:19.5767554Z ##[debug]Result: '/home/runner/work/_temp/artifact.tar'
+2026-01-19T16:11:19.5768235Z ##[debug]Evaluating: inputs.retention-days
+2026-01-19T16:11:19.5768520Z ##[debug]Evaluating Index:
+2026-01-19T16:11:19.5768735Z ##[debug]..Evaluating inputs:
+2026-01-19T16:11:19.5768966Z ##[debug]..=> Object
+2026-01-19T16:11:19.5769178Z ##[debug]..Evaluating String:
+2026-01-19T16:11:19.5769393Z ##[debug]..=> 'retention-days'
+2026-01-19T16:11:19.5769628Z ##[debug]=> '1'
+2026-01-19T16:11:19.5769807Z ##[debug]Result: '1'
+2026-01-19T16:11:19.5772355Z ##[debug]Loading env
+2026-01-19T16:11:19.5776851Z ##[group]Run actions/upload-artifact@v4
+2026-01-19T16:11:19.5777094Z with:
+2026-01-19T16:11:19.5798943Z   name: github-pages
+2026-01-19T16:11:19.5799247Z   path: /home/runner/work/_temp/artifact.tar
+2026-01-19T16:11:19.5799526Z   retention-days: 1
+2026-01-19T16:11:19.5799723Z   if-no-files-found: error
+2026-01-19T16:11:19.5799945Z   compression-level: 6
+2026-01-19T16:11:19.5800133Z   overwrite: false
+2026-01-19T16:11:19.5800326Z   include-hidden-files: false
+2026-01-19T16:11:19.5800537Z ##[endgroup]
+2026-01-19T16:11:19.8053122Z ##[debug]followSymbolicLinks 'true'
+2026-01-19T16:11:19.8053969Z ##[debug]implicitDescendants 'true'
+2026-01-19T16:11:19.8056264Z ##[debug]omitBrokenSymbolicLinks 'true'
+2026-01-19T16:11:19.8057064Z ##[debug]excludeHiddenFiles 'true'
+2026-01-19T16:11:19.8079944Z ##[debug]followSymbolicLinks 'true'
+2026-01-19T16:11:19.8080667Z ##[debug]implicitDescendants 'true'
+2026-01-19T16:11:19.8081290Z ##[debug]matchDirectories 'true'
+2026-01-19T16:11:19.8082146Z ##[debug]omitBrokenSymbolicLinks 'true'
+2026-01-19T16:11:19.8082842Z ##[debug]excludeHiddenFiles 'true'
+2026-01-19T16:11:19.8084786Z ##[debug]Search path '/home/runner/work/_temp/artifact.tar'
+2026-01-19T16:11:19.8115408Z ##[debug]File:/home/runner/work/_temp/artifact.tar was found using the provided searchPath
+2026-01-19T16:11:19.8116256Z With the provided path, there will be 1 file uploaded
+2026-01-19T16:11:19.8117076Z ##[debug]Root artifact directory is /home/runner/work/_temp
+2026-01-19T16:11:19.8121008Z Artifact name is valid!
+2026-01-19T16:11:19.8122375Z Root directory input is valid!
+2026-01-19T16:11:19.8142261Z ##[debug]Workflow Run Backend ID: 1c680808-0d0e-4b0f-a9f6-588d2977cfd0
+2026-01-19T16:11:19.8143227Z ##[debug]Workflow Job Run Backend ID: 3cbdf3af-9ba7-5bcd-8c17-ce422153a785
+2026-01-19T16:11:19.8159467Z ##[debug][Request] CreateArtifact https://results-receiver.actions.githubusercontent.com/twirp/github.actions.results.api.v1.ArtifactService/CreateArtifact
+2026-01-19T16:11:20.0069260Z ##[debug][Response] - 200
+2026-01-19T16:11:20.0069753Z ##[debug]Headers: {
+2026-01-19T16:11:20.0069974Z ##[debug]  "content-length": "577",
+2026-01-19T16:11:20.0070263Z ##[debug]  "content-type": "application/json",
+2026-01-19T16:11:20.0070581Z ##[debug]  "date": "Mon, 19 Jan 2026 16:11:19 GMT",
+2026-01-19T16:11:20.0070896Z ##[debug]  "x-github-backend": "Kubernetes",
+2026-01-19T16:11:20.0071260Z ##[debug]  "x-github-request-id": "CC02:2181BB:6204439:7B43374:696E57A7"
+2026-01-19T16:11:20.0071613Z ##[debug]}
+2026-01-19T16:11:20.0075253Z ::add-mask::***
+2026-01-19T16:11:20.0076916Z ::add-mask::***
+2026-01-19T16:11:20.0077546Z ##[debug]Body: {
+2026-01-19T16:11:20.0077735Z ##[debug]  "ok": true,
+2026-01-19T16:11:20.0080303Z ##[debug]  "signed_upload_url": "https://productionresultssa4.blob.core.windows.net/actions-results/1c680808-0d0e-4b0f-a9f6-588d2977cfd0/workflow-job-run-3cbdf3af-9ba7-5bcd-8c17-ce422153a785/artifacts/afa28766d3caf497f6ad369ac6c5505dd8db6689a300a79784c20dcaaf97018f.zip?se=2026-01-19T17%3A11%3A19Z&sig=***&ske=2026-01-20T02%3A04%3A05Z&skoid=ca7593d4-ee42-46cd-af88-8b886a2f84eb&sks=b&skt=2026-01-19T14%3A04%3A05Z&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skv=2025-11-05&sp=cw&spr=https&sr=b&st=2026-01-19T16%3A11%3A14Z&sv=2025-11-05"
+2026-01-19T16:11:20.0082518Z ##[debug]}
+2026-01-19T16:11:20.0083102Z ##[debug]Creating Artifact archive with compressionLevel: 6
+2026-01-19T16:11:20.0104727Z ##[debug]Zip write high watermark value 8388608
+2026-01-19T16:11:20.0105201Z ##[debug]Zip read high watermark value 8388608
+2026-01-19T16:11:20.0159427Z ##[debug]Uploading artifact zip to blob storage with maxConcurrency: 5, bufferSize: 8388608
+2026-01-19T16:11:20.0168709Z Beginning upload of artifact content to blob storage
+2026-01-19T16:11:20.0506677Z ##[debug]Zip stream for upload has ended.
+2026-01-19T16:11:20.0509605Z ##[debug]Zip stream for upload has finished.
+2026-01-19T16:11:20.4651525Z Uploaded bytes 225996
+2026-01-19T16:11:20.5312660Z Finished uploading artifact content to blob storage!
+2026-01-19T16:11:20.5315996Z SHA256 digest of uploaded artifact zip is 004d8038a587e7798e89a0cb4a5ab3bb0d74dda59131ef0f005caad3cdff1f9b
+2026-01-19T16:11:20.5317908Z Finalizing artifact upload
+2026-01-19T16:11:20.5321770Z ##[debug][Request] FinalizeArtifact https://results-receiver.actions.githubusercontent.com/twirp/github.actions.results.api.v1.ArtifactService/FinalizeArtifact
+2026-01-19T16:11:20.7141552Z ##[debug][Response] - 200
+2026-01-19T16:11:20.7142251Z ##[debug]Headers: {
+2026-01-19T16:11:20.7142632Z ##[debug]  "content-length": "38",
+2026-01-19T16:11:20.7143105Z ##[debug]  "content-type": "application/json",
+2026-01-19T16:11:20.7143620Z ##[debug]  "date": "Mon, 19 Jan 2026 16:11:20 GMT",
+2026-01-19T16:11:20.7144349Z ##[debug]  "x-github-backend": "Kubernetes",
+2026-01-19T16:11:20.7145552Z ##[debug]  "x-github-request-id": "CC02:2181BB:62046D5:7B43621:696E57A7"
+2026-01-19T16:11:20.7146115Z ##[debug]}
+2026-01-19T16:11:20.7146785Z ##[debug]Body: {
+2026-01-19T16:11:20.7147104Z ##[debug]  "ok": true,
+2026-01-19T16:11:20.7147794Z ##[debug]  "artifact_id": "5179466922"
+2026-01-19T16:11:20.7148244Z ##[debug]}
+2026-01-19T16:11:20.7148723Z Artifact github-pages.zip successfully finalized. Artifact ID 5179466922
+2026-01-19T16:11:20.7149856Z Artifact github-pages has been successfully uploaded! Final size is 225996 bytes. Artifact ID is 5179466922
+2026-01-19T16:11:20.7154620Z Artifact download URL: https://github.com/getcher123/bitrix-scribe/actions/runs/21142922649/artifacts/5179466922
+2026-01-19T16:11:20.7226174Z ##[debug]Node Action run completed with exit code 0
+2026-01-19T16:11:20.7242577Z ##[debug]Set output artifact-id = 5179466922
+2026-01-19T16:11:20.7243161Z ##[debug]Set output artifact-digest = 004d8038a587e7798e89a0cb4a5ab3bb0d74dda59131ef0f005caad3cdff1f9b
+2026-01-19T16:11:20.7243922Z ##[debug]Set output artifact-url = https://github.com/getcher123/bitrix-scribe/actions/runs/21142922649/artifacts/5179466922
+2026-01-19T16:11:20.7245115Z ##[debug]Finished: run
+2026-01-19T16:11:20.7273140Z ##[debug]Evaluating: steps.upload-artifact.outputs.artifact-id
+2026-01-19T16:11:20.7273605Z ##[debug]Evaluating Index:
+2026-01-19T16:11:20.7273849Z ##[debug]..Evaluating Index:
+2026-01-19T16:11:20.7274075Z ##[debug]....Evaluating Index:
+2026-01-19T16:11:20.7274710Z ##[debug]......Evaluating steps:
+2026-01-19T16:11:20.7275053Z ##[debug]......=> Object
+2026-01-19T16:11:20.7275313Z ##[debug]......Evaluating String:
+2026-01-19T16:11:20.7275574Z ##[debug]......=> 'upload-artifact'
+2026-01-19T16:11:20.7275867Z ##[debug]....=> Object
+2026-01-19T16:11:20.7276083Z ##[debug]....Evaluating String:
+2026-01-19T16:11:20.7276315Z ##[debug]....=> 'outputs'
+2026-01-19T16:11:20.7276534Z ##[debug]..=> Object
+2026-01-19T16:11:20.7276730Z ##[debug]..Evaluating String:
+2026-01-19T16:11:20.7276953Z ##[debug]..=> 'artifact-id'
+2026-01-19T16:11:20.7277189Z ##[debug]=> '5179466922'
+2026-01-19T16:11:20.7277412Z ##[debug]Result: '5179466922'
+2026-01-19T16:11:20.7284762Z ##[debug]Finishing: Upload artifact
+2026-01-19T16:11:20.7292472Z ##[debug]Evaluating condition for step: 'Post Checkout'
+2026-01-19T16:11:20.7294807Z ##[debug]Evaluating: always()
+2026-01-19T16:11:20.7295177Z ##[debug]Evaluating always:
+2026-01-19T16:11:20.7295948Z ##[debug]=> true
+2026-01-19T16:11:20.7296275Z ##[debug]Result: true
+2026-01-19T16:11:20.7296749Z ##[debug]Starting: Post Checkout
+2026-01-19T16:11:20.7326602Z ##[debug]Loading inputs
+2026-01-19T16:11:20.7328001Z ##[debug]Evaluating: github.repository
+2026-01-19T16:11:20.7328286Z ##[debug]Evaluating Index:
+2026-01-19T16:11:20.7328520Z ##[debug]..Evaluating github:
+2026-01-19T16:11:20.7328757Z ##[debug]..=> Object
+2026-01-19T16:11:20.7328969Z ##[debug]..Evaluating String:
+2026-01-19T16:11:20.7329195Z ##[debug]..=> 'repository'
+2026-01-19T16:11:20.7329458Z ##[debug]=> 'getcher123/bitrix-scribe'
+2026-01-19T16:11:20.7329747Z ##[debug]Result: 'getcher123/bitrix-scribe'
+2026-01-19T16:11:20.7330928Z ##[debug]Evaluating: github.token
+2026-01-19T16:11:20.7331186Z ##[debug]Evaluating Index:
+2026-01-19T16:11:20.7331440Z ##[debug]..Evaluating github:
+2026-01-19T16:11:20.7331671Z ##[debug]..=> Object
+2026-01-19T16:11:20.7331869Z ##[debug]..Evaluating String:
+2026-01-19T16:11:20.7332085Z ##[debug]..=> 'token'
+2026-01-19T16:11:20.7332518Z ##[debug]=> '***'
+2026-01-19T16:11:20.7332830Z ##[debug]Result: '***'
+2026-01-19T16:11:20.7342082Z ##[debug]Loading env
+2026-01-19T16:11:20.7346035Z Post job cleanup.
+2026-01-19T16:11:20.8295871Z ##[debug]Getting git version
+2026-01-19T16:11:20.8310532Z [command]/usr/bin/git version
+2026-01-19T16:11:20.8347210Z git version 2.52.0
+2026-01-19T16:11:20.8371220Z ##[debug]0
+2026-01-19T16:11:20.8371739Z ##[debug]git version 2.52.0
+2026-01-19T16:11:20.8371961Z ##[debug]
+2026-01-19T16:11:20.8373104Z ##[debug]Set git useragent to: git/2.52.0 (github-actions-checkout)
+2026-01-19T16:11:20.8376751Z ::add-mask::***
+2026-01-19T16:11:20.8392216Z Temporarily overriding HOME='/home/runner/work/_temp/b336d8e1-ad1a-4249-9fb6-41e715f5575d' before making global git config changes
+2026-01-19T16:11:20.8393107Z Adding repository directory to the temporary git global config as a safe directory
+2026-01-19T16:11:20.8398622Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/bitrix-scribe/bitrix-scribe
+2026-01-19T16:11:20.8430498Z ##[debug]0
+2026-01-19T16:11:20.8430982Z ##[debug]
+2026-01-19T16:11:20.8438309Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-01-19T16:11:20.8466517Z ##[debug]1
+2026-01-19T16:11:20.8467009Z ##[debug]
+2026-01-19T16:11:20.8472653Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-01-19T16:11:20.8696879Z ##[debug]0
+2026-01-19T16:11:20.8697405Z ##[debug]
+2026-01-19T16:11:20.8705873Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-01-19T16:11:20.8729068Z http.https://github.com/.extraheader
+2026-01-19T16:11:20.8735833Z ##[debug]0
+2026-01-19T16:11:20.8736406Z ##[debug]http.https://github.com/.extraheader
+2026-01-19T16:11:20.8736694Z ##[debug]
+2026-01-19T16:11:20.8741955Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-01-19T16:11:20.8769974Z ##[debug]0
+2026-01-19T16:11:20.8770456Z ##[debug]
+2026-01-19T16:11:20.8775288Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-01-19T16:11:20.8995811Z ##[debug]0
+2026-01-19T16:11:20.8996175Z ##[debug]
+2026-01-19T16:11:20.9002125Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-01-19T16:11:20.9029015Z ##[debug]1
+2026-01-19T16:11:20.9029521Z ##[debug]
+2026-01-19T16:11:20.9035192Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-01-19T16:11:20.9259042Z ##[debug]0
+2026-01-19T16:11:20.9259649Z ##[debug]
+2026-01-19T16:11:20.9260994Z ##[debug]Unsetting HOME override
+2026-01-19T16:11:20.9335271Z ##[debug]Node Action run completed with exit code 0
+2026-01-19T16:11:20.9337535Z ##[debug]Finishing: Post Checkout
+2026-01-19T16:11:20.9379716Z ##[debug]Starting: Complete job
+2026-01-19T16:11:20.9381498Z Uploading runner diagnostic logs
+2026-01-19T16:11:20.9392530Z ##[debug]Starting diagnostic file upload.
+2026-01-19T16:11:20.9392857Z ##[debug]Setting up diagnostic log folders.
+2026-01-19T16:11:20.9395015Z ##[debug]Creating diagnostic log files folder.
+2026-01-19T16:11:20.9403300Z ##[debug]Copying 1 worker diagnostic logs.
+2026-01-19T16:11:20.9411440Z ##[debug]Copying 1 runner diagnostic logs.
+2026-01-19T16:11:20.9412519Z ##[debug]Zipping diagnostic files.
+2026-01-19T16:11:20.9493183Z ##[debug]Uploading diagnostic metadata file.
+2026-01-19T16:11:20.9518190Z ##[debug]Diagnostic file upload complete.
+2026-01-19T16:11:20.9518731Z Completed runner diagnostic log upload
+2026-01-19T16:11:20.9519022Z Cleaning up orphan processes
+2026-01-19T16:11:20.9855755Z ##[debug]Finishing: Complete job
+2026-01-19T16:11:20.9886525Z ##[debug]Finishing: build

@@ -166,7 +166,8 @@ API сохраняет историю запросов/ответов в БД:
 
 - `GET /health` — состояние и конфиг
 - `POST /search` — топ‑результаты
-- `POST /answer` — ответ + источники
+- `POST /answer` — ответ + источники (`mode`: auto/llm/extractive)
+- `GET /history` — последние запросы/ответы
 - `GET /openapi.json` — OpenAPI схема
 
 Пример:
@@ -221,6 +222,21 @@ bitrix-rag --env-file .env index --incremental --strategy auto
 
 ```bash
 python3 scripts/eval_test_set.py --env-file .env --top-k 10 --out ../docs/RAG/RAG_EVAL_REPORT.csv
+```
+
+Локальные тесты:
+
+```bash
+make test
+make test-integration
+```
+
+Frontend (unit + e2e):
+
+```bash
+cd ../frontend
+npm run test
+npm run test:e2e
 ```
 
 ## Типичные проблемы

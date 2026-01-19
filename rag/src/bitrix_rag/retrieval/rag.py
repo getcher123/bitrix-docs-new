@@ -144,9 +144,14 @@ class RagService:
             timings["search_ms"] = (time.monotonic() - search_started) * 1000
         return results
 
-    def answer(self, query: str) -> dict:
+    def answer(self, query: str, mode: str | None = None) -> dict:
         started = time.monotonic()
         timings: dict[str, float] = {}
+        mode_norm = (mode or "auto").strip().lower()
+        if mode_norm not in {"auto", "llm", "extractive"}:
+            mode_norm = "auto"
+        force_llm = mode_norm == "llm"
+        force_extractive = mode_norm == "extractive"
         sections = route_sections(query)
         candidates = self.search(
             query,
@@ -188,7 +193,9 @@ class RagService:
         sources = [f"docs/{doc.path}" for doc in top][:4]
         context = _build_context(top, max_chars=6000)
 
-        if not self._openai or _skip_llm(sections, self._cfg.retrieval.fast_rest):
+        if force_extractive or not self._openai or (
+            not force_llm and _skip_llm(sections, self._cfg.retrieval.fast_rest)
+        ):
             timings["total_ms"] = (time.monotonic() - started) * 1000
             return {
                 "answer": _extractive_answer(query, top),
