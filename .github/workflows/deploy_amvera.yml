@@ -7,7 +7,6 @@ on:
 
 jobs:
   deploy:
-    if: ${{ secrets.AMVERA_USERNAME != '' && secrets.AMVERA_PASSWORD != '' }}
     runs-on: ubuntu-latest
     env:
       AMVERA_USERNAME: ${{ secrets.AMVERA_USERNAME }}
@@ -16,21 +15,31 @@ jobs:
       AMVERA_CLI_VERSION: v1.0.6
       AMVERA_HEALTH_URL: ${{ secrets.AMVERA_HEALTH_URL }}
     steps:
+      - name: Skip deploy when secrets are missing
+        if: ${{ env.AMVERA_USERNAME == '' || env.AMVERA_PASSWORD == '' }}
+        run: |
+          echo "Missing AMVERA_USERNAME or AMVERA_PASSWORD. Skipping deploy."
+          exit 0
+
       - name: Checkout
+        if: ${{ env.AMVERA_USERNAME != '' && env.AMVERA_PASSWORD != '' }}
         uses: actions/checkout@v4
 
       - name: Install Amvera CLI
+        if: ${{ env.AMVERA_USERNAME != '' && env.AMVERA_PASSWORD != '' }}
         run: |
           curl -sSL https://raw.githubusercontent.com/amvera-cloud/cli/master/amvera-install.sh | bash -s -- "${AMVERA_CLI_VERSION}"
 
       - name: Login
+        if: ${{ env.AMVERA_USERNAME != '' && env.AMVERA_PASSWORD != '' }}
         run: amvera login --user "${AMVERA_USERNAME}" --password "${AMVERA_PASSWORD}"
 
       - name: Rebuild project
+        if: ${{ env.AMVERA_USERNAME != '' && env.AMVERA_PASSWORD != '' }}
         run: amvera rebuild --slug "${AMVERA_PROJECT_SLUG}"
 
       - name: Smoke /health
-        if: ${{ env.AMVERA_HEALTH_URL != '' }}
+        if: ${{ env.AMVERA_USERNAME != '' && env.AMVERA_PASSWORD != '' && env.AMVERA_HEALTH_URL != '' }}
         run: |
           echo "Waiting for ${AMVERA_HEALTH_URL}"
           for i in {1..20}; do
