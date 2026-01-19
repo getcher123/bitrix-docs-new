@@ -62,7 +62,7 @@
 - [x] Убедиться, что секреты не закоммичены: `rag/.env`, токены ngrok, ключи OpenAI/DeepInfra.
 - [x] Добавить/проверить `.gitignore` для: `.env`, `.rag/`, `rag_data/`, `__pycache__/`, `.venv/`, `node_modules/`, `dist/`.
 - [ ] Ротация скомпрометированных ключей (если когда-либо попадали в git/логи/чат).
-- [ ] Описать политику данных: что хранится, где, как удалить (GDPR‑подобный минимум).
+- [x] Описать политику данных: что хранится, где, как удалить (GDPR‑подобный минимум).
 
 ---
 
@@ -139,8 +139,8 @@
   - [x] unit: OpenAI client (mock)
   - [x] unit: embed/rerank clients (mock)
   - [x] integration: FastAPI endpoint `/answer` (TestClient) + sqlite/postgres
-- [ ] Гарантировать SLA по таймаутам: `RAG_MAX_LATENCY_S`, `OPENAI_TIMEOUT_S`, per-step timeouts.
-- [ ] Единый формат ответа: `answer` без “sources:” текста внутри; источники — в `sources` (и/или отдельный `citations` массив).
+- [x] Гарантировать SLA по таймаутам: `RAG_MAX_LATENCY_S`, `OPENAI_TIMEOUT_S`, per-step timeouts.
+- [x] Единый формат ответа: `answer` без “sources:” текста внутри; источники — в `sources` (и/или отдельный `citations` массив).
 
 ---
 
@@ -203,9 +203,9 @@
   - [x] unit tests (backend+frontend)
   - [x] integration tests (docker compose)
   - [x] OpenAPI validation
-- [ ] (ожидает пользователя) CD:
-  - [ ] deploy job на Amvera: `amvera rebuild` через GitHub Actions (нужны `AMVERA_USERNAME`/`AMVERA_PASSWORD` secrets)
-  - [ ] после деплоя — smoke check `/health` (нужен `AMVERA_HEALTH_URL` secret)
+- [x] CD:
+  - [x] deploy job на Amvera: `amvera rebuild` через GitHub Actions (нужны `AMVERA_USERNAME`/`AMVERA_PASSWORD` secrets)
+  - [x] после деплоя — smoke check `/health` (нужен `AMVERA_HEALTH_URL` secret)
 - [x] Badge в README (CI status).
 
 ---
@@ -215,7 +215,7 @@
 - [x] “One-command” локальный старт: `make up` или `docker compose up -d`.
 - [x] “One-command” тесты: `make test` (unit) и `make test-integration`.
 - [x] “One-command” ingestion: `make ingest` (по `docs/`).
-- [ ] Опционально для ускорения CI: `demo_vault/` (20–50 файлов) + `make ingest-demo`.
+- [x] Опционально для ускорения CI: `demo_vault/` (20–50 файлов) + `make ingest-demo`.
 
 ---
 

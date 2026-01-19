@@ -1,155 +1,166 @@
-# Документация 1C‑Bitrix (Markdown‑vault)
+# Bitrix Docs Vault + RAG (Zoomcamp Project)
 
 [![CI](https://github.com/getcher123/bitrix-docs-new/actions/workflows/ci.yml/badge.svg)](https://github.com/getcher123/bitrix-docs-new/actions/workflows/ci.yml)
 
-Это офлайн‑хранилище документации 1C‑Bitrix в виде обычных Markdown‑файлов для просмотра в VS Code/Obsidian (без сборщика сайта).
+Этот README раскрывает проект **по критериям** из Zoomcamp (DataTalksClub AI Dev Tools) и ведет к подробной документации.
 
-## Единая точка входа
+---
 
-Начинайте с **[docs/MAIN_INDEX.md](docs/MAIN_INDEX.md)** — это единая навигационная страница по ролям и задачам.
+## 1) Problem description
 
-## Быстрый старт (2–3 минуты)
-
-### Visual Studio Code (рекомендуется)
-
-1. Откройте папку репозитория в VS Code
-2. Откройте `docs/MAIN_INDEX.md`
-3. Нажмите `Ctrl+Shift+V` (предпросмотр)
-4. `Ctrl+Click` по ссылкам для навигации
-5. `Ctrl+Shift+F` для поиска по vault
-
-### Obsidian
-
-1. `Open folder as vault` → выберите папку репозитория (или только `docs/`)
-2. Откройте `docs/MAIN_INDEX.md` (или `MAIN_INDEX.md`, если vault = `docs/`)
-3. Используйте глобальный поиск и граф ссылок
-
-## Ключевые страницы (без дублирования навигации)
-
-- `docs/MAIN_INDEX.md` — стартовая навигация (единая точка входа)
-- `docs/INDEX.md` — индекс разделов (генерируется, пригоден как «карта»)
-- `docs/MODULES.md` — список модулей классического API
-- `docs/QUICK_REFERENCE.md` — быстрые ответы/сценарии
-- `docs/bitrix24_api/index.md` — Bitrix24 REST API (включая импорт `b24-rest-docs`)
-- `docs/AGENT.md` — как AI‑агенту искать справку
-- `docs/RAG/` — документация по проекту RAG (план, параметры, риски, тесты)
-- `docs/ARCHITECTURE.md` — архитектура RAG‑проекта (стек/поток данных)
-
-## Быстрый поиск
-
-```bash
-# Поиск по всему хранилищу
-rg "CIBlockElement" docs/
-
-# Поиск по заголовкам (класс/метод)
-rg "^#\\s+GetList\\b" docs/
-```
-
-## RAG‑сервис (опционально)
-
-Код RAG‑системы находится в `rag/`. Инструкции запуска и конфигурации — в:
-- `rag/README.md`
-- `docs/RAG/RAG_PLAN.md`
-
-## RAG‑проект: проблема и поведение
-
-**Проблема:** в большом vault Bitrix сложно быстро находить точные ответы, примеры и ссылки на первоисточник.  
+**Проблема:** в большом Bitrix‑vault сложно быстро находить точные ответы, примеры и ссылки на первоисточник.  
 **Пользователи:** администраторы и разработчики Bitrix24/1C‑Bitrix.  
-**Ограничения:** данные — локальный `docs/` (Markdown‑vault), без внешней индексации.  
-**Ожидаемое поведение:** сервис отвечает по источникам, дает ссылки и явно сообщает, когда данных нет.
+**Ограничения:** данные — локальный `docs/` (Markdown‑vault), без внешней индексации.
 
-### User stories (пример)
+User stories (кратко):
+- Найти пример D7‑класса и получить ссылку на исходную страницу.
+- Найти REST‑метод и его документацию.
+- Найти шаги настройки функциональности (смарт‑процессы/CRM).
+- Видеть источники сразу после утверждений.
+- Получать честный ответ “данных нет” + альтернативы без ссылок.
 
-- Как разработчик, хочу найти пример D7‑класса и получить ссылку на исходную страницу.
-- Как разработчик, хочу понять REST‑метод и где он описан.
-- Как администратор, хочу найти шаги настройки функциональности (смарт‑процессы/CRM).
-- Как пользователь курсов, хочу перейти на нужный урок из ответа.
-- Как пользователь, хочу видеть источники сразу после утверждений.
-- Как пользователь, хочу честный ответ “нет данных” и полезную альтернативу.
+---
 
-### Архитектура (high‑level)
+## 2) Data & policy
 
+**Храним:** `docs/`, индексы (`.rag/`, `.rag_demo/`), историю запросов/ответов в БД.  
+**Не храним:** пароли/ключи в репозитории; секреты только в env.  
+**Удаление:** удалить `.rag/`/`.rag_demo/`; очистить таблицы `queries`, `answers`, `feedback`, `embeddings`.
+
+---
+
+## 3) Architecture & tech stack
+
+Стек:
+- Frontend: React + Vite (SPA)
+- Backend: FastAPI
+- Vector: Postgres + pgvector (prod), Qdrant (опционально)
+- DB: Postgres (prod) / SQLite (dev)
+- LLM: OpenAI (Responses API)
+- Embeddings/Rerank: DeepInfra/Colab
+- Infra: Docker, Amvera, GitHub Actions
+
+High‑level поток:
 ```
-Frontend (SPA) -> FastAPI /answer
-                     |
-                     +-> BM25 (rag_data)
-                     +-> Vector Search (Postgres+pgvector / Qdrant)
-                     +-> Rerank + LLM (OpenAI)
-                     +-> Ответ + ссылки
-                     +-> История запросов (Postgres/SQLite)
-```
-
-### Demo
-
-- Прод: `https://rag-bitrix-getcher.amvera.io/`
-- Smoke: `https://rag-bitrix-getcher.amvera.io/health` (включает `build.git_sha`, если задано)
-
-Как воспроизвести локально:
-
-```bash
-make up
-make ingest
-curl -s http://localhost:8000/health
-```
-
-### Локальный запуск (1 команда)
-
-```bash
-make up
-make ingest
+Frontend -> FastAPI /answer
+   -> BM25 + Vector Search (pgvector/Qdrant)
+   -> Rerank + LLM
+   -> Answer + sources + History
 ```
 
-## Frontend (bitrix-scribe)
+---
 
-Фронтенд для RAG подключен как git submodule в `frontend/`.  
-Сейчас деплой в Amvera настроен **только для backend**; фронтенд будет разворачиваться отдельно.
+## 4) AI tools / MCP
 
-После клонирования репозитория и при обновлениях:
+В репозитории есть MCP‑server с инструментами:
+- `search_docs(query, top_k, filters)`
+- `answer(query, mode?)`
+- `get_source(path)`
 
-```bash
-git submodule update --init --recursive
-```
+Документация: `docs/AGENT.md` и `mcp/`.
 
-## API versioning
+---
 
-Версия API фиксируется в `rag/openapi.yaml` (`info.version`) и следует семантическому версионированию:
-- `MAJOR` — breaking changes (смена контрактов/ответов)
-- `MINOR` — новые эндпоинты/поля
-- `PATCH` — исправления без изменения контракта
+## 5) API contract (OpenAPI)
 
-При изменениях API обновляйте `info.version` и синхронизируйте типы в фронте:
-
+Контракт: `rag/openapi.yaml`  
+Генерация типов фронта:
 ```bash
 cd frontend
 npm run gen:api
 ```
 
-## CI/CD (Amvera)
+Версионирование API — semver в `info.version` (OpenAPI).
 
-Workflow: `.github/workflows/deploy_amvera.yml`  
-Secrets в GitHub:
-- `AMVERA_USERNAME`
-- `AMVERA_PASSWORD`
-- `AMVERA_HEALTH_URL` (опционально, для smoke `/health`)
+---
 
-## Integration tests report
+## 6) Backend
 
-Сгенерировать локальный отчет (CSV/JSON):
+Код: `rag/src/bitrix_rag/`  
+Слои: `api/`, `retrieval/`, `clients/`, `db/`, `ingest/`, `eval/`.
 
+SLA/таймауты настраиваются через env:
+`RAG_MAX_LATENCY_S`, `OPENAI_TIMEOUT_S`, `BGE_TIMEOUT_S`.
+
+Формат ответа:
+- `answer` без текста `sources:` внутри
+- `sources` отдельным массивом
+- если данных нет — честный ответ + альтернативы без ссылок
+
+---
+
+## 7) Frontend
+
+Submodule: `frontend/` → `https://github.com/getcher123/bitrix-scribe`  
+Экраны: Ask / History / Eval.  
+Тесты: unit (Vitest) + e2e (Playwright).
+
+---
+
+## 8) Database & Vector store
+
+Postgres + pgvector:
+- таблицы `queries`, `answers`, `feedback`, `embeddings`
+- миграции Alembic
+- `/health` показывает статус DB и pgvector
+
+---
+
+## 9) Evaluation & tests
+
+Unit + integration tests, CI‑отчет:
+- `docs/RAG/RAG_INTEGRATION_REPORT.json`
+- `docs/RAG/RAG_INTEGRATION_REPORT.csv`
+
+Сгенерировать локально:
 ```bash
 python3 rag/scripts/generate_integration_report.py
 ```
 
-Файлы отчета:
-- `docs/RAG/RAG_INTEGRATION_REPORT.json`
-- `docs/RAG/RAG_INTEGRATION_REPORT.csv`
+---
 
-## Источники
+## 10) Deployment (Amvera)
 
-- https://dev.1c-bitrix.ru/docs/ (документация, классическое API)
-- https://dev.1c-bitrix.ru/api_help/ (классическое API: справочник функций/классов)
-- https://dev.1c-bitrix.ru/api_d7/ (D7 API)
-- https://dev.1c-bitrix.ru/user_help/ (пользовательская документация)
-- https://dev.1c-bitrix.ru/learning/ (учебные курсы)
-- https://apidocs.bitrix24.ru/ (Bitrix24 REST API)
-- https://github.com/bitrix-tools/b24-rest-docs (upstream-репозиторий Bitrix24 REST, импортирован в `docs/bitrix24_api/b24-rest-docs/`)
+Прод: `https://rag-bitrix-getcher.amvera.io/`  
+Smoke: `https://rag-bitrix-getcher.amvera.io/health`
+
+Документация деплоя: `docs/RAG/AMVERA_DEPLOY.md`
+
+---
+
+## 11) CI/CD
+
+CI workflow: `.github/workflows/ci.yml`  
+CD workflow: `.github/workflows/deploy_amvera.yml`  
+Secrets:
+- `AMVERA_USERNAME`
+- `AMVERA_PASSWORD`
+- `AMVERA_HEALTH_URL`
+
+---
+
+## 12) Reproducibility
+
+Локальный запуск:
+```bash
+make up
+make ingest
+```
+
+Demo‑ingest для CI:
+```bash
+make ingest-demo
+```
+
+---
+
+## Дополнительно
+
+Полная документация RAG:
+- `rag/README.md`
+- `docs/RAG/` (план, параметры, тесты, риски)
+
+Единая точка входа по документации Bitrix:
+- `docs/MAIN_INDEX.md`
+
+---
