@@ -59,7 +59,11 @@ class RagService:
     def __init__(self, cfg: AppConfig) -> None:
         self._cfg = cfg
         self._chunks = ChunkStore(cfg.rag_data_dir / CHUNKS_FILE)
-        self._bm25 = Bm25Index.load(cfg.rag_data_dir / BM25_FILE)
+        # BM25 can be memory-heavy (tokens + BM25Okapi). Allow disabling it via RAG_BM25_K=0.
+        if cfg.retrieval.bm25_k > 0:
+            self._bm25 = Bm25Index.load(cfg.rag_data_dir / BM25_FILE)
+        else:
+            self._bm25 = Bm25Index(doc_ids=[], tokens=[], bm25=None)
         self._qdrant: QdrantStore | None = None
         self._pgvector: PgVectorStore | None = None
         if cfg.vector_store.backend == "qdrant":

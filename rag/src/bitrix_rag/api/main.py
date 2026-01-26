@@ -6,6 +6,7 @@ import logging
 import os
 import time
 import uuid
+import sys
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
@@ -161,6 +162,76 @@ def create_app() -> FastAPI:
             result["error"] = str(exc)
         return result
 
+    @app.get("/health/resources")
+    def health_resources():
+        """
+        Lightweight runtime resource diagnostics for environments without SSH.
+        Works on Linux containers (cgroup v2 + /proc).
+        """
+
+        def _read_int(path: str) -> int | None:
+            try:
+                raw = Path(path).read_text(encoding="utf-8").strip()
+            except Exception:
+                return None
+            if not raw:
+                return None
+            if raw == "max":
+                return -1
+            try:
+                return int(raw)
+            except Exception:
+                return None
+
+        def _proc_status_kb(field: str) -> int | None:
+            try:
+                for line in Path("/proc/self/status").read_text(encoding="utf-8").splitlines():
+                    if line.startswith(field + ":"):
+                        parts = line.split()
+                        if len(parts) >= 2:
+                            return int(parts[1])
+            except Exception:
+                return None
+            return None
+
+        mem_current = _read_int("/sys/fs/cgroup/memory.current")
+        mem_max = _read_int("/sys/fs/cgroup/memory.max")
+        rss_kb = _proc_status_kb("VmRSS")
+
+        cpu_usage_usec = None
+        cpu_user_usec = None
+        cpu_system_usec = None
+        try:
+            cpu_stat = Path("/sys/fs/cgroup/cpu.stat").read_text(encoding="utf-8").splitlines()
+            for line in cpu_stat:
+                key, _, value = line.partition(" ")
+                if key == "usage_usec":
+                    cpu_usage_usec = int(value)
+                elif key == "user_usec":
+                    cpu_user_usec = int(value)
+                elif key == "system_usec":
+                    cpu_system_usec = int(value)
+        except Exception:
+            pass
+
+        return {
+            "ok": True,
+            "python": {
+                "version": sys.version.split()[0],
+                "pid": os.getpid(),
+            },
+            "process": {
+                "rss_bytes": (rss_kb * 1024) if rss_kb is not None else None,
+                "rss_mb": (round((rss_kb or 0) / 1024, 2) if rss_kb is not None else None),
+            },
+            "cgroup": {
+                "memory_current_bytes": mem_current,
+                "memory_max_bytes": mem_max,
+                "cpu_usage_usec": cpu_usage_usec,
+                "cpu_user_usec": cpu_user_usec,
+                "cpu_system_usec": cpu_system_usec,
+            },
+        }
 
     @app.post("/search")
     def search(req: SearchRequest):

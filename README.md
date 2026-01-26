@@ -14,6 +14,7 @@ This README presents the project **against Zoomcamp criteria** (DataTalksClub AI
 - OpenAPI JSON: https://rag-bitrix-getcher.amvera.io/openapi.json
 - Smoke (health): https://rag-bitrix-getcher.amvera.io/health
 - Smoke (qdrant): https://rag-bitrix-getcher.amvera.io/health/qdrant
+- Smoke (resources): https://rag-bitrix-getcher.amvera.io/health/resources
 - Qdrant (external): https://qdrant-getcher.amvera.io/
 - Agent guidelines: [AGENT.md](AGENT.md)
 - Project checklist (criteria): [TODO-CRITERIAS.md](TODO-CRITERIAS.md)
