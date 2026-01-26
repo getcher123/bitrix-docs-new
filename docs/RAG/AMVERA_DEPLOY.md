@@ -111,7 +111,7 @@ amvera domain --slug rag-bitrix
 
 ## GitHub Actions (CD)
 
-В репозитории есть workflow `deploy_amvera.yml`, который запускает `amvera rebuild`.
+В репозитории есть workflow `cd.yml`, который запускает `amvera rebuild`.
 Для работы нужно добавить secrets в GitHub:
 
 - `AMVERA_USERNAME`

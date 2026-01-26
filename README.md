@@ -131,7 +131,7 @@ Smoke: `https://rag-bitrix-getcher.amvera.io/health`
 ## 11) CI/CD
 
 CI workflow: `.github/workflows/ci.yml`  
-CD workflow: `.github/workflows/deploy_amvera.yml`  
+CD workflow: `.github/workflows/cd.yml`  
 Secrets:
 - `AMVERA_USERNAME`
 - `AMVERA_PASSWORD`
