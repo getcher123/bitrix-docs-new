@@ -15,6 +15,9 @@ This README presents the project **against Zoomcamp criteria** (DataTalksClub AI
 - Smoke (health): https://rag-bitrix-getcher.amvera.io/health
 - Smoke (qdrant): https://rag-bitrix-getcher.amvera.io/health/qdrant
 - Qdrant (external): https://qdrant-getcher.amvera.io/
+- Agent guidelines: [AGENT.md](AGENT.md)
+- Project checklist (criteria): [TODO-CRITERIAS.md](TODO-CRITERIAS.md)
+- RAG docs: [rag/README.md](rag/README.md)
 
 ---
 
@@ -70,6 +73,7 @@ This repo includes an MCP server with tools:
 - `get_source(path)`
 
 Documentation: [docs/AGENT.md](docs/AGENT.md) and [mcp/README.md](mcp/README.md).
+Project docs: [AGENT.md](AGENT.md), [TODO-CRITERIAS.md](TODO-CRITERIAS.md), [rag/README.md](rag/README.md).
 
 Run local MCP server (stdio, not deployed in prod):
 ```bash
@@ -113,6 +117,7 @@ API versioning: semver in `info.version` (OpenAPI).
 
 Code: [rag/src/bitrix_rag/](rag/src/bitrix_rag/)  
 Layers: `api/`, `retrieval/`, `clients/`, `db/`, `ingest/`, `eval/`.
+Details: [rag/README.md](rag/README.md)
 
 SLA/timeouts via env:
 `RAG_MAX_LATENCY_S`, `OPENAI_TIMEOUT_S`, `BGE_TIMEOUT_S`.
@@ -212,14 +217,38 @@ CD workflow: [.github/workflows/cd.yml](.github/workflows/cd.yml)
 - `AMVERA_PASSWORD`
 - `AMVERA_HEALTH_URL`
 
+Checklist / progress tracking: [TODO-CRITERIAS.md](TODO-CRITERIAS.md)
+
 ---
 
 ## 12) Reproducibility
 
-Local run:
+Local run (Docker):
 ```bash
-make up
-make ingest
+git submodule update --init --recursive
+cp rag/.env.example rag/.env
+
+# Edit rag/.env (see rag/README.md for full configuration):
+# - set DEEPINFRA_KEY (embeddings/rerank)
+# - set OPENAI_API_KEY (or use DeepInfra OpenAI-compatible API via OPENAI_BASE_URL)
+
+# Start services (uses rag/.env via docker-compose.dev.yml)
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d db api
+
+# Build indexes (inside the container; will write to ./.rag on the host via volume)
+docker compose -f docker-compose.yml -f docker-compose.dev.yml exec -T api \
+  python -m bitrix_rag.cli index
+
+curl -fsS http://localhost:8000/health
+
+# basic smoke request
+curl -sS -X POST http://localhost:8000/answer \
+  -H 'Content-Type: application/json' \
+  -d '{"query":"How to raise BitrixVM? Provide step-by-step instructions."}'
+
+# optional: run the frontend container (then open http://localhost:3000)
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d frontend
+# In the UI: Settings -> API Base URL -> http://localhost:8000
 ```
 
 Demo ingest (manual, for debugging):
