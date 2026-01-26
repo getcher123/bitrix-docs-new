@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+import httpx
 from pydantic import BaseModel
 from sqlalchemy.orm import sessionmaker
 
@@ -117,6 +118,48 @@ def create_app() -> FastAPI:
             "bge_base_url_set": bool(cfg.bge.base_url),
             "openai_model": cfg.openai.model,
         }
+
+    @app.get("/health/qdrant")
+    def health_qdrant():
+        base_url = (cfg.qdrant.url or "").rstrip("/")
+        collection = cfg.qdrant.collection
+        if not base_url:
+            return {"ok": False, "error": "qdrant url is empty"}
+        result = {
+            "ok": False,
+            "qdrant_url": base_url,
+            "collection": collection,
+            "collections": None,
+            "points_count": None,
+            "error": None,
+        }
+        try:
+            with httpx.Client(timeout=5.0) as client:
+                collections_resp = client.get(f"{base_url}/collections")
+                if not collections_resp.is_success:
+                    result["error"] = f"/collections {collections_resp.status_code}"
+                    return result
+                collections_json = collections_resp.json()
+                result["collections"] = [
+                    item.get("name")
+                    for item in (collections_json.get("result", {}) or {}).get("collections", [])
+                ]
+                if collection:
+                    count_resp = client.post(
+                        f"{base_url}/collections/{collection}/points/count",
+                        json={"exact": True},
+                    )
+                    if count_resp.is_success:
+                        result["points_count"] = (
+                            count_resp.json().get("result", {}) or {}
+                        ).get("count")
+                    else:
+                        result["error"] = f"/points/count {count_resp.status_code}"
+                        return result
+                result["ok"] = True
+        except Exception as exc:
+            result["error"] = str(exc)
+        return result
 
 
     @app.post("/search")

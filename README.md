@@ -34,7 +34,7 @@ User stories (кратко):
 Стек:
 - Frontend: React + Vite (SPA)
 - Backend: FastAPI
-- Vector: Postgres + pgvector (prod), Qdrant (опционально)
+- Vector: Qdrant (prod), pgvector (опционально)
 - DB: Postgres (prod) / SQLite (dev)
 - LLM: OpenAI (Responses API)
 - Embeddings/Rerank: DeepInfra/Colab
@@ -99,7 +99,7 @@ Submodule: `frontend/` → `https://github.com/getcher123/bitrix-scribe`
 
 ## 8) Database & Vector store
 
-Postgres + pgvector:
+Postgres + pgvector (опционально):
 - таблицы `queries`, `answers`, `feedback`, `embeddings`
 - миграции Alembic
 - `/health` показывает статус DB и pgvector
@@ -137,6 +137,8 @@ Secrets:
 - `AMVERA_PASSWORD`
 - `AMVERA_HEALTH_URL`
 
+CI smoke‑job поднимает только API без миграций/индексации (`RUN_MIGRATIONS=0`, `MIGRATE_QDRANT_ON_STARTUP=0`).
+
 ---
 
 ## 12) Reproducibility
@@ -147,7 +149,7 @@ make up
 make ingest
 ```
 
-Demo‑ingest для CI:
+Demo‑ingest (ручной, для отладки):
 ```bash
 make ingest-demo
 ```
