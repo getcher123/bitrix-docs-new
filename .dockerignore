@@ -10,7 +10,10 @@
 .env.*
 !.env.example
 
-.rag
+.rag/*
+!.rag/chunks.jsonl
+!.rag/bm25.json
+!.rag/index_version.json
 rag_data
 
 frontend/

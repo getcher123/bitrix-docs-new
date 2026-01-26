@@ -18,6 +18,10 @@ COPY rag/alembic.ini /app/rag/alembic.ini
 COPY rag/alembic /app/rag/alembic
 COPY rag/openapi.yaml /app/rag/openapi.yaml
 COPY rag/debug_frontend /app/rag/debug_frontend
+RUN mkdir -p /app/.rag
+COPY .rag/chunks.jsonl /app/.rag/chunks.jsonl
+COPY .rag/bm25.json /app/.rag/bm25.json
+COPY .rag/index_version.json /app/.rag/index_version.json
 COPY docs /app/docs
 COPY metadata.json /app/metadata.json
 COPY url_mapping.json /app/url_mapping.json
