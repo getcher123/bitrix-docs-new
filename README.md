@@ -2,45 +2,45 @@
 
 [![CI](https://github.com/getcher123/bitrix-docs-new/actions/workflows/ci.yml/badge.svg)](https://github.com/getcher123/bitrix-docs-new/actions/workflows/ci.yml)
 
-Этот README раскрывает проект **по критериям** из Zoomcamp (DataTalksClub AI Dev Tools) и ведет к подробной документации.
+This README presents the project **against Zoomcamp criteria** (DataTalksClub AI Dev Tools) and links to the detailed documentation.
 
 ---
 
 ## 1) Problem description
 
-**Проблема:** в большом Bitrix‑vault сложно быстро находить точные ответы, примеры и ссылки на первоисточник.  
-**Пользователи:** администраторы и разработчики Bitrix24/1C‑Bitrix.  
-**Ограничения:** данные — локальный `docs/` (Markdown‑vault), без внешней индексации.
+**Problem:** in a large Bitrix vault it is hard to quickly find exact answers, examples, and links to the source of truth.  
+**Users:** Bitrix24 / 1C-Bitrix administrators and developers.  
+**Constraints:** data is a local `docs/` Markdown vault, without external indexing.
 
-User stories (кратко):
-- Найти пример D7‑класса и получить ссылку на исходную страницу.
-- Найти REST‑метод и его документацию.
-- Найти шаги настройки функциональности (смарт‑процессы/CRM).
-- Видеть источники сразу после утверждений.
-- Получать честный ответ “данных нет” + альтернативы без ссылок.
+User stories (short):
+- Find a D7 class example and get the original source link.
+- Find a REST method and its documentation.
+- Find configuration steps for a feature (smart processes / CRM).
+- See sources immediately after each statement.
+- Get an honest "no data" answer with alternatives (no links).
 
 ---
 
 ## 2) Data & policy
 
-**Храним:** `docs/`, индексы (`.rag/`, `.rag_demo/`), историю запросов/ответов в БД.  
-**Не храним:** пароли/ключи в репозитории; секреты только в env.  
-**Удаление:** удалить `.rag/`/`.rag_demo/`; очистить таблицы `queries`, `answers`, `feedback`, `embeddings`.
+**We store:** `docs/`, indexes (`.rag/`, `.rag_demo/`), and query/answer history in DB.  
+**We do not store:** passwords/keys in the repository; secrets live only in env.  
+**Deletion:** remove `.rag/`/`.rag_demo/`; clear DB tables `queries`, `answers`, `feedback`, `embeddings`.
 
 ---
 
 ## 3) Architecture & tech stack
 
-Стек:
+Stack:
 - Frontend: React + Vite (SPA)
 - Backend: FastAPI
-- Vector: Qdrant (prod), pgvector (опционально)
+- Vector: Qdrant (prod), pgvector (optional)
 - DB: Postgres (prod) / SQLite (dev)
 - LLM: OpenAI (Responses API)
 - Embeddings/Rerank: DeepInfra/Colab
 - Infra: Docker, Amvera, GitHub Actions
 
-High‑level поток:
+High-level flow:
 ```
 Frontend -> FastAPI /answer
    -> BM25 + Vector Search (pgvector/Qdrant)
@@ -52,67 +52,67 @@ Frontend -> FastAPI /answer
 
 ## 4) AI tools / MCP
 
-В репозитории есть MCP‑server с инструментами:
+This repo includes an MCP server with tools:
 - `search_docs(query, top_k, filters)`
 - `answer(query, mode?)`
 - `get_source(path)`
 
-Документация: `docs/AGENT.md` и `mcp/`.
+Documentation: `docs/AGENT.md` and `mcp/`.
 
 ---
 
 ## 5) API contract (OpenAPI)
 
-Контракт: `rag/openapi.yaml`  
-Генерация типов фронта:
+Contract: `rag/openapi.yaml`  
+Frontend type generation:
 ```bash
 cd frontend
 npm run gen:api
 ```
 
-Версионирование API — semver в `info.version` (OpenAPI).
+API versioning: semver in `info.version` (OpenAPI).
 
 ---
 
 ## 6) Backend
 
-Код: `rag/src/bitrix_rag/`  
-Слои: `api/`, `retrieval/`, `clients/`, `db/`, `ingest/`, `eval/`.
+Code: `rag/src/bitrix_rag/`  
+Layers: `api/`, `retrieval/`, `clients/`, `db/`, `ingest/`, `eval/`.
 
-SLA/таймауты настраиваются через env:
+SLA/timeouts via env:
 `RAG_MAX_LATENCY_S`, `OPENAI_TIMEOUT_S`, `BGE_TIMEOUT_S`.
 
-Формат ответа:
-- `answer` без текста `sources:` внутри
-- `sources` отдельным массивом
-- если данных нет — честный ответ + альтернативы без ссылок
+Response format:
+- `answer` contains no `sources:` text
+- `sources` is a separate array
+- if no data - honest answer + alternatives without links
 
 ---
 
 ## 7) Frontend
 
-Submodule: `frontend/` → `https://github.com/getcher123/bitrix-scribe`  
-Экраны: Ask / History / Eval.  
-Тесты: unit (Vitest) + e2e (Playwright).
+Submodule: `frontend/` -> `https://github.com/getcher123/bitrix-scribe`  
+Screens: Ask / History / Eval.  
+Tests: unit (Vitest) + e2e (Playwright).
 
 ---
 
 ## 8) Database & Vector store
 
-Postgres + pgvector (опционально):
-- таблицы `queries`, `answers`, `feedback`, `embeddings`
-- миграции Alembic
-- `/health` показывает статус DB и pgvector
+Postgres + pgvector (optional):
+- tables `queries`, `answers`, `feedback`, `embeddings`
+- Alembic migrations
+- `/health` shows DB and pgvector status
 
 ---
 
 ## 9) Evaluation & tests
 
-Unit + integration tests, CI‑отчет:
+Unit + integration tests, CI report:
 - `docs/RAG/RAG_INTEGRATION_REPORT.json`
 - `docs/RAG/RAG_INTEGRATION_REPORT.csv`
 
-Сгенерировать локально:
+Generate locally:
 ```bash
 python3 rag/scripts/generate_integration_report.py
 ```
@@ -121,10 +121,10 @@ python3 rag/scripts/generate_integration_report.py
 
 ## 10) Deployment (Amvera)
 
-Прод: `https://rag-bitrix-getcher.amvera.io/`  
+Prod: `https://rag-bitrix-getcher.amvera.io/`  
 Smoke: `https://rag-bitrix-getcher.amvera.io/health`
 
-Документация деплоя: `docs/RAG/AMVERA_DEPLOY.md`
+Deploy docs: `docs/RAG/AMVERA_DEPLOY.md`
 
 ---
 
@@ -137,32 +137,33 @@ Secrets:
 - `AMVERA_PASSWORD`
 - `AMVERA_HEALTH_URL`
 
-CI smoke‑job поднимает только API без миграций/индексации (`RUN_MIGRATIONS=0`, `MIGRATE_QDRANT_ON_STARTUP=0`).
+The CI smoke job starts API only (no migrations/indexing):
+`RUN_MIGRATIONS=0`, `MIGRATE_QDRANT_ON_STARTUP=0`.
 
 ---
 
 ## 12) Reproducibility
 
-Локальный запуск:
+Local run:
 ```bash
 make up
 make ingest
 ```
 
-Demo‑ingest (ручной, для отладки):
+Demo ingest (manual, for debugging):
 ```bash
 make ingest-demo
 ```
 
 ---
 
-## Дополнительно
+## Additional
 
-Полная документация RAG:
+Full RAG documentation:
 - `rag/README.md`
-- `docs/RAG/` (план, параметры, тесты, риски)
+- `docs/RAG/` (plan, parameters, tests, risks)
 
-Единая точка входа по документации Bitrix:
+Single entry point for Bitrix documentation:
 - `docs/MAIN_INDEX.md`
 
 ---
