@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 from typing import Iterable
 import time
+import os
 
 from qdrant_client.http import models as qmodels
 
