@@ -18,3 +18,7 @@ __pycache__/
 # RAG runtime data (indexes, caches, local volumes)
 .rag/
 rag_data/
+
+# Qdrant snapshots (uploaded manually)
+qdrant/*.snapshot
+qdrant/*.snapshot.part-*
