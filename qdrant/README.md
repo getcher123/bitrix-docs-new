@@ -1,46 +1,46 @@
-# Qdrant (Amvera) — отдельное приложение
+# Qdrant (Amvera) - separate application
 
-В этом репозитории основной `amvera.yaml` относится к backend‑API, поэтому для Qdrant вынесен отдельный конфиг: `qdrant/amvera.yaml`.
+In this repository the main `amvera.yaml` belongs to the backend API, so Qdrant has its own config: `qdrant/amvera.yaml`.
 
-## Деплой в Amvera
+## Deploy to Amvera
 
-Рекомендуемый вариант: создать **отдельный репозиторий** для Qdrant (или отдельную ветку), куда положить:
-- `qdrant/amvera.yaml` как `amvera.yaml` в корень
-- `qdrant/Dockerfile` как `Dockerfile` в корень
+Recommended: create a **separate repository** for Qdrant (or a separate branch) and place:
+- `qdrant/amvera.yaml` as `amvera.yaml` in the repo root
+- `qdrant/Dockerfile` as `Dockerfile` in the repo root
 
-И запустить новый проект в Amvera из этого репозитория.
+Then create a new Amvera project from that repository.
 
-Если Amvera UI позволяет указать путь до Dockerfile/конфига в текущем репозитории, используйте:
+If Amvera UI allows selecting a Dockerfile/config path within the current repo, use:
 - Dockerfile: `qdrant/Dockerfile`
-- Config: `qdrant/amvera.yaml` (или перенесите/скопируйте в корень репозитория, который деплоите)
+- Config: `qdrant/amvera.yaml` (or copy it to the root of the repo you deploy)
 
-## Данные
+## Data
 
-Для персистентности используется mount в `/qdrant/storage` (см. `persistenceMount`).
-Снапшоты складываются в `/qdrant/storage/snapshots` (см. `QDRANT__STORAGE__SNAPSHOTS_PATH` в Dockerfile),
-чтобы они тоже попадали в persistent storage.
+Persistence uses a mount at `/qdrant/storage` (see `persistenceMount`).
+Snapshots are stored in `/qdrant/storage/snapshots` (see `QDRANT__STORAGE__SNAPSHOTS_PATH` in Dockerfile),
+so they are also persisted.
 
-## Снапшоты > 200MB (ограничение загрузки)
+## Snapshots > 200MB (upload limit)
 
-Если платформа ограничивает размер загрузки (например 200MB), снапшот можно порезать на части.
+If the platform limits upload size (e.g. 200MB), the snapshot can be split into parts.
 
-### Нарезка (локально)
+### Split (locally)
 
 ```bash
 split -b 190m bitrix_docs.snapshot bitrix_docs.snapshot.part-
 ```
 
-### Куда положить на сервер
+### Where to upload on the server
 
-Загрузить части в persistent каталог снапшотов (**рекомендуется**):
+Upload parts into the persistent snapshots directory (**recommended**):
 
 `/qdrant/storage/snapshots/`
 
-Также допускается загрузить части прямо в корень persistent storage:
+You can also upload parts into the root of the persistent storage:
 
 `/qdrant/storage/`
 
-Например:
+Example:
 
 ```
 /qdrant/storage/snapshots/bitrix_docs-20260123-193108.snapshot.part-aa
@@ -48,29 +48,29 @@ split -b 190m bitrix_docs.snapshot bitrix_docs.snapshot.part-
 ...
 ```
 
-### Автосборка
+### Auto-reassembly
 
-В образе используется `qdrant/entrypoint.sh`: при старте контейнера он автоматически собирает
-`*.snapshot.part-*` в итоговый `*.snapshot` (если его ещё нет) в каталоге снапшотов.
-Если части загружены в `/qdrant/storage/`, entrypoint переместит их в каталог снапшотов и затем соберёт.
-Если задан `SNAPSHOT_FILENAME`, скрипт **собирает только этот снапшот** и игнорирует другие части.
+The image uses `qdrant/entrypoint.sh`: at container start it assembles `*.snapshot.part-*`
+into a final `*.snapshot` (if it does not exist) in the snapshots directory.
+If parts are uploaded into `/qdrant/storage/`, the entrypoint moves them into the snapshots directory and assembles.
+If `SNAPSHOT_FILENAME` is set, the script **only assembles that snapshot** and ignores other parts.
 
-## Автоскачивание и авто‑recover (опционально)
+## Auto-download and auto-recover (optional)
 
-Если нужно, контейнер умеет **сам скачать** части снапшота по HTTP и **выполнить recover**.
+If needed, the container can **download** snapshot parts over HTTP and **run recover** automatically.
 
-Переменные окружения:
-- `SNAPSHOT_BASE_URL` — базовый URL (например, `https://.../qdrant`)
-- `SNAPSHOT_PARTS` — список частей через запятую
-- `SNAPSHOT_FILENAME` — итоговый файл снапшота
-- `QDRANT_COLLECTION` — имя коллекции (по умолчанию `bitrix_docs`)
-- `SNAPSHOT_RECOVER_ON_STARTUP=1` — включить авто‑recover
-- `SNAPSHOT_FORCE_DOWNLOAD=1` — скачать части заново и пересобрать снапшот, даже если файлы уже есть
-- `SNAPSHOT_CLEAN_STORAGE=1` — очистить старые данные коллекции/temporary перед recover
-- `SNAPSHOT_VERIFY_TAR=1` — проверить, что в снапшоте есть `config.json`
-- `SNAPSHOT_SHA256` — ожидаемый sha256 собранного снапшота (защита от битой загрузки)
+Environment variables:
+- `SNAPSHOT_BASE_URL` - base URL (e.g. `https://.../qdrant`)
+- `SNAPSHOT_PARTS` - comma-separated list of parts
+- `SNAPSHOT_FILENAME` - final snapshot file name
+- `QDRANT_COLLECTION` - collection name (default `bitrix_docs`)
+- `SNAPSHOT_RECOVER_ON_STARTUP=1` - enable auto-recover
+- `SNAPSHOT_FORCE_DOWNLOAD=1` - re-download parts and reassemble even if files exist
+- `SNAPSHOT_CLEAN_STORAGE=1` - clean old collection/temp before recover
+- `SNAPSHOT_VERIFY_TAR=1` - verify that `config.json` exists inside the snapshot
+- `SNAPSHOT_SHA256` - expected sha256 for the assembled snapshot (protects from corrupted downloads)
 
-Пример:
+Example:
 
 ```
 SNAPSHOT_BASE_URL=https://<ngrok-host>.ngrok-free.app
@@ -82,6 +82,6 @@ SNAPSHOT_VERIFY_TAR=1
 SNAPSHOT_SHA256=71efca728583ede30294e400d42e0903c085dabf8ab17ffbb58ce59c3a13b0e8
 ```
 
-Важно: `SNAPSHOT_PARTS` должен содержать **только имена файлов частей**, без `SNAPSHOT_FILENAME=...` и без пробелов. Иначе загрузка упадёт с 404.
+Important: `SNAPSHOT_PARTS` must contain **only file names**, without `SNAPSHOT_FILENAME=...` and without spaces. Otherwise downloads will fail with 404.
 
-Логи: при старте контейнера будет подробный вывод о скачивании, сборке и recover.
+Logs: on container start, detailed logs will show download, assembly and recovery status.

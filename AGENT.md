@@ -1,76 +1,76 @@
-# AGENT.md — гайдлайны для автономной разработки (Zoomcamp project)
+# AGENT.md - guidelines for autonomous development (Zoomcamp project)
 
-Этот документ предназначен для агента/разработчика, который реализует задачи из `TODO-CRITERIAS.md`.
+This document is for the agent/developer implementing tasks from `TODO-CRITERIAS.md`.
 
-## Источники правды
+## Sources of truth
 
-- План по критериям: `TODO-CRITERIAS.md` (главный чеклист прогресса)
-- RAG‑документация: `docs/RAG/` (параметры, риски, приемка, тест‑набор, деплой Amvera)
-- Поиск по Bitrix‑vault: `docs/AGENT.md`
+- Criteria plan: `TODO-CRITERIAS.md` (main progress checklist)
+- RAG docs: `docs/RAG/` (parameters, risks, acceptance, test set, Amvera deploy)
+- Bitrix vault search guide: `docs/AGENT.md`
 - Backend (API/RAG): `rag/`
-- Frontend (submodule): `frontend/` (репозиторий `bitrix-scribe`)
+- Frontend (submodule): `frontend/` (repo `bitrix-scribe`)
 
-## Обязательное правило автономности (важно)
+## Mandatory autonomy rule (important)
 
-Если для выполнения шага нужны действия/ответы пользователя (доступы, токены, настройки Amvera/GitHub, выборы в UI и т.п.):
+If a step requires user actions/answers (access, tokens, Amvera/GitHub settings, UI choices, etc.):
 
-1) **Не останавливать** работу целиком — продолжать выполнять другие независимые шаги.
-2) Заблокированный шаг в `TODO-CRITERIAS.md` помечать прямо в тексте как: **“ожидает пользователя”**.
-3) Возвращаться к таким шагам после получения нужных данных.
+1) **Do not stop** all work - continue with other independent tasks.
+2) Mark the blocked step in `TODO-CRITERIAS.md` as: **"waiting for user"**.
+3) Return to it after receiving the required info.
 
-Рекомендуемый формат пометки:
+Recommended marker format:
 
 ```md
-- [ ] (ожидает пользователя) <описание шага> — нужно: <что именно нужно от пользователя>
+- [ ] (waiting for user) <step description> - need: <what exactly is needed>
 ```
 
-## Минимальные инструменты (must-have)
+## Minimum tools (must-have)
 
-- `git` (submodules обязательно)
+- `git` (submodules required)
 - Python **3.10+** + `pip` (backend)
-- Node.js **18+** + пакетный менеджер (`npm`/`pnpm`/`bun`) (frontend)
-- Docker + Docker Compose (локальный запуск/CI интеграционных тестов)
-- Amvera CLI (`amvera`) для деплоя (см. `docs/RAG/AMVERA_DEPLOY.md`)
+- Node.js **18+** + package manager (`npm`/`pnpm`/`bun`) (frontend)
+- Docker + Docker Compose (local run / CI integration tests)
+- Amvera CLI (`amvera`) for deploy (see `docs/RAG/AMVERA_DEPLOY.md`)
 
-Опционально (ускоряет работу): `rg` (ripgrep) для поиска по vault.
+Optional (speeds up work): `rg` (ripgrep) for vault search.
 
-## Правила изменения кода
+## Code change rules
 
-- Следовать контракту: `rag/openapi.yaml` — **источник истины** для API.
-- Не коммитить секреты: `.env`, токены, ключи API. Проверять `.gitignore`.
-- Изменения делать минимальными, по одному “логическому” пункту за раз.
-- После изменений запускать локальные проверки (минимум):
-  - backend: unit tests / lint (если добавлены)
+- Follow the contract: `rag/openapi.yaml` is the **source of truth** for the API.
+- Do not commit secrets: `.env`, tokens, API keys. Check `.gitignore`.
+- Keep changes minimal and focused (one logical change at a time).
+- After changes, run local checks at minimum:
+  - backend: unit tests / lint (if available)
   - frontend: `lint` + smoke (dev build)
-- Всегда обновлять `TODO-CRITERIAS.md` чекбоксы по факту выполненной работы.
+- Always update `TODO-CRITERIAS.md` checkboxes after completion.
 
-## Рабочий процесс (workflow)
+## Workflow
 
-- Перед задачей: проверить `TODO-CRITERIAS.md` и актуальные блокеры.
-- Во время задачи: фиксировать изменения малыми патчами, не смешивать темы.
-- После задачи: обновить чекбоксы, добавить заметки о рисках/блокерах.
-- Если шаг требует внешних действий — помечать как **“ожидает пользователя”**.
+- Before a task: check `TODO-CRITERIAS.md` and current blockers.
+- During a task: make small patches, do not mix topics.
+- After a task: update checkboxes, add notes about risks/blockers.
+- If a step needs external actions - mark it as **"waiting for user"**.
 
 ## How we used AI tools
 
-- Поиск по коду и документации (rg/CLI) для понимания структуры.
-- Автогенерация черновиков (README/архитектура/инструкции) с последующей ручной проверкой.
-- Диагностика ошибок сборки/деплоя по логам.
-- Ограничения: не публиковать секреты, не “выдумывать” источники, проверять факты.
+- Search code/docs (rg/CLI) to understand structure.
+- Generate drafts (README/architecture/instructions) with manual review.
+- Diagnose build/deploy errors from logs.
+- Constraints: do not expose secrets, do not invent sources, verify facts.
 
-## Submodule `frontend/` (важно для деплоя)
+## Submodule `frontend/` (important for deploy)
 
-- После `git clone` выполнять:
+- After `git clone` run:
 
 ```bash
 git submodule update --init --recursive
 ```
 
-- Изменения фронта делаются **внутри** `frontend/` как отдельные коммиты в его репозитории, затем в основном репозитории коммитится обновление указателя submodule.
+- Frontend changes are **committed inside** `frontend/` as a separate repo. Then the main repo commits the updated submodule pointer.
 
-## Деплой в Amvera (кратко)
+## Deploy to Amvera (short)
 
-- Проект Amvera: `rag-bitrix`
-- Текущее состояние и команды: `docs/RAG/AMVERA_DEPLOY.md`
+- Amvera project: `rag-bitrix`
+- Current state and commands: `docs/RAG/AMVERA_DEPLOY.md`
 
-В Amvera нет нативного docker-compose: деплой делаем через `Dockerfile` + `amvera.yml` и managed services (например, Postgres). `docker compose` используем локально и в CI для интеграционных тестов.
+Amvera has no native docker-compose: deploy via `Dockerfile` + `amvera.yml` and managed services (e.g., Postgres). `docker compose` is used locally and in CI for integration tests.

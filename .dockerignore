@@ -19,5 +19,4 @@ rag_data
 frontend/
 demo_vault/
 rag/tests/
-rag/debug_frontend/
 qdrant/

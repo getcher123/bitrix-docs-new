@@ -1,8 +1,8 @@
-# RAG сервис для Bitrix Markdown‑vault
+# RAG service for the Bitrix Markdown vault
 
-Этот каталог содержит код RAG‑системы для работы с локальным vault в `../docs/`.
+This directory contains the RAG system code for the local vault in `../docs/`.
 
-Документация проекта:
+Project documentation:
 
 - `../docs/RAG/RAG_PLAN.md`
 - `../docs/RAG/RAG_PARAMETERS.md`
@@ -11,38 +11,38 @@
 - `../docs/RAG/RAG_TEST_SET.md`
 - `../docs/RAG/RAG_QUESTIONNAIRE.md`
 
-## Требования
+## Requirements
 
 - Python 3.10+
-- Docker Desktop (для Qdrant) или локальный Qdrant binary
-- Доступ к BGE endpoints (Colab/ngrok)
-- OpenAI API key (для генерации ответа; без него будет extractive‑режим)
+- Docker Desktop (for Qdrant) or local Qdrant binary
+- Access to BGE endpoints (Colab/ngrok)
+- OpenAI-compatible API key (for answer generation; without it the system uses extractive mode)
 
-## Быстрый обзор
+## Quick overview
 
-- Индексация: `bitrix-rag --env-file .env index`
-- Поиск: `bitrix-rag --env-file .env search "запрос"`
-- Ответ: `bitrix-rag --env-file .env answer "запрос"`
+- Index: `bitrix-rag --env-file .env index`
+- Search: `bitrix-rag --env-file .env search "query"`
+- Answer: `bitrix-rag --env-file .env answer "query"`
 - API: `uvicorn bitrix_rag.api.main:app --host 0.0.0.0 --port 8000`
-- Публичный API (ngrok): `./scripts/run_with_ngrok.sh run`
+- Public API (ngrok): `./scripts/run_with_ngrok.sh run`
 
-## Проблема и поведение
+## Problem and behavior
 
-**Проблема:** в большом Bitrix‑vault сложно быстро находить точные ответы, примеры и ссылки на первоисточник.  
-**Пользователи:** администраторы и разработчики Bitrix24/1C‑Bitrix.  
-**Ограничения:** данные — локальный `docs/` (Markdown‑vault), без внешней индексации.  
-**Ожидаемое поведение:** сервис отвечает по источникам, дает ссылки и явно сообщает, когда данных нет.
+**Problem:** in a large Bitrix vault it is hard to quickly find exact answers, examples and source links.  
+**Users:** Bitrix24 / 1C-Bitrix admins and developers.  
+**Constraints:** data is a local `docs/` Markdown vault, no external indexing.  
+**Expected behavior:** answers must cite sources and explicitly say when data is missing.
 
-### User stories (пример)
+### User stories (example)
 
-- Как разработчик, хочу найти пример D7‑класса и получить ссылку на исходную страницу.
-- Как разработчик, хочу понять REST‑метод и где он описан.
-- Как администратор, хочу найти шаги настройки функциональности (смарт‑процессы/CRM).
-- Как пользователь, хочу перейти на нужный урок из ответа.
-- Как пользователь, хочу видеть источники сразу после утверждений.
-- Как пользователь, хочу честный ответ “нет данных” и полезную альтернативу.
+- As a developer, I want to find a D7 class example and get the source link.
+- As a developer, I want to understand a REST method and where it is documented.
+- As an admin, I want to find configuration steps for a feature (smart processes / CRM).
+- As a user, I want to navigate to the exact lesson from the answer.
+- As a user, I want to see sources right after statements.
+- As a user, I want an honest "no data" answer with a helpful alternative.
 
-### Архитектура (high‑level)
+### Architecture (high-level)
 
 ```
 Frontend (SPA) -> FastAPI /answer
@@ -50,97 +50,97 @@ Frontend (SPA) -> FastAPI /answer
                      +-> BM25 (rag_data)
                      +-> Vector Search (Postgres+pgvector / Qdrant)
                      +-> Rerank + LLM (OpenAI)
-                     +-> Ответ + ссылки
-                     +-> История запросов (Postgres/SQLite)
+                     +-> Answer + links
+                     +-> Query history (Postgres/SQLite)
 ```
 
-## SLA и формат ответа
+## SLA and response format
 
-**Таймауты/SLA (настраиваются через env):**
+**Timeouts/SLA (via env):**
 
-- `RAG_MAX_LATENCY_S` — общий бюджет ответа (по умолчанию 25s).
-- `OPENAI_TIMEOUT_S` — таймаут LLM (по умолчанию 20s).
-- `BGE_TIMEOUT_S` — таймаут embed/rerank (по умолчанию 30s).
+- `RAG_MAX_LATENCY_S` - total response budget (default 25s).
+- `OPENAI_TIMEOUT_S` - LLM timeout (default 20s).
+- `BGE_TIMEOUT_S` - embed/rerank timeout (default 30s).
 
-**Формат ответа API:**
+**API response format:**
 
-- `answer` — текст ответа без секции `sources:` внутри.
-- `sources` — массив путей на источники.
-- Если данных нет, ответ **прямо сообщает об этом** и предлагает альтернативы **без ссылок**.
+- `answer` - answer text without inline `sources:`.
+- `sources` - array of source paths.
+- If data is missing, the answer must explicitly say so and provide alternatives **without links**.
 
 ## Frontend
 
-Продовый фронтенд подключен как git submodule в `../frontend/`.
+The production frontend is a git submodule at `../frontend/`.
 
-Если после `git clone` папка `frontend/` пустая:
+If `frontend/` is empty after `git clone`:
 
 ```bash
 git submodule update --init --recursive
 ```
 
-## Единая точка входа
+## Single entry point
 
-Начинайте с **[docs/MAIN_INDEX.md](docs/MAIN_INDEX.md)** — это единая навигационная страница по ролям и задачам.
+Start with **[docs/MAIN_INDEX.md](docs/MAIN_INDEX.md)** - the single navigation page by roles and tasks.
 
-## Быстрый старт (2–3 минуты)
+## Quick start (2-3 minutes)
 
-### Visual Studio Code (рекомендуется)
+### Visual Studio Code (recommended)
 
-1. Откройте папку репозитория в VS Code
-2. Откройте `docs/MAIN_INDEX.md`
-3. Нажмите `Ctrl+Shift+V` (предпросмотр)
-4. `Ctrl+Click` по ссылкам для навигации
-5. `Ctrl+Shift+F` для поиска по vault
+1. Open the repo folder in VS Code
+2. Open `docs/MAIN_INDEX.md`
+3. Press `Ctrl+Shift+V` (preview)
+4. `Ctrl+Click` links to navigate
+5. `Ctrl+Shift+F` to search the vault
 
 ### Obsidian
 
-1. `Open folder as vault` → выберите папку репозитория (или только `docs/`)
-2. Откройте `docs/MAIN_INDEX.md` (или `MAIN_INDEX.md`, если vault = `docs/`)
-3. Используйте глобальный поиск и граф ссылок
+1. `Open folder as vault` -> select repo folder (or only `docs/`)
+2. Open `docs/MAIN_INDEX.md` (or `MAIN_INDEX.md` if vault = `docs/`)
+3. Use global search and graph view
 
-## Ключевые страницы (без дублирования навигации)
+## Key pages (no duplicate navigation)
 
-- `docs/MAIN_INDEX.md` — стартовая навигация (единая точка входа)
-- `docs/INDEX.md` — индекс разделов (генерируется, пригоден как «карта»)
-- `docs/MODULES.md` — список модулей классического API
-- `docs/QUICK_REFERENCE.md` — быстрые ответы/сценарии
-- `docs/bitrix24_api/index.md` — Bitrix24 REST API (включая импорт `b24-rest-docs`)
-- `docs/AGENT.md` — как AI‑агенту искать справку
-- `docs/RAG/` — документация по проекту RAG (план, параметры, риски, тесты)
-- `docs/ARCHITECTURE.md` — архитектура RAG‑проекта (стек/поток данных)
+- `docs/MAIN_INDEX.md` - start navigation (single entry point)
+- `docs/INDEX.md` - section index (generated, map-like)
+- `docs/MODULES.md` - classic API modules list
+- `docs/QUICK_REFERENCE.md` - quick answers/scenarios
+- `docs/bitrix24_api/index.md` - Bitrix24 REST API (incl. `b24-rest-docs` import)
+- `docs/AGENT.md` - how AI agents search the docs
+- `docs/RAG/` - project documentation (plan, params, risks, tests)
+- `docs/ARCHITECTURE.md` - RAG architecture (stack/data flow)
 
-## Быстрый поиск
+## Quick search
 
 ```bash
-# Поиск по всему хранилищу
+# Search the entire repository
 rg "CIBlockElement" docs/
 
-# Поиск по заголовкам (класс/метод)
+# Search by headings (class/method)
 rg "^#\\s+GetList\\b" docs/
 ```
 
-## RAG‑сервис (опционально)
+## RAG service (optional)
 
-Код RAG‑системы находится в `rag/`. Полное описание, архитектура, SLA и формат ответов — в:
+RAG code lives in `rag/`. Full description, architecture, SLA and response format:
 
 - `rag/README.md`
 - `docs/RAG/RAG_PLAN.md`
 
-## Быстрый запуск (MVP)
+## Quick start (MVP)
 
-1. Поднять Qdrant (если используем):
+1. Start Qdrant (if used):
 
 ```bash
 docker compose up -d
 ```
 
-2. Заполнить `.env` по шаблону:
+2. Fill `.env` from template:
 
 ```bash
 cp .env.example .env
 ```
 
-3. Установить зависимости:
+3. Install dependencies:
 
 ```bash
 python -m venv .venv
@@ -149,209 +149,184 @@ pip install -U pip
 pip install -e .
 ```
 
-4. Собрать индекс:
+4. Build index:
 
 ```bash
 bitrix-rag --env-file .env index
 ```
 
-5. Запустить API:
+5. Start API:
 
 ```bash
 uvicorn bitrix_rag.api.main:app --host 0.0.0.0 --port 8000
 ```
 
-Проверка:
+Check:
 
 ```bash
 curl -s http://localhost:8000/health
 ```
 
-Опционально: запустить API с публичным ngrok‑endpoint:
+Optional: run API with a public ngrok endpoint:
 
 ```bash
 chmod +x ./scripts/run_with_ngrok.sh
 ./scripts/run_with_ngrok.sh run
 ```
 
-Дальше: индексация и API будут развиваться по плану в `../docs/RAG/RAG_PLAN.md`.
+Indexing and API will continue to evolve per `../docs/RAG/RAG_PLAN.md`.
 
-## Dev стенд (Docker + MCP)
+## Dev stand (Docker + MCP)
 
-Dev‑стенд поднимает API + Postgres + MCP и подхватывает `rag/.env`:
+Dev stand brings up API + Postgres + MCP and uses `rag/.env`:
 
 ```bash
 docker compose -f ../docker-compose.yml -f ../docker-compose.dev.yml up -d db api mcp
 ```
 
-Проверки:
+Checks:
 
 ```bash
 curl -s http://localhost:8000/health
 python ../mcp/smoke.py
 ```
 
-Публичный доступ через ngrok (если нужен):
+Public access via ngrok (if needed):
 
 ```bash
 ngrok http 8000
 ```
 
-## Конфигурация (.env)
+## Configuration (.env)
 
-Файл `.env` не коммитится. Основные переменные:
+`.env` is not committed. Key variables:
 
-- `VAULT_ROOT=docs` — путь к vault
-- `RAG_DATA_DIR=.rag` — локальные артефакты индекса
-- `DATABASE_URL=sqlite:///./.rag/app.db` (dev) или `postgresql+psycopg://...` (prod)
-- `VECTOR_BACKEND=pgvector` (Postgres+pgvector) или `qdrant` (Qdrant), либо пусто (авто)
-- `QDRANT_URL=http://localhost:6333`
-- `QDRANT_COLLECTION=bitrix_docs`
-- `BGE_PROVIDER=deepinfra` или `colab`
-- DeepInfra:
-  - `DEEPINFRA_BASE_URL=https://api.deepinfra.com/v1/inference`
-  - `DEEPINFRA_EMBED_PATH=/BAAI/bge-m3`
-  - `DEEPINFRA_RERANK_PATH=/Qwen/Qwen3-Reranker-0.6B`
-  - `DEEPINFRA_KEY=...`
-- Colab/ngrok:
-- `COLAB_BASE_URL=https://<ngrok>.app`
-- `COLAB_EMBED_PATH=/embed`
-- `COLAB_RERANK_PATH=/rerank`
-- `COLAB_API_KEY=...`
-- `OPENAI_API_KEY=...`
-- `OPENAI_MODEL=gpt-5.2`
-- `OPENAI_BASE_URL=https://api.openai.com/v1`
-- `OPENAI_TIMEOUT_S=20`
-- `OPENAI_MAX_OUTPUT_TOKENS=800`
-- `NGROK_AUTH_TOKEN=...` (для публичного API через ngrok)
-- `RAG_EMBED_BATCH=4`
-- `RAG_MAX_LATENCY_S=25`
-- `RAG_FAST_REST=1` (быстрый режим для REST: без vector/rerank/LLM)
+- `VAULT_ROOT=docs` - vault path
+- `RAG_DATA_DIR=.rag` - local index artifacts
+- `DATABASE_URL=sqlite:///./.rag/app.db` (dev) or `postgresql+psycopg://...` (prod)
+- `VECTOR_BACKEND=pgvector` (Postgres+pgvector) or `qdrant` (Qdrant), or empty (auto)
+- `BGE_PROVIDER=deepinfra` or `colab`
+- `NGROK_AUTH_TOKEN=...` (for public API via ngrok)
+- `RAG_FAST_REST=1` (fast mode for REST: no vector/rerank/LLM)
 
-### Пример LLM через DeepInfra (OpenAI‑совместимый API)
+### LLM via DeepInfra (OpenAI-compatible API)
 
-```env
+Example:
+
+```
 OPENAI_BASE_URL=https://api.deepinfra.com/v1/openai
+OPENAI_API_KEY=<DEEPINFRA_KEY>
 OPENAI_MODEL=Qwen/Qwen3-Next-80B-A3B-Instruct
-DEEPINFRA_KEY=...
+OPENAI_TIMEOUT_S=60
+OPENAI_MAX_OUTPUT_TOKENS=1600
 ```
 
-## Миграции (Alembic)
+## Migrations (Alembic)
 
-Для PostgreSQL (prod) применить миграции:
+For PostgreSQL (prod), apply migrations:
 
 ```bash
-alembic -c alembic.ini upgrade head
+alembic upgrade head
 ```
 
-Для SQLite (dev) таблицы создаются автоматически при старте API.
+For SQLite (dev), tables are created automatically on API startup.
 
-## История запросов
+## Query history
 
-API сохраняет историю запросов/ответов в БД:
+API stores query/answer history in DB:
 
-- `queries` — запрос, режим, латентность, ошибки
-- `answers` — текст ответа, модель, sources JSON
-- `feedback` — оценка/комментарий пользователя (позже подключим UI)
+- `queries` - query, mode, latency, errors
+- `answers` - answer text, model, sources JSON
+- `feedback` - rating/comment (planned UI)
 
 ## API endpoints
 
-- `GET /health` — состояние и конфиг
-- `POST /search` — топ‑результаты
-- `POST /answer` — ответ + источники (`mode`: auto/llm/extractive)
-- `GET /history` — последние запросы/ответы
-- `GET /openapi.json` — OpenAPI схема
+- `GET /health` - status and config
+- `POST /search` - top results
+- `POST /answer` - answer + sources (`mode`: auto/llm/extractive)
+- `GET /history` - latest queries/answers
+- `GET /openapi.json` - OpenAPI schema
 
-Пример:
+Example:
 
 ```bash
-curl -s -X POST http://localhost:8000/answer \
+curl -s http://localhost:8000/answer \
   -H 'Content-Type: application/json' \
-  -d '{"query":"Как получить список элементов инфоблока через CIBlockElement::GetList"}'
+  -d '{"query":"How to get a list of iblock elements via CIBlockElement::GetList"}'
 ```
 
-## OpenAPI и debug UI
+## OpenAPI and debug UI
 
-- Статическая OpenAPI спецификация: `openapi.yaml`
-- Фронт‑заглушка для отладки: `debug_frontend/index.html`
+- Static OpenAPI spec: `openapi.yaml`
+- Debug UI stub: `debug_frontend/index.html`
 
-Запуск:
+Run:
 
-1. Запусти API (`uvicorn ...` или `./scripts/run_with_ngrok.sh run`).
-2. Открой `http://localhost:8000/debug` (или `${ngrok_url}/debug`).
-3. Проверь `POST /answer` или `POST /search`.
+1. Start API (`uvicorn ...` or `./scripts/run_with_ngrok.sh run`).
+2. Open `http://localhost:8000/debug` (or `${ngrok_url}/debug`).
+3. Test `POST /answer` or `POST /search`.
 
-## Frontend (отдельно)
+## Frontend (separate)
 
-В текущем прод‑контейнере Amvera разворачивается **только backend**.  
-Frontend планируется деплоить отдельно (Amvera как второй сервис или GitHub Pages).
+In Amvera prod container we deploy **backend only**.  
+Frontend is planned as a separate deployment (Amvera as a second service or GitHub Pages).
 
-## Индексация
+## Indexing
 
-Индексация создаёт файлы в `.rag/`:
+Indexing creates files in `.rag/`:
 
-- `chunks.jsonl` — чанки и метаданные
-- `bm25.json` — индекс BM25
-- `embedding_cache.jsonl` — кеш эмбеддингов
-- `index_manifest.json` — mtime/size для инкрементальных обновлений
-- `index_version.json` — версия индекса (git commit + timestamp)
+- `chunks.jsonl` - chunks + metadata
+- `bm25.json` - BM25 index
+- `embedding_cache.jsonl` - embedding cache
+- `index_manifest.json` - mtime/size for incremental updates
+- `index_version.json` - index version (git commit + timestamp)
 
-Qdrant коллекция: `bitrix_docs`.
+Qdrant collection: `bitrix_docs`.
 
-Инкрементальная индексация:
+Incremental indexing:
 
 ```bash
-bitrix-rag --env-file .env index --incremental --strategy auto
+bitrix-rag --env-file .env index --strategy auto
 ```
 
-Стратегии: `auto` (git→mtime), `git`, `mtime`.
+Strategies: `auto` (git->mtime), `git`, `mtime`.
 
-## Тестирование
+## Testing
 
-Тест‑набор: `../docs/RAG/RAG_TEST_SET.md`  
-Отчёт (пример): `../docs/RAG/RAG_TEST_REPORT_FULL.csv`
+Test set: `../docs/RAG/RAG_TEST_SET.md`  
+Report example: `../docs/RAG/RAG_TEST_REPORT_FULL.csv`
 
-Оценка recall/MRR:
+Recall/MRR evaluation:
 
 ```bash
-python3 scripts/eval_test_set.py --env-file .env --top-k 10 --out ../docs/RAG/RAG_EVAL_REPORT.csv
+python3 rag/scripts/eval_test_set.py
 ```
 
-Локальные тесты:
+Local tests:
 
 ```bash
 make test
 make test-integration
 ```
 
-Frontend (unit + e2e):
+## Common issues
 
-```bash
-cd ../frontend
-npm run test
-npm run test:e2e
-```
+- Qdrant not reachable: check `docker compose up -d`, URL and port `6333`.
+- Rerank/Embed return 4xx/5xx: check `BGE_BASE_URL` and key.
+- LLM errors: check `OPENAI_MODEL` and `OPENAI_API_KEY`.
+- Slow indexing: reduce `RAG_EMBED_BATCH`.
+- Request logs: `.rag/requests.log` (JSONL with timings).
 
-## Типичные проблемы
-
-- Qdrant не доступен: проверь `docker compose up -d`, URL и порт `6333`.
-- Rerank/Embed дают 4xx/5xx: проверь `BGE_BASE_URL` и ключ.
-- LLM ошибки: проверь `OPENAI_MODEL` и `OPENAI_API_KEY`.
-- Медленная индексация: уменьшай `RAG_EMBED_BATCH`.
-- Логи запросов: `.rag/requests.log` (JSONL, включает timings).
-
-## Остановка
+## Stop
 
 ```bash
 docker compose down
 ```
 
-## Источники
+## Sources
 
-- https://dev.1c-bitrix.ru/docs/ (документация, классическое API)
-- https://dev.1c-bitrix.ru/api_help/ (классическое API: справочник функций/классов)
-- https://dev.1c-bitrix.ru/api_d7/ (D7 API)
-- https://dev.1c-bitrix.ru/user_help/ (пользовательская документация)
-- https://dev.1c-bitrix.ru/learning/ (учебные курсы)
-- https://apidocs.bitrix24.ru/ (Bitrix24 REST API)
-- https://github.com/bitrix-tools/b24-rest-docs (upstream-репозиторий Bitrix24 REST, импортирован в `docs/bitrix24_api/b24-rest-docs/`)
+- https://dev.1c-bitrix.ru/docs/ (documentation, classic API)
+- https://dev.1c-bitrix.ru/api_help/ (classic API: functions/classes)
+- https://dev.1c-bitrix.ru/user_help/ (user docs)
+- https://dev.1c-bitrix.ru/learning/ (courses)
+- https://github.com/bitrix-tools/b24-rest-docs (upstream Bitrix24 REST docs, imported into `docs/bitrix24_api/b24-rest-docs/`)
