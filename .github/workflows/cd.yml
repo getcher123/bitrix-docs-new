@@ -36,7 +36,28 @@ jobs:
 
       - name: Rebuild project
         if: ${{ env.AMVERA_USERNAME != '' && env.AMVERA_PASSWORD != '' }}
-        run: amvera rebuild --slug "${AMVERA_PROJECT_SLUG}"
+        run: |
+          set -e
+          max_retries=5
+          for attempt in $(seq 1 $max_retries); do
+            echo "Rebuild attempt ${attempt}/${max_retries}..."
+            output="$(amvera rebuild --slug "${AMVERA_PROJECT_SLUG}" 2>&1)" && {
+              echo "$output"
+              exit 0
+            }
+            code=$?
+            echo "$output"
+            if echo "$output" | grep -q "409"; then
+              if [ "$attempt" -lt "$max_retries" ]; then
+                echo "Build already in progress (409). Waiting before retry..."
+                sleep 30
+                continue
+              fi
+              echo "Still 409 after ${max_retries} attempts. Skipping rebuild."
+              exit 0
+            fi
+            exit "$code"
+          done
 
       - name: Smoke /health
         if: ${{ env.AMVERA_USERNAME != '' && env.AMVERA_PASSWORD != '' && env.AMVERA_HEALTH_URL != '' }}

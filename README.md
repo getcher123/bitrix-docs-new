@@ -131,14 +131,41 @@ Deploy docs: `docs/RAG/AMVERA_DEPLOY.md`
 ## 11) CI/CD
 
 CI workflow: `.github/workflows/ci.yml`  
-CD workflow: `.github/workflows/cd.yml`  
-Secrets:
+CD workflow: `.github/workflows/cd.yml`
+
+### CI (tests + build)
+- Trigger: `push` to `main` and all `pull_request`s
+- Checkout with submodules
+- Backend:
+  - Install deps: `pip install -e 'rag[dev]'` + `ruff`
+  - Lint: `ruff check rag/src --select E9,F63,F7,F82`
+  - Unit tests: `make test`
+  - Integration tests (TestClient + sqlite): `make test-integration`
+- OpenAPI:
+  - Validate spec: `npx @apidevtools/swagger-cli validate rag/openapi.yaml`
+- Frontend (if `frontend/package.json` exists):
+  - `npm ci`
+  - `npm run lint`
+  - `npm run test`
+  - `npm run build`
+- Smoke job (after tests):
+  - `docker compose up -d api`
+  - `/health` check (20 tries)
+  - No migrations / no reindex:
+    - `RUN_MIGRATIONS=0`
+    - `MIGRATE_QDRANT_ON_STARTUP=0`
+
+### CD (Amvera)
+- Trigger: manual (`workflow_dispatch`) or `push` to `main`
+- Uses Amvera CLI (v1.0.6)
+- Deploys project: `rag-bitrix`
+- Runs `/health` smoke check after rebuild
+- Skips deploy when credentials are missing
+
+### Required secrets (GitHub Actions)
 - `AMVERA_USERNAME`
 - `AMVERA_PASSWORD`
 - `AMVERA_HEALTH_URL`
-
-The CI smoke job starts API only (no migrations/indexing):
-`RUN_MIGRATIONS=0`, `MIGRATE_QDRANT_ON_STARTUP=0`.
 
 ---
 

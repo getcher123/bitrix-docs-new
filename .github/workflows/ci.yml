@@ -81,6 +81,9 @@ jobs:
         env:
           RUN_MIGRATIONS: "0"
           MIGRATE_QDRANT_ON_STARTUP: "0"
+          BGE_BASE_URL: "http://localhost:9999"
+          BGE_EMBED_PATH: "/embed"
+          BGE_RERANK_PATH: "/rerank"
         run: docker compose up -d api
 
       - name: Wait for /health
