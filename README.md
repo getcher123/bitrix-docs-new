@@ -6,11 +6,23 @@ This README presents the project **against Zoomcamp criteria** (DataTalksClub AI
 
 ---
 
+## Quick links
+
+- Frontend (GitHub Pages): https://getcher123.github.io/bitrix-scribe/
+- Backend (prod): https://rag-bitrix-getcher.amvera.io/
+- Swagger UI: https://rag-bitrix-getcher.amvera.io/docs
+- OpenAPI JSON: https://rag-bitrix-getcher.amvera.io/openapi.json
+- Smoke (health): https://rag-bitrix-getcher.amvera.io/health
+- Smoke (qdrant): https://rag-bitrix-getcher.amvera.io/health/qdrant
+- Qdrant (external): https://qdrant-getcher.amvera.io/
+
+---
+
 ## 1) Problem description
 
 **Problem:** in a large Bitrix vault it is hard to quickly find exact answers, examples, and links to the source of truth.  
 **Users:** Bitrix24 / 1C-Bitrix administrators and developers.  
-**Constraints:** data is a local `docs/` Markdown vault, without external indexing.
+**Constraints:** source data is a local `docs/` Markdown vault; search is done via our own indexes (BM25 + vector DB).
 
 User stories (short):
 - Find a D7 class example and get the original source link.
@@ -35,8 +47,8 @@ Stack:
 - Frontend: React + Vite (SPA)
 - Backend: FastAPI
 - Vector: Qdrant (prod), pgvector (optional)
-- DB: Postgres (prod) / SQLite (dev)
-- LLM: OpenAI (Responses API)
+- DB: Postgres (prod + docker-compose), SQLite (tests)
+- LLM: OpenAI-compatible API (DeepInfra in prod; OpenAI supported)
 - Embeddings/Rerank: DeepInfra/Colab
 - Infra: Docker, Amvera, GitHub Actions
 
@@ -57,13 +69,36 @@ This repo includes an MCP server with tools:
 - `answer(query, mode?)`
 - `get_source(path)`
 
-Documentation: `docs/AGENT.md` and `mcp/`.
+Documentation: [docs/AGENT.md](docs/AGENT.md) and [mcp/README.md](mcp/README.md).
+
+Run local MCP server (stdio, not deployed in prod):
+```bash
+pip install -e 'rag[dev]'
+
+# optional (default is rag/.env)
+export RAG_ENV_FILE=rag/.env
+
+# index first (pick one)
+make ingest-demo
+# or: make ingest
+
+python mcp/server.py
+python mcp/smoke.py
+```
+
+Run MCP via Docker (dev):
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d api
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up mcp
+```
+
+Note: run `python mcp/server.py` (not `python -m mcp.server`) to avoid module name collisions with the PyPI `mcp` package.
 
 ---
 
 ## 5) API contract (OpenAPI)
 
-Contract: `rag/openapi.yaml`  
+Contract: [rag/openapi.yaml](rag/openapi.yaml)  
 Frontend type generation:
 ```bash
 cd frontend
@@ -76,7 +111,7 @@ API versioning: semver in `info.version` (OpenAPI).
 
 ## 6) Backend
 
-Code: `rag/src/bitrix_rag/`  
+Code: [rag/src/bitrix_rag/](rag/src/bitrix_rag/)  
 Layers: `api/`, `retrieval/`, `clients/`, `db/`, `ingest/`, `eval/`.
 
 SLA/timeouts via env:
@@ -91,10 +126,10 @@ Response format:
 
 ## 7) Frontend
 
-Submodule: `frontend/` -> `https://github.com/getcher123/bitrix-scribe`  
+Submodule: [frontend/](frontend) -> https://github.com/getcher123/bitrix-scribe  
 Screens: Ask / History / Eval.  
 Tests: unit (Vitest) + e2e (Playwright).
-Deploy: GitHub Pages from the frontend repo (workflow `.github/workflows/pages.yml`).  
+Deploy: GitHub Pages from the frontend repo (workflow [frontend/.github/workflows/pages.yml](frontend/.github/workflows/pages.yml)).  
 Build script: `npm run build` (Vite) publishes `dist/`.
 
 ---
@@ -123,21 +158,23 @@ python3 rag/scripts/generate_integration_report.py
 
 ## 10) Deployment (Amvera)
 
-Prod: `https://rag-bitrix-getcher.amvera.io/`  
-Smoke: `https://rag-bitrix-getcher.amvera.io/health`
+Backend (prod): https://rag-bitrix-getcher.amvera.io/  
+Smoke (health): https://rag-bitrix-getcher.amvera.io/health  
+Smoke (qdrant): https://rag-bitrix-getcher.amvera.io/health/qdrant  
+Swagger UI: https://rag-bitrix-getcher.amvera.io/docs  
+OpenAPI JSON: https://rag-bitrix-getcher.amvera.io/openapi.json  
 
-Frontend (GitHub Pages): `https://getcher123.github.io/bitrix-scribe/`  
-OpenAPI JSON: `https://rag-bitrix-getcher.amvera.io/openapi.json`  
-Swagger UI: `https://rag-bitrix-getcher.amvera.io/docs`
+Frontend (GitHub Pages): https://getcher123.github.io/bitrix-scribe/  
+Qdrant (external): https://qdrant-getcher.amvera.io/
 
-Deploy docs: `docs/RAG/AMVERA_DEPLOY.md`
+Deploy docs: [docs/RAG/AMVERA_DEPLOY.md](docs/RAG/AMVERA_DEPLOY.md)
 
 ---
 
 ## 11) CI/CD
 
-CI workflow: `.github/workflows/ci.yml`  
-CD workflow: `.github/workflows/cd.yml`
+CI workflow: [.github/workflows/ci.yml](.github/workflows/ci.yml)  
+CD workflow: [.github/workflows/cd.yml](.github/workflows/cd.yml)
 
 ### CI (tests + build)
 - Trigger: `push` to `main` and all `pull_request`s
@@ -195,10 +232,10 @@ make ingest-demo
 ## Additional
 
 Full RAG documentation:
-- `rag/README.md`
-- `docs/RAG/` (plan, parameters, tests, risks)
+- [rag/README.md](rag/README.md)
+- [docs/RAG/](docs/RAG/) (plan, parameters, tests, risks)
 
 Single entry point for Bitrix documentation:
-- `docs/MAIN_INDEX.md`
+- [docs/MAIN_INDEX.md](docs/MAIN_INDEX.md)
 
 ---
