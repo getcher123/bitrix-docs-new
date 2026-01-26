@@ -152,6 +152,10 @@ class RagService:
             mode_norm = "auto"
         force_llm = mode_norm == "llm"
         force_extractive = mode_norm == "extractive"
+        force_llm_env = os.getenv("FORCE_LLM", "").strip().lower() in {"1", "true", "yes"}
+        if force_llm_env:
+            force_llm = True
+            force_extractive = False
         sections = route_sections(query)
         candidates = self.search(
             query,
