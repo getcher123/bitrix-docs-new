@@ -19,6 +19,9 @@ services:
       VECTOR_BACKEND: pgvector
       VAULT_ROOT: docs
       RAG_DATA_DIR: .rag
+      BGE_BASE_URL: ${BGE_BASE_URL:-}
+      BGE_EMBED_PATH: ${BGE_EMBED_PATH:-/embed}
+      BGE_RERANK_PATH: ${BGE_RERANK_PATH:-/rerank}
     ports:
       - "8000:8000"
     volumes:

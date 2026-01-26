@@ -94,6 +94,8 @@ Response format:
 Submodule: `frontend/` -> `https://github.com/getcher123/bitrix-scribe`  
 Screens: Ask / History / Eval.  
 Tests: unit (Vitest) + e2e (Playwright).
+Deploy: GitHub Pages from the frontend repo (workflow `.github/workflows/pages.yml`).  
+Build script: `npm run build` (Vite) publishes `dist/`.
 
 ---
 
